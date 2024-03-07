@@ -1,6 +1,5 @@
 import { Page } from "puppeteer";
-import { SiteColumns } from "../types";
-import GoogleSheetsManager from "../types/class/GoogleSheetsManager";
+import Site from "../model/Site";
 import PuppeteerManager from "../types/class/PuppeteerManager";
 import { SiteInfo } from "../types/interface/SiteInfo";
 
@@ -9,19 +8,23 @@ interface SiteData {
     url: string;
 }
 
-const getSite = async (): Promise<SiteInfo[]> => {
-    const googleDocs = new GoogleSheetsManager();
-    const siteSheet = await googleDocs.getSheetsByIndex(0);
-    const sitesInfo = await siteSheet.getRows();
-    const sites = sitesInfo.map((site) => {
-        const keywords = site.get(SiteColumns.KEYWORDS);
-        return {
-            name: site.get(SiteColumns.NAME),
-            url: site.get(SiteColumns.URL),
-            keywords: keywords ? keywords.split(", ") : [],
-        };
-    });
-    return sites;
+// const getSiteFromGoogleSheets = async (): Promise<SiteInfo[]> => {
+// const googleDocs = new GoogleSheetsManager();
+// const siteSheet = await googleDocs.getSheetsByIndex(0);
+// const sitesInfo = await siteSheet.getRows();
+// const sites = sitesInfo.map((site) => {
+//     const keywords = site.get(SiteColumns.KEYWORDS);
+//     return {
+//         name: site.get(SiteColumns.NAME),
+//         url: site.get(SiteColumns.URL),
+//         keywords: keywords ? keywords.split(", ") : [],
+//     };
+// });
+// return sites;
+// };
+
+const getSites = async (): Promise<SiteInfo[]> => {
+    return await Site.find({});
 };
 
 const getMetaTag = async (page: Page): Promise<SiteData[]> => {
@@ -44,10 +47,11 @@ const filterByKeyword = (originalData: SiteData[], keywords: string[]) => {
 };
 
 const getInfoFromSite = async () => {
-    const sites = await getSite();
-    console.log(sites);
+    const sites = await Site.find({});
+    console.log(`sites: ${sites}`);
 
     if (!sites) {
+        console.log("hi");
         return;
     }
 

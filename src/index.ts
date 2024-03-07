@@ -1,11 +1,17 @@
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import connectDB from "./loader";
+import { TrendService } from "./service";
 const app = express();
 dotenv.config();
 
-connectDB();
-// TrendService.getInfoFromSite();
+(async () => {
+    // 데이터베이스 연결
+    await connectDB();
+
+    // 데이터베이스 로드가 완료된 후 TrendService.getInfoFromSite 호출
+    await TrendService.getInfoFromSite();
+})();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
