@@ -12,7 +12,7 @@ const SiteSchema = new mongoose.Schema(
             required: true,
         },
         keywords: {
-            type: String,
+            type: [String],
             required: false,
         },
     },
