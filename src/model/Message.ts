@@ -30,7 +30,10 @@ const MessageSchema = new mongoose.Schema(
 );
 
 // timestamps 로 선언 시 생성되는 createdAt, updatedAt
-MessageSchema.index({ createdAt: 1 }, { expireAfterSeconds: 604800 }); // 7일
+MessageSchema.index(
+    { createdAt: 1 },
+    { expireAfterSeconds: 60 * 60 * 24 * 30 }
+); // 30일
 
 export default mongoose.model<MessageInfo & mongoose.Document>(
     "Messages",
