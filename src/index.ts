@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
+import config from "./config";
 import connectDB from "./loader";
 import { TrendService } from "./service";
 const app = express();
@@ -29,17 +30,17 @@ app.use(function (
     next: NextFunction
 ) {
     res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "production" ? err : {};
+    res.locals.error = req.app.get("env") === "real" ? err : {};
 
     res.status(err.status || 500);
     res.render("error");
 });
 
-app.listen(process.env.PORT, () => {
+app.listen(config.port, () => {
     console.log(`
-    -- ${process.env.NODE_ENV}
+    -- ${config.nodeEnv}
     ################################################
-          🛡️  Server listening on port ${process.env.PORT} 🛡️
+          🛡️  Server listening on port ${config.port} 🛡️
     ################################################
   `);
 }).on("error", (err) => {

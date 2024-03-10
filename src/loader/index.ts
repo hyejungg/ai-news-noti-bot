@@ -5,7 +5,11 @@ import Site from "../model/Site";
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(config.mongoDbUri);
+        if (process.env.NODE_ENV === "real") {
+            await mongoose.connect(config.mongoDbRealUri);
+        } else {
+            await mongoose.connect(config.mongoDbUri);
+        }
 
         mongoose.set("autoCreate", true);
 

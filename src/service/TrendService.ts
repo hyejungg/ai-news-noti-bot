@@ -34,7 +34,7 @@ const getInfoFromSite = async () => {
         console.log("hi");
         return;
     }
-
+    return;
     const puppeteerManager = new PuppeteerManager();
     await puppeteerManager.initialize();
     const page = puppeteerManager.getPage();
