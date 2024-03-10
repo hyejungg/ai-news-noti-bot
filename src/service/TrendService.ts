@@ -159,8 +159,7 @@ const getInfoFromSite = async () => {
                 }
             })
 
-            const data = filterByKeyword(siteData, site.keywords);
-            console.log(data)
+            console.log(siteData)
         }
     }
 
