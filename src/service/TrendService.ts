@@ -131,6 +131,30 @@ const getInfoFromSite = async () => {
 
             console.log(data);
         }
+        if (site.name === "클루잇") {
+            const apiPath = "https://clueit.substack.com/api/v1/archive"
+            const paramsData = {
+                sort: "new",
+                search: "",
+                offset: "0",
+                limit: "5"
+            };
+            const params = new URLSearchParams(paramsData);
+
+            const url = `${apiPath}?${params.toString()}`;
+
+            const response = await fetch(url, {method: "GET"});
+            const posts = await response.json();
+
+            const siteData: SiteData[] = posts.map((post) => {
+                return {
+                    title: post.title,
+                    url: post.canonical_url
+                }
+            })
+
+            console.log(siteData)
+        }
     }
 
     await puppeteerManager.close();
