@@ -8,8 +8,8 @@
     "dev": "ts-node src",
     "build": "tsc && node dist",
     "lint": "eslint --fix **/*.ts",
-    "update-lambda": "sh scripts/updateLambda.sh",
-    "invoke-lambda": "sh scripts/invokeLambda.sh"
+    "update-lambda": "sh scripts/scraper/updateLambda.sh",
+    "invoke-lambda": "sh scripts/scraper/invokeLambda.sh"
   },
   "keywords": [],
   "author": "",
