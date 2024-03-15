@@ -1,2 +1,3 @@
+import KakaoWorkService from "./KakaoWorkService";
 import TrendService from "./TrendService";
-export { TrendService };
+export { KakaoWorkService, TrendService };

@@ -8,7 +8,7 @@ if (envFound.error) {
 }
 
 export default {
-    nodeEnv: process.env.NODE_ENV || ("development" as string),
+    nodeEnv: (process.env.NODE_ENV as string) || ("development" as string),
     /**
      * Your favorite port
      */
@@ -30,4 +30,8 @@ export default {
      * google service email
      */
     googleServiceEmail: process.env.GOOGLE_SERVICE_EMAIL as string,
+    /**
+     * kakaowork webhook url
+     */
+    kakaoWorkWebHookUrl: process.env.KAWORK_WEBHOOK_URI as string,
 };
