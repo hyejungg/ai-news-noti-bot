@@ -9,7 +9,8 @@
     "build": "tsc && node dist",
     "lint": "eslint --fix **/*.ts",
     "update-lambda": "sh scripts/scraper/updateLambda.sh",
-    "invoke-lambda": "sh scripts/scraper/invokeLambda.sh"
+    "invoke-lambda": "sh scripts/scraper/invokeLambda.sh",
+    "local": "ts-node src/local.ts"
   },
   "keywords": [],
   "author": "",

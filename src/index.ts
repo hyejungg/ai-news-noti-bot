@@ -18,3 +18,4 @@ export const handler: EventBridgeHandler<EventBridgeDetailType, EventBridgeDetai
         console.error(e);
     }
 };
+
