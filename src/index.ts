@@ -7,12 +7,6 @@ import {EventBridgeDetail, EventBridgeDetailType, LambdaResult} from "./types/aw
 
 dotenv.config();
 
-// error handler
-interface ErrorType {
-    message: string;
-    status: number;
-}
-
 export const handler: EventBridgeHandler<EventBridgeDetailType, EventBridgeDetail, LambdaResult> = async (event, context) => {
     try {
         // 데이터베이스 연결
