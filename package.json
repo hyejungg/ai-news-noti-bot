@@ -7,7 +7,9 @@
     "test": "nodemon",
     "dev": "ts-node src",
     "build": "tsc && node dist",
-    "lint": "eslint --fix **/*.ts"
+    "lint": "eslint --fix **/*.ts",
+    "update-lambda": "sh scripts/updateLambda.sh",
+    "invoke-lambda": "sh scripts/invokeLambda.sh"
   },
   "keywords": [],
   "author": "",

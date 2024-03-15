@@ -20,10 +20,7 @@ export const handler: EventBridgeHandler<EventBridgeDetailType, EventBridgeDetai
 
         // 데이터베이스 로드가 완료된 후 TrendService.getInfoFromSite 호출
         await TrendService.getInfoFromSite();
-
-        return 0;
     } catch (e) {
         console.error(e);
-        return 1;
     }
 };
