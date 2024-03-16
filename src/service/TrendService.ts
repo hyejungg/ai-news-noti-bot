@@ -1,15 +1,8 @@
 import { Page } from "puppeteer";
 import Site from "../model/Site";
 import PuppeteerManager from "../types/class/PuppeteerManager";
-
-interface MessageData {
-    siteName: string;
-    siteData: SiteData[];
-}
-interface SiteData {
-    title: string | null;
-    url: string | null;
-}
+import { SendMessageDto } from "../types/interface/SendMessageDto";
+import { SiteData } from "../types/interface/SiteData";
 
 const getMetaTag = async (page: Page): Promise<SiteData[]> => {
     const title = await page.$eval('meta[property="og:title"]', (element) =>
@@ -18,7 +11,12 @@ const getMetaTag = async (page: Page): Promise<SiteData[]> => {
     const url = await page.$eval('meta[property="og:url"]', (element) =>
         element.getAttribute("content")
     );
-    return [{ title: title ?? "", url: url ?? "" }];
+    return [
+        {
+            title: title ?? "",
+            url: url ?? "",
+        },
+    ];
 };
 
 const filterByKeyword = (originalData: SiteData[], keywords: string[]) => {
@@ -38,7 +36,7 @@ const getInfoFromSite = async () => {
         return;
     }
 
-    const messageData: MessageData[] = [];
+    const messageData: SendMessageDto[] = [];
 
     const puppeteerManager = new PuppeteerManager();
     await puppeteerManager.initialize();
@@ -72,7 +70,10 @@ const getInfoFromSite = async () => {
                         (el) => el.innerText
                     );
                 }
-                tempData.push({ title: titleName, url: detailUrl });
+                tempData.push({
+                    title: titleName,
+                    url: detailUrl,
+                });
             }
             const filteredData = filterByKeyword(tempData, site.keywords);
             messageData.push({ siteName: site.name, siteData: filteredData });
@@ -88,7 +89,10 @@ const getInfoFromSite = async () => {
                 );
                 const detailUrl = await link.$eval("a", (el) => el.href);
                 if (titleName && detailUrl) {
-                    tempData.push({ title: titleName, url: detailUrl });
+                    tempData.push({
+                        title: titleName,
+                        url: detailUrl,
+                    });
                 }
             }
             messageData.push({ siteName: site.name, siteData: tempData });
