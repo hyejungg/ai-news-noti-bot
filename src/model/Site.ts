@@ -18,6 +18,7 @@ const SiteSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
+        versionKey: false, // __v(버전 필드) 생성 방지
     }
 );
 
