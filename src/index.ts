@@ -16,7 +16,7 @@ dotenv.config();
         console.error("크롤링을 통해 뉴스 메시지 생성 실패");
         return;
     }
-    await KakaoWorkService.sendMessage(messageData);
+    await KakaoWorkService.processMessages(messageData);
 })();
 
 app.use(express.urlencoded({ extended: true }));
