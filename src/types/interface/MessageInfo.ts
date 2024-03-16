@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import { Messages } from "./Messages";
 
 export interface MessageInfo {
     type: string;
-    keywords: mongoose.Types.ObjectId[];
+    messages: Messages[];
 }

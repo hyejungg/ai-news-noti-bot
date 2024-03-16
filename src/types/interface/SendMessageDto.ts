@@ -1,6 +1,6 @@
 import { SiteData } from "./SiteData";
 
-export interface MessageData {
+export interface SendMessageDto {
     siteName: string;
     siteData: SiteData[];
 }
