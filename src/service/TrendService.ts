@@ -146,7 +146,7 @@ const getInfoFromSite = async () => {
             const response = await fetch(url, {method: "GET"});
             const posts = await response.json();
 
-            const siteData: SiteData[] = posts.map((post) => {
+            const siteData: SiteData[] = posts.map((post: any) => {
                 return {
                     title: post.title,
                     url: post.canonical_url
