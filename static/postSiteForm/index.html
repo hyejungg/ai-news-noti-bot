@@ -23,9 +23,10 @@
             <div class="formbold-input-flex">
                 <div style="width: 100%">
                     <label for="name" class="formbold-form-label">
-                        사이트 / 서비스 이름
+                        사이트 / 서비스 이름 <span style="color: red">*</span>
                     </label>
                     <input
+                        required
                         type="text"
                         name="name"
                         id="name"
@@ -38,13 +39,44 @@
             <div class="formbold-input-flex">
                 <div style="width: 100%">
                     <label for="url" class="formbold-form-label">
-                        URL
+                        URL <span style="color: red">*</span>
                     </label>
                     <input
+                        required
                         type="url"
                         name="url"
                         id="url"
                         placeholder="https://www.example.com"
+                        class="formbold-form-input"
+                    />
+                </div>
+            </div>
+
+            <div class="formbold-input-flex">
+                <div style="width: 100%">
+                    <label for="keywords" class="formbold-form-label">
+                        키워드 (쉼표로 구분)
+                    </label>
+                    <input
+                        type="text"
+                        name="keywords"
+                        id="keywords"
+                        placeholder="AI, GPT, 딥러닝 등"
+                        class="formbold-form-input"
+                    />
+                </div>
+            </div>
+
+            <div class="formbold-input-flex">
+                <div style="width: 100%">
+                    <label for="requestBy" class="formbold-form-label">
+                        제출자
+                    </label>
+                    <input
+                        type="url"
+                        name="requestBy"
+                        id="requestBy"
+                        placeholder="justin.dev"
                         class="formbold-form-input"
                     />
                 </div>
@@ -282,6 +314,10 @@
                 text-decoration: none;
             }
         }
+    }
+
+    input::placeholder {
+        color: #c4c4c4;
     }
 </style>
 </body>
