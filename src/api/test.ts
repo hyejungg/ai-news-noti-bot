@@ -1,7 +1,5 @@
 import {handler} from "./index"
 
-console.log('?')
-
 // @ts-ignore
 handler({
     headers: {
