@@ -27,7 +27,7 @@ const filterByKeyword = (originalData: SiteData[], keywords: string[]) => {
 };
 
 const getInfoFromSite = async () => {
-    const sites = await Site.find({});
+    const sites = await Site.find({verified: true});
     console.log(`sites: ${sites}`);
 
     if (!sites) {
