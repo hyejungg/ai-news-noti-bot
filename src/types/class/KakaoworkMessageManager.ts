@@ -1,4 +1,3 @@
-import * as https from "https";
 import config from "../../config";
 import { BlockType } from "../interface/BlockType";
 
@@ -30,42 +29,16 @@ export default class KakaoworkMessageManager {
         };
     }
 
-    sendMessageBlocks() {
-        return new Promise((resolve, reject) => {
-            const data = JSON.stringify(this.getBlocks());
-            const url = new URL(this.webhookUrl);
-            const options = {
-                hostname: url.hostname,
-                path: url.pathname,
-                port: 443,
-                method: HTTP_METHOD_POST,
-                headers: {
-                    "Content-Type": HTTP_CONTENT_TYPE,
-                    "Content-Length": Buffer.byteLength(data),
-                },
-            };
-
-            const req = https.request(options, (res) => {
-                if (
-                    res.statusCode &&
-                    res.statusCode >= 200 &&
-                    res.statusCode < 300
-                ) {
-                    resolve(res.statusCode);
-                } else {
-                    reject(
-                        new Error(
-                            `Request failed with status code: ${res.statusCode}`
-                        )
-                    );
-                }
-            });
-            req.on("error", (e) => {
-                reject(e);
-            });
-            req.write(data);
-            req.end();
+    async sendMessageBlocks() {
+        const data = JSON.stringify(this.getBlocks());
+        const response = await fetch(this.webhookUrl, {
+            method: HTTP_METHOD_POST,
+            headers: {
+                "Content-Type": HTTP_CONTENT_TYPE,
+            },
+            body: data,
         });
+        return response.status;
     }
 
     addHeader(text: string, style: string) {
