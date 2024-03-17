@@ -27,13 +27,14 @@ const buildKakaoworkMessagesAndMessageDtos = (
         .forEach((data) => {
             const name = data.siteName;
             const inlineTextData: BlockType[] = [
-                blockManager.createTextBlock(`${data.siteName}\n`, true),
+                blockManager.createTextBlock(`${data.siteName}\n\n`, true),
                 ...data.siteDataArray
                     .filter((item) => item.title !== null && item.url !== null)
                     .map((item, index, array) => {
                         const isLastItem = index === array.length - 1;
+                        // 가독성을 위해 뉴스 타이틀 간 \n 추가
                         const titleWithNewLine = isLastItem
-                            ? item.title!
+                            ? `${item.title}\n\n`
                             : `${item.title}\n`;
                         const url = item.url!
                         messageDto.push({
