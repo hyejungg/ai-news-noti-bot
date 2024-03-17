@@ -15,6 +15,15 @@ const SiteSchema = new mongoose.Schema(
             type: [String],
             required: false,
         },
+        verified: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        requestedBy: {
+            type: String,
+            required: false,
+        }
     },
     {
         timestamps: true,

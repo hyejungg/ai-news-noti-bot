@@ -12,10 +12,6 @@ export default {
     /**
      * Your favorite port
      */
-    port: parseInt(process.env.PORT as string, 10) as number,
-    /**
-     * Your favorite port
-     */
     mongoDbUri: process.env.MONGO_DB_URI as string,
     mongoDbRealUri: process.env.MONGO_DB_REAL_URI as string,
     /**
