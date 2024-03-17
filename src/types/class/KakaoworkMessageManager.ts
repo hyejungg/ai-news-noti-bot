@@ -103,4 +103,15 @@ export default class KakaoworkMessageManager {
             inlines: [...inlines],
         });
     }
+
+    appendSectionBlockWithInlines(inlines: BlockType[]) {
+        this.blocks.push({
+            type: "section",
+            content: {
+                type: "text",
+                text: "section text",
+                inlines: [...inlines],
+            },
+        });
+    }
 }

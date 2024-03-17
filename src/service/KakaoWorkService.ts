@@ -33,19 +33,15 @@ const buildKakaoworkMessagesAndMessageDtos = (
                     .map((item, index, array) => {
                         const isLastItem = index === array.length - 1;
                         // 가독성을 위해 뉴스 타이틀 간 \n 추가
-                        const titleWithNewLine = isLastItem
-                            ? `${item.title}\n\n`
-                            : `${item.title}\n`;
-                        const url = item.url!
-                        messageDto.push({
-                            name: name,
-                            title: item.title!,
-                            url: url,
-                        });
-                        return blockManager.createLinkBlock(titleWithNewLine , url);
+                        const title = isLastItem
+                            ? `${item.title}\n`
+                            : `${item.title}\n\n`;
+                        const url = item.url!;
+                        messageDto.push({ name, title: item.title!, url });
+                        return blockManager.createLinkBlock(title, url);
                     }),
             ];
-            blockManager.appendTextBlockWithInlines(inlineTextData);
+            blockManager.appendSectionBlockWithInlines(inlineTextData);
             blockManager.appendDividerBlock();
         });
 
