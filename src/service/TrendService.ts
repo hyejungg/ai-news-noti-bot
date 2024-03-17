@@ -76,7 +76,10 @@ const getInfoFromSite = async () => {
                 });
             }
             const filteredData = filterByKeyword(tempData, site.keywords);
-            messageData.push({ siteName: site.name, siteData: filteredData });
+            messageData.push({
+                siteName: site.name,
+                siteDataArray: filteredData,
+            });
         }
         if (site.name === "AI 타임즈") {
             const selector = `aside.side div.auto-article > div.item`;
@@ -95,7 +98,7 @@ const getInfoFromSite = async () => {
                     });
                 }
             }
-            messageData.push({ siteName: site.name, siteData: tempData });
+            messageData.push({ siteName: site.name, siteDataArray: tempData });
         }
         if (site.name === "삼성 SDS") {
             const data = await page.evaluate((keywords) => {
@@ -121,7 +124,7 @@ const getInfoFromSite = async () => {
                 });
                 return items;
             }, site.keywords);
-            messageData.push({ siteName: site.name, siteData: data });
+            messageData.push({ siteName: site.name, siteDataArray: data });
         }
         if (site.name === "데보션") {
             const clickSelector = `div.sec-area > ul.sec-area-list01 > li:first-child > div`;
@@ -148,7 +151,7 @@ const getInfoFromSite = async () => {
                     return acc;
                 }, [] as { title: string | null; url: string | null }[]);
             }, site.keywords);
-            messageData.push({ siteName: site.name, siteData: data });
+            messageData.push({ siteName: site.name, siteDataArray: data });
         }
         if (site.name === "클루잇") {
             const today = new Date();
@@ -178,7 +181,10 @@ const getInfoFromSite = async () => {
                         };
                     }
                 );
-                messageData.push({ siteName: site.name, siteData: siteData });
+                messageData.push({
+                    siteName: site.name,
+                    siteDataArray: siteData,
+                });
             }
         }
     }

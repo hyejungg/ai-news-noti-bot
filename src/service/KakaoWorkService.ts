@@ -18,36 +18,31 @@ const buildKakaoworkMessagesAndMessageDtos = (
             blockManager.addText("오늘은 소식이 없어요! 😅", false)
         );
         blockManager.addTextWithInlines(inlinesTextData);
-        return [];
+        return messageDto;
     }
 
     // 카카오워크 메시지 생성 및 db 저장 dto 생성
-    for (const data of messageData) {
-        const inlineTextData: BlockType[] = [];
-        if (data.siteData.length !== 0) {
-            inlineTextData.push(
-                blockManager.addText(`${data.siteName}\n`, true)
-            );
-            data.siteData.forEach((item, index, array) => {
-                const isLastItem = index === array.length - 1;
-                if (item.title && item.url) {
-                    const titleWithNewLine = isLastItem
-                        ? item.title
-                        : `${item.title}\n`;
-                    inlineTextData.push(
-                        blockManager.addTextLinks(titleWithNewLine, item.url)
-                    );
-                    messageDto.push({
-                        name: data.siteName,
-                        title: item.title,
-                        url: item.url,
-                    });
-                }
-            });
+    messageData
+        .filter((data) => data.siteDataArray.length !== 0)
+        .forEach((data) => {
+            const name = data.siteName;
+            const inlineTextData: BlockType[] = [
+                blockManager.addText(`${data.siteName}\n`, true),
+                ...data.siteDataArray
+                    .filter((item) => item.title !== null && item.url !== null)
+                    .map((item, index, array) => {
+                        const isLastItem = index === array.length - 1;
+                        const title = isLastItem
+                            ? item.title!
+                            : `${item.title}\n`;
+                        const url = item.url!;
+                        messageDto.push({ name, title: item.title!, url });
+                        return blockManager.addTextLinks(title, url);
+                    }),
+            ];
             blockManager.addTextWithInlines(inlineTextData);
             blockManager.addDivider();
-        }
-    }
+        });
 
     // TODO 사이트는 정적 웹사이트로 변경하기!
     blockManager.addTextButton(
@@ -60,11 +55,11 @@ const buildKakaoworkMessagesAndMessageDtos = (
 
 const getUniqueMessageData = async (messageData: SendMessageDto[]) => {
     const targetTitles: string[] = messageData.flatMap((data) => {
-        const validSiteData = data.siteData ?? [];
-        const filteredSiteData = validSiteData.filter(
+        const validSiteDataArray = data.siteDataArray ?? [];
+        const filteredSiteDataArray = validSiteDataArray.filter(
             (item): item is { title: string; url: string } => item.title != null
         );
-        const titles = filteredSiteData.map((item) => item.title);
+        const titles = filteredSiteDataArray.map((item) => item.title);
         return titles;
     });
 
@@ -85,7 +80,7 @@ const getUniqueMessageData = async (messageData: SendMessageDto[]) => {
     );
 
     for (const data of messageData) {
-        data.siteData = data.siteData.filter((item) => {
+        data.siteDataArray = data.siteDataArray.filter((item) => {
             return item.title != null && uniqueTitles.includes(item.title);
         });
     }
@@ -115,9 +110,9 @@ const sendMessageAndSave = async (
 const processMessages = async (messageData: SendMessageDto[]) => {
     const uniqueMessageData = await getUniqueMessageData(messageData);
 
-    const newsCount = uniqueMessageData
-        .map((data) => data.siteData.length !== 0)
-        .filter((isNotEmpty) => isNotEmpty).length;
+    const newsCount = uniqueMessageData.filter(
+        (data) => data.siteDataArray.length !== 0
+    ).length;
     const existsNewsData = newsCount > 0;
 
     const blockManager = new KakaoworkMessageManager();
