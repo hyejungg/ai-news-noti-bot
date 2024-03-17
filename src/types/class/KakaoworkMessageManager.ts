@@ -22,7 +22,7 @@ export default class KakaoworkMessageManager {
         this.nowDate = getFormattedNowDate();
     }
 
-    getBlocks() {
+    createMessagePayload() {
         return {
             text: `📢 ${this.nowDate} AI 소식`,
             blocks: this.blocks,
@@ -30,7 +30,7 @@ export default class KakaoworkMessageManager {
     }
 
     async sendMessageBlocks() {
-        const data = JSON.stringify(this.getBlocks());
+        const data = JSON.stringify(this.createMessagePayload());
         const response = await fetch(this.webhookUrl, {
             method: HTTP_METHOD_POST,
             headers: {
@@ -41,7 +41,7 @@ export default class KakaoworkMessageManager {
         return response.status;
     }
 
-    addHeader(text: string, style: string) {
+    appendHeaderBlock(text: string, style: string) {
         this.blocks.push({
             type: "header",
             text: text,
@@ -49,7 +49,7 @@ export default class KakaoworkMessageManager {
         });
     }
 
-    addHeaderTitleWithNowDate(style: string) {
+    appendDateHeaderBlock(style: string) {
         this.blocks.push({
             type: "header",
             text: `📢 ${this.nowDate} AI 소식`,
@@ -57,13 +57,13 @@ export default class KakaoworkMessageManager {
         });
     }
 
-    addDivider() {
+    appendDividerBlock() {
         this.blocks.push({
             type: "divider",
         });
     }
 
-    addTextLinks(text: string, url: string) {
+    createLinkBlock(text: string, url: string) {
         return {
             type: "link",
             text: text,
@@ -71,7 +71,7 @@ export default class KakaoworkMessageManager {
         };
     }
 
-    addText(text: string, isBold: boolean) {
+    createTextBlock(text: string, isBold: boolean) {
         return {
             type: "styled",
             text: text,
@@ -79,7 +79,7 @@ export default class KakaoworkMessageManager {
         };
     }
 
-    addTextButton(
+    appendTextButtonBlock(
         buttonText: string,
         openWebUrl: string,
         style: string = "default"
@@ -96,7 +96,7 @@ export default class KakaoworkMessageManager {
         });
     }
 
-    addTextWithInlines(inlines: BlockType[]) {
+    appendTextBlockWithInlines(inlines: BlockType[]) {
         this.blocks.push({
             type: "text",
             text: "test sample",

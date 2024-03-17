@@ -10,14 +10,14 @@ const buildKakaoworkMessagesAndMessageDtos = (
     blockManager: KakaoworkMessageManager
 ) => {
     let messageDto: Messages[] = [];
-    blockManager.addHeaderTitleWithNowDate("blue");
+    blockManager.appendDateHeaderBlock("blue");
 
     if (!existsNewsData) {
         const inlinesTextData: BlockType[] = [];
         inlinesTextData.push(
-            blockManager.addText("오늘은 소식이 없어요! 😅", false)
+            blockManager.createTextBlock("오늘은 소식이 없어요! 😅", false)
         );
-        blockManager.addTextWithInlines(inlinesTextData);
+        blockManager.appendTextBlockWithInlines(inlinesTextData);
         return messageDto;
     }
 
@@ -27,7 +27,7 @@ const buildKakaoworkMessagesAndMessageDtos = (
         .forEach((data) => {
             const name = data.siteName;
             const inlineTextData: BlockType[] = [
-                blockManager.addText(`${data.siteName}\n`, true),
+                blockManager.createTextBlock(`${data.siteName}\n`, true),
                 ...data.siteDataArray
                     .filter((item) => item.title !== null && item.url !== null)
                     .map((item, index, array) => {
@@ -37,15 +37,15 @@ const buildKakaoworkMessagesAndMessageDtos = (
                             : `${item.title}\n`;
                         const url = item.url!;
                         messageDto.push({ name, title: item.title!, url });
-                        return blockManager.addTextLinks(title, url);
+                        return blockManager.createLinkBlock(title, url);
                     }),
             ];
-            blockManager.addTextWithInlines(inlineTextData);
-            blockManager.addDivider();
+            blockManager.appendTextBlockWithInlines(inlineTextData);
+            blockManager.appendDividerBlock();
         });
 
     // TODO 사이트는 정적 웹사이트로 변경하기!
-    blockManager.addTextButton(
+    blockManager.appendTextButtonBlock(
         "사이트 추가하기",
         "https://github.com/hyejungg/ai-news-noti-bot"
     );
