@@ -32,12 +32,16 @@ const buildKakaoworkMessagesAndMessageDtos = (
                     .filter((item) => item.title !== null && item.url !== null)
                     .map((item, index, array) => {
                         const isLastItem = index === array.length - 1;
-                        const title = isLastItem
+                        const titleWithNewLine = isLastItem
                             ? item.title!
                             : `${item.title}\n`;
-                        const url = item.url!;
-                        messageDto.push({ name, title: item.title!, url });
-                        return blockManager.createLinkBlock(title, url);
+                        const url = item.url!
+                        messageDto.push({
+                            name: name,
+                            title: item.title!,
+                            url: url,
+                        });
+                        return blockManager.createLinkBlock(titleWithNewLine , url);
                     }),
             ];
             blockManager.appendTextBlockWithInlines(inlineTextData);
