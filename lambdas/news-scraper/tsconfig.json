@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@ai-news-noti-bot/common/*": ["../../common/*"],
+      "@ai-news-noti-bot/register-site-api/*": ["../register-site-api/src/*"],
+    }
   },
   "include": [
     "./src/**/*"

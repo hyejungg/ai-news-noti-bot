@@ -2,13 +2,17 @@
 # npm script를 통한 실행을 기준으로 작성
 
 # zip파일 생성
-npm run build
+pnpm run build \
+&& cp ../../pnpm-workspace.yaml ./dist \
+&& cp ./package.json ./dist/lambdas/news-scraper \
+&& cp ../../common/package.json ./dist/common \
+&& cd ./dist \
+&& pnpm install
 
-cp ./.env ./dist
-cp ./package.json ./dist
-cp ./package-lock.json ./dist
-cd ./dist
-npm install --production
+cp ../../../common/.env ./common/.env
+
+echo "const handler = require('./lambdas/news-scraper/src/index.js');" > index.js
+echo "module.exports = handler;" >> index.js
 
 zip -r ./ai-news-noti-bot.zip ./
 
