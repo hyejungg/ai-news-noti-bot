@@ -18,9 +18,6 @@
             "./node_modules/@types" // 설정 안할시 기본적으로 ./node_modules/@types
         ]
     },
-    "include": [
-        "./src/**/*" // build 시 포함
-    ],
     "exclude": [
         "node_modules", // build 시 제외
         "tests"

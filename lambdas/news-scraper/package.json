@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "update-lambda": "sh scripts/updateLambda.sh",
     "invoke-lambda": "sh scripts/invokeLambda.sh",
     "local": "ts-node src/local.ts"

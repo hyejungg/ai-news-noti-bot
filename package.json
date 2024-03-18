@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nodemon",
-    "dev": "ts-node src",
-    "build": "tsc && node dist",
+    "build": "tsc",
     "lint": "eslint --fix **/*.ts"
   },
   "keywords": [],
