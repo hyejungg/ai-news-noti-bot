@@ -31,3 +31,5 @@ export const handler: EventBridgeHandler<
         console.error(e);
     }
 };
+
+// handler(); // 로컬에서 실행 시 주석 해제하고 실행하기

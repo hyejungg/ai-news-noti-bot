@@ -1,31 +1,31 @@
 {
-  "name": "ai-trend-my-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "nodemon",
-    "dev": "ts-node src",
-    "build": "tsc && node dist",
-    "lint": "eslint --fix **/*.ts",
-    "update-lambda": "sh scripts/scraper/updateLambda.sh",
-    "invoke-lambda": "sh scripts/scraper/invokeLambda.sh",
-    "local": "ts-node src/local.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.136",
-    "@types/node": "^20.11.17",
-    "google-auth-library": "^9.6.3",
-    "google-spreadsheet": "^4.1.1",
-    "nodemon": "^3.0.3",
-    "ts-node": "^10.9.2"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.1",
-    "mongoose": "^8.1.2",
-    "puppeteer": "^20.3.0"
-  }
+    "name": "ai-trend-my-bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "nodemon",
+        "dev": "ts-node src",
+        "build": "tsc && node dist",
+        "lint": "eslint --fix **/*.ts",
+        "update-lambda": "sh scripts/scraper/updateLambda.sh",
+        "invoke-lambda": "sh scripts/scraper/invokeLambda.sh",
+        "local": "ts-node src/local.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.136",
+        "@types/node": "^20.11.17",
+        "google-auth-library": "^9.6.3",
+        "google-spreadsheet": "^4.1.1",
+        "nodemon": "^3.0.3",
+        "ts-node": "^10.9.2"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.1",
+        "mongoose": "^8.1.2",
+        "puppeteer": "^20.3.0"
+    }
 }
