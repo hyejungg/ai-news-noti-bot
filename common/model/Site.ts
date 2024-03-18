@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { SiteInfo } from "../types/interface/SiteInfo";
+import { SiteInfo } from "../types/model/SiteInfo";
+
 
 const SiteSchema = new mongoose.Schema(
     {

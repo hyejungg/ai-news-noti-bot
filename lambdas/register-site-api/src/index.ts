@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
-import { SiteInfo } from "../types/interface/SiteInfo";
-import Site from "../model/Site";
-import connectDB from "../loader";
+import Site from "@ai-news-noti-bot/common/model/Site";
+import { SiteInfo } from "@ai-news-noti-bot/common/types/model/SiteInfo";
+import connectDB from "@ai-news-noti-bot/common/loader";
 
 export const handler: APIGatewayProxyHandler = async (event, context) => {
     const contentType = event.headers?.['content-type'];

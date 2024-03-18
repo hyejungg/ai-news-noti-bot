@@ -1,5 +1,5 @@
 import { Page } from "puppeteer";
-import Site from "../model/Site";
+import Site from "@ai-news-noti-bot/common/model/Site";
 import PuppeteerManager from "../types/class/PuppeteerManager";
 import { SendMessageDto } from "../types/interface/SendMessageDto";
 import { SiteData } from "../types/interface/SiteData";

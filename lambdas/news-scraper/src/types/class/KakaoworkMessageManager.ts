@@ -1,4 +1,4 @@
-import config from "../../config";
+import config from "@ai-news-noti-bot/common/config";
 import { BlockType } from "../interface/BlockType";
 
 const HTTP_METHOD_POST = "POST";

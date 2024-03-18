@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { MessageInfo } from "../types/interface/MessageInfo";
+import { MessageInfo } from "../types/model/MessageInfo";
+
 
 const MessageSchema = new mongoose.Schema(
     {

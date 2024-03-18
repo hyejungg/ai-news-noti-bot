@@ -1,7 +1,7 @@
-import Message from "../model/Message";
+import Message from "@ai-news-noti-bot/common/model/Message";
 import KakaoworkMessageManager from "../types/class/KakaoworkMessageManager";
+import { Messages } from "@ai-news-noti-bot/common/types/model";
 import { BlockType } from "../types/interface/BlockType";
-import { Messages } from "../types/interface/Messages";
 import { SendMessageDto } from "../types/interface/SendMessageDto";
 
 const buildKakaoworkMessagesAndMessageDtos = (

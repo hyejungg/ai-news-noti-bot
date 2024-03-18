@@ -1,9 +1,9 @@
+import config from "@ai-news-noti-bot/common/config";
 import { JWT } from "google-auth-library";
 import {
     GoogleSpreadsheet,
     GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
-import config from "../../config";
 
 const googleServiceKey = JSON.parse(config.googleServiceKey);
 

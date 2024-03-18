@@ -1,6 +1,6 @@
 import { EventBridgeHandler } from "aws-lambda";
 import dotenv from "dotenv";
-import connectDB from "./loader";
+import connectDB from "@ai-news-noti-bot/common/loader";
 import { KakaoWorkService, TrendService } from "./service";
 import {
     EventBridgeDetail,
