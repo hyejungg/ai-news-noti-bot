@@ -1,5 +1,4 @@
 import { EventBridgeHandler } from "aws-lambda";
-import dotenv from "dotenv";
 import connectDB from "@ai-news-noti-bot/common/loader";
 import { KakaoWorkService, TrendService } from "./service";
 import {
@@ -7,8 +6,6 @@ import {
     EventBridgeDetailType,
     LambdaResult,
 } from "./types/aws/lambda";
-
-dotenv.config();
 
 export const handler: EventBridgeHandler<
     EventBridgeDetailType,
@@ -31,5 +28,3 @@ export const handler: EventBridgeHandler<
         console.error(e);
     }
 };
-
-// handler(); // 로컬에서 실행 시 주석 해제하고 실행하기

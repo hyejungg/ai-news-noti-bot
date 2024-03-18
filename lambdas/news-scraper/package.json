@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-lambda": "sh scripts/updateLambda.sh",
+    "invoke-lambda": "sh scripts/invokeLambda.sh",
+    "local": "ts-node src/local.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +22,6 @@
   },
   "dependencies": {
     "@ai-news-noti-bot/common": "workspace:^",
-    "dotenv": "^16.4.5",
     "mongoose": "^8.2.2",
     "puppeteer": "^22.5.0"
   }

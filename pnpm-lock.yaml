@@ -16,15 +16,16 @@ importers:
       mongoose:
         specifier: ^8.2.2
         version: 8.2.2
+    devDependencies:
+      '@types/node':
+        specifier: ^20.11.28
+        version: 20.11.28
 
   lambdas/news-scraper:
     dependencies:
       '@ai-news-noti-bot/common':
         specifier: workspace:^
         version: link:../../common
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       mongoose:
         specifier: ^8.2.2
         version: 8.2.2
@@ -60,6 +61,9 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.136
         version: 8.10.136
+      '@types/node':
+        specifier: ^20.11.28
+        version: 20.11.28
 
 packages:
 
