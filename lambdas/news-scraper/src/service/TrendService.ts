@@ -29,7 +29,7 @@ const filterByKeyword = (originalData: SiteData[], keywords: string[]) => {
 };
 
 const getInfoFromSite = async () => {
-    const sites = await Site.find({verified: true});
+    const sites = await Site.find({ verified: true });
     console.log(`sites: ${sites}`);
 
     if (!sites) {
@@ -116,7 +116,7 @@ const getInfoFromSite = async () => {
                         if (isKeywordIncluded) {
                             items.push({
                                 title: aTag.textContent!.trim(),
-                                url: `https://www.samsungsds.com/kr/${aTag.getAttribute(
+                                url: `https://www.samsungsds.com${aTag.getAttribute(
                                     "href"
                                 )}`,
                             });
