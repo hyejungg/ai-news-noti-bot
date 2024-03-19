@@ -20,6 +20,9 @@ importers:
       '@types/node':
         specifier: ^20.11.28
         version: 20.11.28
+      tsc-alias:
+        specifier: ^1.8.8
+        version: 1.8.8
 
   lambdas/news-scraper:
     dependencies:
@@ -67,6 +70,9 @@ importers:
       '@types/node':
         specifier: ^20.11.28
         version: 20.11.28
+      tsc-alias:
+        specifier: ^1.8.8
+        version: 1.8.8
 
 packages:
 
