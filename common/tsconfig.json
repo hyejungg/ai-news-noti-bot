@@ -2,7 +2,11 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@ai-news-noti-bot/news-scraper/*": ["../lambdas/news-scraper/src/*"],
+      "@ai-news-noti-bot/register-site-api/*": ["../lambdas/register-site-api/src/*"],
+    }
   },
   "include": [
     "./**/*"
