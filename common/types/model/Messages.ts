@@ -1,5 +1,5 @@
 export interface Messages {
-    name: string;
-    title: string;
-    url: string;
+  name: string;
+  title: string;
+  url: string;
 }

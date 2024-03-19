@@ -1,4 +1,3 @@
-
 /**
  * EventBridgeEvent 관련 타입 선언
  * 참고: https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events-structure.html

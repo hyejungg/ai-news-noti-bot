@@ -1,5 +1,5 @@
 export interface ButtonBlockType {
-    type: string;
-    name: string;
-    value: string;
+  type: string;
+  name: string;
+  value: string;
 }

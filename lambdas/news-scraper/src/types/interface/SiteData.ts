@@ -1,4 +1,4 @@
 export interface SiteData {
-    title: string | null;
-    url: string | null;
+  title: string | null;
+  url: string | null;
 }
