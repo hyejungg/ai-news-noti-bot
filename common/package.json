@@ -1,0 +1,21 @@
+{
+  "name": "@ai-news-noti-bot/common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && tsc-alias"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.28",
+    "tsc-alias": "^1.8.8"
+  }
+}

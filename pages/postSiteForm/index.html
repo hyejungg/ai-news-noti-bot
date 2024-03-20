@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GAI - AI 뉴스 사이트 추가</title>
+  </head>
+  <body>
+    <div class="formbold-main-wrapper">
+      <h1 style="margin-top: 40px; margin-bottom: 0">사이트 / 서비스 제출</h1>
+      <!-- Author: FormBold Team -->
+      <!-- Learn More: https://formbold.com -->
+      <div class="formbold-form-wrapper">
+        <figure class="form-image-figure">
+          <img src="./images/Mar-Business_18.jpg" />
+          <figcaption>
+            <a
+              href="https://kr.freepik.com/free-vector/illustration-e-mail-protection-concept-e-mail-envelope-with-file-document-and-attach-file-system-security-approved_13744792.htm#fromView=search&page=1&position=1&uuid=5e1d4044-6d30-4798-a85e-36bc6d170134"
+              >작가 jcomp 출처 Freepik</a
+            >
+          </figcaption>
+        </figure>
+        <form
+          action="https://q6aywf3om3.execute-api.ap-northeast-2.amazonaws.com/real/api/v1/site"
+          method="POST"
+        >
+          <div class="formbold-input-flex">
+            <div style="width: 100%">
+              <label for="name" class="formbold-form-label">
+                사이트 / 서비스 이름 <span style="color: red">*</span>
+              </label>
+              <input
+                required
+                type="text"
+                name="name"
+                id="name"
+                placeholder="◯◯ 블로그/뉴스레터 등"
+                class="formbold-form-input"
+              />
+            </div>
+          </div>
+
+          <div class="formbold-input-flex">
+            <div style="width: 100%">
+              <label for="url" class="formbold-form-label">
+                URL <span style="color: red">*</span>
+              </label>
+              <input
+                required
+                type="url"
+                name="url"
+                id="url"
+                placeholder="https://www.example.com"
+                class="formbold-form-input"
+              />
+            </div>
+          </div>
+
+          <div class="formbold-input-flex">
+            <div style="width: 100%">
+              <label for="keywords" class="formbold-form-label">
+                키워드 (쉼표로 구분)
+              </label>
+              <input
+                type="text"
+                name="keywords"
+                id="keywords"
+                placeholder="AI, GPT, 딥러닝 등"
+                class="formbold-form-input"
+              />
+            </div>
+          </div>
+
+          <div class="formbold-input-flex">
+            <div style="width: 100%">
+              <label for="requestBy" class="formbold-form-label">
+                제출자
+              </label>
+              <input
+                type="text"
+                name="requestBy"
+                id="requestBy"
+                placeholder="justin.dev"
+                class="formbold-form-input"
+              />
+            </div>
+          </div>
+          <button class="formbold-btn">제출</button>
+        </form>
+      </div>
+    </div>
+    <style>
+      @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Pretendard Variable", Pretendard, "Inter",
+          BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+          "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      }
+      .formbold-main-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .formbold-form-wrapper {
+        margin: 0 auto;
+        max-width: 570px;
+        width: 100%;
+        background: white;
+        padding: 40px;
+      }
+
+      @media (max-width: 768px) {
+        .formbold-form-wrapper {
+          max-width: 100%;
+          width: 100%;
+          padding: 40px;
+        }
+      }
+
+      .formbold-img {
+        margin-bottom: 40px;
+      }
+
+      .formbold-input-flex {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .formbold-input-flex > div {
+        width: 50%;
+      }
+      .formbold-form-input {
+        width: 100%;
+        padding: 13px 22px;
+        border-radius: 5px;
+        border: 1px solid #dde3ec;
+        background: #ffffff;
+        font-weight: 500;
+        font-size: 16px;
+        color: #536387;
+        outline: none;
+        resize: none;
+      }
+      .formbold-form-input:focus {
+        border-color: #6a64f1;
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+      }
+      .formbold-form-label {
+        color: #536387;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 24px;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .formbold-mb-5 {
+        margin-bottom: 20px;
+      }
+      .formbold-radio-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .formbold-radio-label {
+        font-size: 14px;
+        line-height: 24px;
+        color: #07074d;
+        position: relative;
+        padding-left: 25px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      .formbold-input-radio {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .formbold-radio-checkmark {
+        position: absolute;
+        top: -1px;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        background-color: #ffffff;
+        border: 1px solid #dde3ec;
+        border-radius: 50%;
+      }
+      .formbold-radio-label
+        .formbold-input-radio:checked
+        ~ .formbold-radio-checkmark {
+        background-color: #6a64f1;
+      }
+      .formbold-radio-checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+
+      .formbold-radio-label
+        .formbold-input-radio:checked
+        ~ .formbold-radio-checkmark:after {
+        display: block;
+      }
+
+      .formbold-radio-label .formbold-radio-checkmark:after {
+        top: 50%;
+        left: 50%;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ffffff;
+        transform: translate(-50%, -50%);
+      }
+
+      .formbold-btn {
+        text-align: center;
+        width: 100%;
+        font-size: 16px;
+        border-radius: 5px;
+        padding: 14px 25px;
+        border: none;
+        font-weight: 500;
+        background-color: #6a64f1;
+        color: white;
+        cursor: pointer;
+        margin-top: 25px;
+      }
+      .formbold-btn:hover {
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+      }
+      .form-image-figure {
+        width: 80%;
+        margin: 0 auto;
+      }
+      .form-image-figure {
+        img {
+          width: 100%;
+        }
+        figcaption {
+          font-size: 12px;
+          text-align: right;
+          display: block;
+          a {
+            color: #868686;
+            text-decoration: none;
+          }
+        }
+      }
+
+      input::placeholder {
+        color: #c4c4c4;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "@ai-news-noti-bot/news-scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && tsc-alias",
+    "update-lambda": "sh scripts/updateLambda.sh",
+    "invoke-lambda": "sh scripts/invokeLambda.sh",
+    "local": "ts-node src/local.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.136",
+    "@types/node": "^20.11.28",
+    "google-auth-library": "^9.7.0",
+    "google-spreadsheet": "^4.1.1",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8"
+  },
+  "dependencies": {
+    "@ai-news-noti-bot/common": "workspace:^",
+    "mongoose": "^8.2.2",
+    "puppeteer": "^22.5.0"
+  }
+}

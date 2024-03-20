@@ -131,3 +131,6 @@ dist
 
 # Jetbrains IDE files
 .idea
+
+.DS_Store
+
