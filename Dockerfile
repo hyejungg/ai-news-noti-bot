@@ -5,20 +5,20 @@ WORKDIR /home/app
 
 RUN npm install -g pnpm
 
-# 모노레포 구조와 관련된 파일들 복사
+# 모노레포 구조와 관련된 파일들 복f사
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 
 # common 모듈과 news-scrapper 함수의 코드와 package.json 복사
 COPY common ./common
-COPY lambda/news-scrapper ./lambda/news-scrapper
+COPY lambdas/news-scraper ./lambdas/news-scraper
 
 # 의존성 설치를 위한 작업 디렉토리로 변경
-WORKDIR /home/app/lambda/news-scrapper
+WORKDIR /home/app/lambdas/news-scraper
 
 RUN pnpm install
 
-WORKDIR /home/app/lambda/news-scrapper/dist
+WORKDIR /home/app/lambdas/news-scraper/dist
 
 CMD ["node", "index.js"]
