@@ -25,13 +25,6 @@ jobs:
                   touch .env
                   echo ${{ secrets.ENV }} >> ./common/.env
 
-            # TODO 확인 후 삭제
-            - name: ls
-              run: |
-                  pwd
-                  ls
-                  ls ./common/
-
             - name: Install AWS CLI
               run: |
                   sudo apt-get update
@@ -44,22 +37,24 @@ jobs:
                   aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_ACCESS_KEY }}
                   aws-region: ${{ secrets.AWS_REGION }}
 
-            - name: Deploy Static Web File
+            - name: Sync static web files
               run: aws s3 sync ./pages s3://${{ secrets.AWS_S3_BUCKET_NAME }}
 
             - name: AWS ECR Login
-              run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.REAL_APP_LAMBDA_ASN }}
+              run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
 
-            - name: Build Docker Image
-              run: docker build -t ai-news-trend-bot-real:latest .
+            - name: Build docker image and push docker images to ecr
+              run: |
+                  docker build -t ai-news-trend-bot-real .
+                  docker tag ai-news-trend-bot-real:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-trend-bot-real:latest
+                  # TODO 확인 후 삭제 (docker images)
+                  docker images ai-news-trend-bot-real:latest
+                  docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-trend-bot-real:latest
 
-            - name: Push Docker Image to ECR
-              run: docker push ${{ secrets.AWS_REGISTRY_URL }}:latest
-
-            - name: Update Lambda Function
+            - name: Update lambda function
               run: aws lambda update-function-code --function-name ${{ secrets.REAL_APP_LAMBDA_ASN }} --image-uri ${{ secrets.AWS_REGISTRY_URL }}:latest
 
-            - name: Delete Untagged Images In ECR
+            - name: Delete untagged images in ECR
               run: |
                   # Get untagged image digest
                   UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ${{ secrets.AWS_REGISTRY_URL }} --query 'imageDetails[?imageTags==null].imageDigest' --output json)
