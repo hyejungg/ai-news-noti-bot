@@ -45,10 +45,7 @@ jobs:
                   aws-region: ${{ secrets.AWS_REGION }}
 
             - name: Deploy Static Web File
-              run: aws s3 cp \
-                  --recursive \
-                  --region ap-northeast-2 \
-                  pages s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+              run: aws s3 sync ./pages s3://${{ secrets.AWS_S3_BUCKET_NAME }}
 
             - name: AWS ECR Login
               run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.REAL_APP_LAMBDA_ASN }}
