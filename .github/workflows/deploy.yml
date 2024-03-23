@@ -55,11 +55,11 @@ jobs:
             - name: Delete untagged images in ECR
               run: |
                   # Get untagged image digest
-                  UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ${{ secrets.AWS_REGISTRY_URL }} --query 'imageDetails[?imageTags==null].imageDigest' --output json)
+                  UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ai-news-noti-bot-real --query 'imageDetails[?imageTags==null].imageDigest' --output json)
 
                   # Delete untagged images
                   if [ -n "$UNTAGGED_IMAGES" ]; then
                     for IMAGE_DIGEST in $(echo "$UNTAGGED_IMAGES" | jq -r '.[]'); do
-                      aws ecr batch-delete-image --repository-name ${{ secrets.AWS_REGISTRY_URL }} --image-ids imageDigest=$IMAGE_DIGEST
+                      aws ecr batch-delete-image --repository-name ai-news-noti-bot-real --image-ids imageDigest=$IMAGE_DIGEST
                     done
                   fi
