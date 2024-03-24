@@ -18,9 +18,14 @@ RUN pnpm install
 WORKDIR /home/app/lambdas/news-scraper
 
 # 실행 환경 구성
-RUN pnpm build && cp ../../pnpm-workspace.yaml ./dist && cp ./package.json ./dist/lambdas/news-scraper && cp ../../common/package.json ./dist/common
+RUN pnpm build \
+    && cp ../../pnpm-workspace.yaml ./dist \
+    && cp ./package.json ./dist/lambdas/news-scraper \
+    && cp ../../common/package.json ./dist/common
+    
 WORKDIR /home/app/lambdas/news-scraper/dist
-RUN pnpm install && cp ../../../common/.env ./common/.env
+RUN pnpm install \
+    && cp ../../../common/.env ./common/.env
 
 # 실행
 WORKDIR /home/app/lambdas/news-scraper/dist/lambdas/news-scraper/src
