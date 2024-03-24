@@ -25,10 +25,11 @@ RUN pnpm build \
 WORKDIR /home/app/lambdas/news-scraper/dist
 RUN pnpm install \
     && cp ../../../common/.env ./common/.env \
-    && echo "const handler = require('./lambdas/news-scraper/src/index.js');" > index.js \
-    && echo "module.exports = handler;" >> index.js
+    && echo "import { handler as test } from './lambdas/news-scraper/src/index.js'" > index.mjs \
+    && echo "export const handler = test;" >> index.mjs
 
+COPY . ${LAMBDA_TASK_ROOT}
 WORKDIR ${LAMBDA_TASK_ROOT}
-COPY /home/app/lambdas/news-scraper/dist/* .
+RUN ls -al
 
 CMD ["index.handler"]
