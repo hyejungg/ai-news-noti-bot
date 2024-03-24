@@ -6,15 +6,15 @@ RUN npm install -g typescript
 RUN npm install -g pnpm
 
 # 전체 파일 복사
-COPY . /home/app
+COPY . ${LAMBDA_TASK_ROOT}
 
 # 디렉터리 위치 이동
-WORKDIR /home/app
+WORKDIR ${LAMBDA_TASK_ROOT}
 
 RUN pnpm install
 
 # 의존성 설치를 위한 작업 디렉토리로 변경
-WORKDIR /home/app/lambdas/news-scraper
+WORKDIR ./lambdas/news-scraper
 
 # 실행 환경 구성
 RUN pnpm build \
@@ -27,7 +27,7 @@ RUN pnpm build \
     && echo "import { handler as test } from './lambdas/news-scraper/src/index.js'" > index.mjs \
     && echo "export const handler = test;" >> index.mjs
 
-WORKDIR ${LAMBDA_TASK_ROOT}
-COPY /home/app/lambdas/news-scraper/dist ./
+WORKDIR ${LAMBDA_TASK_ROOT}/lambdas/news-scraper/dist
+#COPY /home/app/lambdas/news-scraper/dist ./
 
 CMD ["index.handler"]
