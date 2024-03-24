@@ -30,4 +30,4 @@ RUN pnpm install \
 # 실행
 WORKDIR /home/app/lambdas/news-scraper/dist/lambdas/news-scraper/src
 
-CMD ["node", "index.js"]
+CMD ["index.handler"]
