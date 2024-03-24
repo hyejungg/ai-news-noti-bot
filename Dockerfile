@@ -30,6 +30,6 @@ RUN pnpm install \
 
 COPY . ${LAMBDA_TASK_ROOT}
 WORKDIR ${LAMBDA_TASK_ROOT}
-RUN ls -al
+RUN ls -al && ls -al ./lambdas/news-scraper/dist && cat ./lambdas/news-scraper/dist/index.mjs
 
 CMD ["index.handler"]
