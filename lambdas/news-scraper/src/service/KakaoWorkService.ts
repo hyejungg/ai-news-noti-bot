@@ -18,6 +18,10 @@ const buildKakaoworkMessagesAndMessageDtos = (
       blockManager.createTextBlock("오늘은 소식이 없어요! 😅", false),
     );
     blockManager.appendTextBlockWithInlines(inlinesTextData);
+    blockManager.appendTextButtonBlock(
+        "사이트 추가하기",
+        "https://d1qbk7p5aewspc.cloudfront.net/index.html",
+    );
     return messageDto;
   }
 
@@ -43,10 +47,9 @@ const buildKakaoworkMessagesAndMessageDtos = (
       blockManager.appendDividerBlock();
     });
 
-  // TODO 사이트는 정적 웹사이트로 변경하기!
   blockManager.appendTextButtonBlock(
     "사이트 추가하기",
-    "https://github.com/hyejungg/ai-news-noti-bot",
+    "https://d1qbk7p5aewspc.cloudfront.net/index.html",
   );
 
   return messageDto;
