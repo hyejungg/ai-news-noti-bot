@@ -25,7 +25,7 @@ RUN pnpm build \
 WORKDIR /home/app/lambdas/news-scraper/dist
 RUN pnpm install \
     && cp ../../../common/.env ./common/.env \
-    && echo "import handler from './lambdas/news-scraper/src/index.js'" > index.mjs \
+    && echo "import { handler } from './lambdas/news-scraper/src/index.js'" > index.mjs \
     && echo "export { handler };" >> index.mjs
 
 CMD ["index.handler"]
