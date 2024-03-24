@@ -8,6 +8,7 @@ import { SiteInfo } from "@ai-news-noti-bot/common/types/model";
 
 export default class ExtractorFactory {
   static createExtractor(site: SiteInfo): Extractor {
+    console.log(`${site.name} : 데이터 추출 시작`);
     switch (site.name) {
       case "긱뉴스":
         return new GeekNewsExtractor(site);
