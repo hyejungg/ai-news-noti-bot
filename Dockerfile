@@ -29,6 +29,6 @@ RUN pnpm install \
     && echo "module.exports = handler;" >> index.js
 
 WORKDIR ${LAMBDA_TASK_ROOT}
-COPY --from=builder /home/app/lambdas/news-scraper/dist/* .
+COPY /home/app/lambdas/news-scraper/dist/* .
 
 CMD ["index.handler"]
