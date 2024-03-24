@@ -11,7 +11,6 @@ COPY . /home/app
 # 디렉터리 위치 이동
 WORKDIR /home/app
 
-# pnpm 설치
 RUN pnpm install
 
 # 의존성 설치를 위한 작업 디렉토리로 변경
@@ -25,9 +24,8 @@ RUN pnpm build \
     
 WORKDIR /home/app/lambdas/news-scraper/dist
 RUN pnpm install \
-    && cp ../../../common/.env ./common/.env
-
-# 실행
-WORKDIR /home/app/lambdas/news-scraper/dist/lambdas/news-scraper/src
+    && cp ../../../common/.env ./common/.env \
+    && echo "const handler = require('./lambdas/news-scraper/src/index.js');" > index.js \
+    && echo "module.exports = handler;" >> index.js
 
 CMD ["index.handler"]

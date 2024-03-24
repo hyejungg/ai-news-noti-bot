@@ -28,7 +28,6 @@ COPY . /home/app
 # 디렉터리 위치 이동
 WORKDIR /home/app
 
-# pnpm 설치
 RUN pnpm install
 
 # 의존성 설치를 위한 작업 디렉토리로 변경
