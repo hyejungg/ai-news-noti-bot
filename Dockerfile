@@ -20,15 +20,14 @@ WORKDIR /home/app/lambdas/news-scraper
 RUN pnpm build \
     && cp ../../pnpm-workspace.yaml ./dist \
     && cp ./package.json ./dist/lambdas/news-scraper \
-    && cp ../../common/package.json ./dist/common
-    
-WORKDIR /home/app/lambdas/news-scraper/dist
-RUN pnpm install \
+    && cp ../../common/package.json ./dist/common \
+    && cd ./dist \
+    && pnpm install \
     && cp ../../../common/.env ./common/.env \
     && echo "import { handler as test } from './lambdas/news-scraper/src/index.js'" > index.mjs \
     && echo "export const handler = test;" >> index.mjs
 
-COPY /home/app/lambdas/news-scraper/dist ${LAMBDA_TASK_ROOT}
-WORKDIR ${LAMBDA_TASK_ROOT}/lambdas/news-scraper/src
+WORKDIR ${LAMBDA_TASK_ROOT}
+COPY /home/app/lambdas/news-scraper/dist ./
 
 CMD ["index.handler"]
