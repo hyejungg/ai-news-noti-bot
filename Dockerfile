@@ -27,7 +27,7 @@ RUN pnpm build \
     && echo "import { handler as test } from './lambdas/news-scraper/src/index.js'" > index.mjs \
     && echo "export const handler = test;" >> index.mjs
 
-WORKDIR ${LAMBDA_TASK_ROOT}/lambdas/news-scraper/dist
+WORKDIR ${LAMBDA_TASK_ROOT}
 #COPY /home/app/lambdas/news-scraper/dist ./
 
-CMD ["index.handler"]
+CMD ["lambdas/news-scraper/dist/index.handler"]
