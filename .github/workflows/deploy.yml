@@ -45,7 +45,7 @@ jobs:
 
             - name: Build docker image and push docker images to ecr
               run: |
-                  docker build -t ai-news-noti-bot-real .
+                  docker build -t ai-news-noti-bot-real . --progress=plain
                   docker tag ai-news-noti-bot-real:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
                   docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
 
