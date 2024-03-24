@@ -16,6 +16,12 @@ export default class PuppeteerManager {
             });
         }
         this.browser = await puppeteer.launch({
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+            ],
             headless: false, // 브라우저 창을 보이게 설정
             executablePath: puppeteer.executablePath(),
         });
