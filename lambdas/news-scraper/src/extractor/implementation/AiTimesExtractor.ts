@@ -1,6 +1,6 @@
 import Extractor from "../Extractor";
 import PuppeteerManager from "../../types/class/PuppeteerManager";
-import { ElementHandle } from "puppeteer";
+import { ElementHandle } from "puppeteer-core";
 import { SiteData } from "../../types/interface/SiteData";
 import { SiteInfo } from "@ai-news-noti-bot/common/types/model";
 import { SendMessageDto } from "../../types/interface/SendMessageDto";

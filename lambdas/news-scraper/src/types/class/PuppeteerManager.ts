@@ -1,6 +1,6 @@
 import config from "@ai-news-noti-bot/common/config";
 import chromium from "chrome-aws-lambda";
-import puppeteer, { Browser, Page } from "puppeteer";
+import puppeteer, { Browser, Page } from "puppeteer-core";
 
 export default class PuppeteerManager {
   private browser: Browser | null = null;
