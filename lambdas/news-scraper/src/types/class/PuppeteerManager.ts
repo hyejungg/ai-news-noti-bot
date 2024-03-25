@@ -14,17 +14,18 @@ export default class PuppeteerManager {
                 executablePath: await chromium.executablePath,
                 headless: chromium.headless,
             });
+        } else {
+            this.browser = await puppeteer.launch({
+                args: [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                ],
+                headless: false, // 브라우저 창을 보이게 설정
+                executablePath: puppeteer.executablePath(),
+            });
         }
-        this.browser = await puppeteer.launch({
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-            ],
-            headless: false, // 브라우저 창을 보이게 설정
-            executablePath: puppeteer.executablePath(),
-        });
         this.page = await this.browser.newPage();
         await this.page.setViewport({
             width: 1920,
