@@ -27,6 +27,6 @@
     "chrome-aws-lambda": "^10.1.0",
     "mongoose": "^8.2.2",
     "puppeteer": "^22.6.1",
-    "puppeteer-core": "^22.6.1"
+    "puppeteer-core": "10.1.0"
   }
 }
