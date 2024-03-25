@@ -1,65 +1,65 @@
 name: deploy
 on:
-    # push:
-    #   branches:
-    #     - main
-    # TODO PR 올라온 환경에서 동작하는지 확인하는 용도 추후에 삭제하기 !!
-    pull_request:
-        branches:
-            - main
-            - dev
+  push:
+    branches:
+      - main
+  # 아래는 PR 올라온 환경에서 동작하는지 확인하는 용도 추후에 삭제하기 !!
+#  pull_request:
+#    branches:
+#      - main
+#      - dev
 
 jobs:
-    prod_CICD:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [18.16.0] # 개발환경과 동일하게 맞춤
+  prod_CICD:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.16.0 ] # 개발환경과 동일하게 맞춤
 
-        steps:
-            - name: Checkout source code.
-              uses: actions/checkout@v2
+    steps:
+      - name: Checkout source code.
+        uses: actions/checkout@v2
 
-            - name: Create .env file
-              run: |
-                  touch .env
-                  echo "${{ secrets.REAL_ENV }}" >> ./common/.env
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "${{ secrets.REAL_ENV }}" >> ./common/.env
 
-            - name: Install AWS CLI
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y awscli
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
 
-            - name: Configure AWS Credentials
-              uses: aws-actions/configure-aws-credentials@v1
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
-                  aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-            - name: Sync static web files
-              run: aws s3 sync ./pages s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+      - name: Sync static web files
+        run: aws s3 sync ./pages s3://${{ secrets.AWS_S3_BUCKET_NAME }}
 
-            - name: AWS ECR login
-              run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
+      - name: AWS ECR login
+        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
 
-            - name: Build docker image and push docker images to ecr
-              run: |
-                  docker build -t ai-news-noti-bot-real . --progress=plain
-                  docker tag ai-news-noti-bot-real:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
-                  docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
+      - name: Build docker image and push docker images to ecr
+        run: |
+          docker build -t ai-news-noti-bot-real .
+          docker tag ai-news-noti-bot-real:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
+          docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
 
-            - name: Update lambda function
-              run: aws lambda update-function-code --function-name ai-news-noti-bot-real --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
+      - name: Update lambda function
+        run: aws lambda update-function-code --function-name ai-news-noti-bot-real --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real:latest
 
-            - name: Delete untagged images in ECR
-              run: |
-                  # Get untagged image digest
-                  UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ai-news-noti-bot-real --query 'imageDetails[?imageTags==null].imageDigest' --output json)
-
-                  # Delete untagged images
-                  if [ -n "$UNTAGGED_IMAGES" ]; then
-                    for IMAGE_DIGEST in $(echo "$UNTAGGED_IMAGES" | jq -r '.[]'); do
-                      aws ecr batch-delete-image --repository-name ai-news-noti-bot-real --image-ids imageDigest=$IMAGE_DIGEST
-                    done
-                  fi
+      - name: Delete untagged images in ECR
+        run: |
+          # Get untagged image digest
+          UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ai-news-noti-bot-real --query 'imageDetails[?imageTags==null].imageDigest' --output json)
+          
+          # Delete untagged images
+          if [ -n "$UNTAGGED_IMAGES" ]; then
+            for IMAGE_DIGEST in $(echo "$UNTAGGED_IMAGES" | jq -r '.[]'); do
+              aws ecr batch-delete-image --repository-name ai-news-noti-bot-real --image-ids imageDigest=$IMAGE_DIGEST
+            done
+          fi
