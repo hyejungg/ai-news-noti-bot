@@ -29,7 +29,7 @@ export default class DevoceanExtractor implements Extractor {
 
       return spanElements
         .map((span): SiteData | null => {
-          const isKeywordIncluded = keywords.some((keyword) =>
+          const isKeywordIncluded = keywords.some((keyword: string) =>
             span.textContent?.trim().includes(keyword),
           );
           if (!isKeywordIncluded) {

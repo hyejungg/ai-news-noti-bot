@@ -5,16 +5,19 @@ const getInfoFromSite = async () => {
   const sites = await Site.find({ verified: true });
   console.log(`sites: ${sites}`);
 
-  if (!sites) {
+  if (!sites || sites.length === 0) {
     console.error("site 정보를 가져오는 것을 실패했습니다!");
     return;
   }
 
-  return await Promise.all(
-    sites.map(async (site) => {
-      return ExtractorFactory.createExtractor(site).extractToMessage();
-    }),
-  );
+  const result = [];
+  for await (const site of sites) {
+    const message =
+      await ExtractorFactory.createExtractor(site).extractToMessage();
+    result.push(message);
+  }
+
+  return result;
 };
 
 export default { getInfoFromSite };

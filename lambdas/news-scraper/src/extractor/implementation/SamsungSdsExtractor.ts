@@ -32,7 +32,7 @@ export default class SamsungSdsExtractor implements Extractor {
             return null;
           }
 
-          const isKeywordIncluded = keywords.some((keyword) =>
+          const isKeywordIncluded = keywords.some((keyword: string) =>
             aTag.textContent?.trim().includes(keyword),
           );
           if (!isKeywordIncluded) {

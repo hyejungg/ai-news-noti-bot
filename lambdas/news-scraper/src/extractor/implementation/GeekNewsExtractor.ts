@@ -2,7 +2,7 @@ import { SiteData } from "../../types/interface/SiteData";
 import Extractor from "../Extractor";
 import PuppeteerManager from "../../types/class/PuppeteerManager";
 import { SiteInfo } from "@ai-news-noti-bot/common/types/model";
-import { ElementHandle } from "puppeteer";
+import { ElementHandle } from "puppeteer-core";
 import { SendMessageDto } from "../../types/interface/SendMessageDto";
 
 export default class GeekNewsExtractor implements Extractor {
@@ -10,7 +10,9 @@ export default class GeekNewsExtractor implements Extractor {
   private site: SiteInfo;
 
   constructor(site: SiteInfo) {
+    console.log("geeknews extractor constructor");
     this.puppeteerManager = new PuppeteerManager();
+    console.log("geeknews extractor constructor 2");
     this.site = site;
   }
 
@@ -21,7 +23,7 @@ export default class GeekNewsExtractor implements Extractor {
     try {
       titleName = await link.$eval(
         "div.topictitle > a > h1",
-        (el) => el.innerText,
+        (el) => el.textContent,
       );
     } catch (e) {
       console.error(
@@ -35,11 +37,14 @@ export default class GeekNewsExtractor implements Extractor {
       // 'div.topicdesc > a' 선택자가 존재하는지 확인
       const hasDetailUrl = await link.$("div.topicdesc > a");
       if (hasDetailUrl) {
-        detailUrl = await link.$eval("div.topicdesc > a", (el) => el.href);
+        detailUrl = await link.$eval(
+          "div.topicdesc > a",
+          (el) => el.getAttribute("href") ?? "",
+        );
       } else {
         detailUrl = await link.$eval(
           "div.topictitle > a > h1",
-          (el) => el.innerText,
+          (el) => el.textContent ?? "",
         );
       }
     } catch (e) {
@@ -68,8 +73,10 @@ export default class GeekNewsExtractor implements Extractor {
   }
 
   async extractToMessage(): Promise<SendMessageDto> {
+    console.log("geeknews extractToMessage before initialize");
     await this.puppeteerManager.initialize();
 
+    console.log("geeknews extractToMessage after initialize");
     let filteredSiteDataArray: SiteData[] = [];
     try {
       filteredSiteDataArray = (await this.extract()).filter((siteData) => {
@@ -77,6 +84,7 @@ export default class GeekNewsExtractor implements Extractor {
           siteData.title?.includes(keyword),
         );
       });
+      console.log("filtered site data array", filteredSiteDataArray);
     } catch (e) {
       console.error(
         `${this.site.name} : extract에서 에러가 발생했습니다. error = ${e}`,
@@ -84,7 +92,9 @@ export default class GeekNewsExtractor implements Extractor {
       throw e;
     }
 
+    console.log("geeknews extractToMessage before close");
     await this.puppeteerManager.close();
+    console.log("geeknews extractToMessage after close");
 
     console.log(`${this.site.name} : 데이터 추출 성공`);
     return {
