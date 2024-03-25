@@ -20,7 +20,7 @@ export default class AiTimesExtractor implements Extractor {
     let titleName;
     let detailUrl;
     try {
-      titleName = await link.$eval("a > span", (el) => el.innerText);
+      titleName = await link.$eval("a > span", (el) => el.textContent);
     } catch (e) {
       console.error(
         `${this.site.name} : titleName을 가져오는데 실패했습니다. error = ${e}`,
@@ -29,7 +29,7 @@ export default class AiTimesExtractor implements Extractor {
     }
 
     try {
-      detailUrl = await link.$eval("a", (el) => el.href);
+      detailUrl = await link.$eval("a", (el) => el.getAttribute("href"));
     } catch (e) {
       console.error(
         `${this.site.name} : detailUrl을 가져오는데 실패했습니다. error = ${e}`,

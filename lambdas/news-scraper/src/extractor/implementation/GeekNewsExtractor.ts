@@ -23,7 +23,7 @@ export default class GeekNewsExtractor implements Extractor {
     try {
       titleName = await link.$eval(
         "div.topictitle > a > h1",
-        (el) => el.innerText,
+        (el) => el.textContent,
       );
     } catch (e) {
       console.error(
@@ -37,11 +37,14 @@ export default class GeekNewsExtractor implements Extractor {
       // 'div.topicdesc > a' 선택자가 존재하는지 확인
       const hasDetailUrl = await link.$("div.topicdesc > a");
       if (hasDetailUrl) {
-        detailUrl = await link.$eval("div.topicdesc > a", (el) => el.href);
+        detailUrl = await link.$eval(
+          "div.topicdesc > a",
+          (el) => el.getAttribute("href") ?? "",
+        );
       } else {
         detailUrl = await link.$eval(
           "div.topictitle > a > h1",
-          (el) => el.innerText,
+          (el) => el.textContent ?? "",
         );
       }
     } catch (e) {
