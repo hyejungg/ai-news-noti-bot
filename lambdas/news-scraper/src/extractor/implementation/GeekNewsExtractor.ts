@@ -10,7 +10,9 @@ export default class GeekNewsExtractor implements Extractor {
   private site: SiteInfo;
 
   constructor(site: SiteInfo) {
+    console.log("geeknews extractor constructor");
     this.puppeteerManager = new PuppeteerManager();
+    console.log("geeknews extractor constructor 2");
     this.site = site;
   }
 
@@ -68,8 +70,10 @@ export default class GeekNewsExtractor implements Extractor {
   }
 
   async extractToMessage(): Promise<SendMessageDto> {
+    console.log("geeknews extractToMessage before initialize");
     await this.puppeteerManager.initialize();
 
+    console.log("geeknews extractToMessage after initialize");
     let filteredSiteDataArray: SiteData[] = [];
     try {
       filteredSiteDataArray = (await this.extract()).filter((siteData) => {
@@ -77,6 +81,7 @@ export default class GeekNewsExtractor implements Extractor {
           siteData.title?.includes(keyword),
         );
       });
+      console.log("filtered site data array", filteredSiteDataArray);
     } catch (e) {
       console.error(
         `${this.site.name} : extract에서 에러가 발생했습니다. error = ${e}`,
@@ -84,7 +89,9 @@ export default class GeekNewsExtractor implements Extractor {
       throw e;
     }
 
+    console.log("geeknews extractToMessage before close");
     await this.puppeteerManager.close();
+    console.log("geeknews extractToMessage after close");
 
     console.log(`${this.site.name} : 데이터 추출 성공`);
     return {
