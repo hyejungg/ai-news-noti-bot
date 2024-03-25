@@ -10,11 +10,14 @@ const getInfoFromSite = async () => {
     return;
   }
 
-  return await Promise.all(
-    sites.map(async (site) => {
-      return ExtractorFactory.createExtractor(site).extractToMessage();
-    }),
-  );
+  const result = [];
+  for await (const site of sites) {
+    const message =
+      await ExtractorFactory.createExtractor(site).extractToMessage();
+    result.push(message);
+  }
+
+  return result;
 };
 
 export default { getInfoFromSite };
