@@ -24,8 +24,6 @@ RUN pnpm build \
     && cd ./dist \
     && pnpm install \
     && cp ../../../common/.env ./common/.env \
-    && echo "import { handler as test } from './lambdas/register-site-api/src/index.js'" > index.mjs \
-    && echo "export const handler = test;" >> index.mjs
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 
