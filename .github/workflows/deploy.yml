@@ -71,7 +71,7 @@ jobs:
             docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
 
       - name: Update lambda function (api)
-        run: aws lambda update-function-code --function-name ai-news-noti-bot-api --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
+        run: aws lambda update-function-code --function-name ai-news-noti-bot-api-real --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
 
       - name: Delete untagged images in ECR (api)
         run: |
