@@ -66,21 +66,21 @@ jobs:
 
       - name: Build docker image and push docker images to ecr (api)
         run: |
-          docker build -t ai-news-noti-bot-real-api -f DockerfileApi .
-          docker tag ai-news-noti-bot-real-api:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real-api:latest
-            docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real-api:latest
+          docker build -t ai-news-noti-bot-api-real -f DockerfileApi .
+          docker tag ai-news-noti-bot-api-real:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
+            docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
 
       - name: Update lambda function (api)
-        run: aws lambda update-function-code --function-name ai-news-noti-bot-api --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real-api:latest
+        run: aws lambda update-function-code --function-name ai-news-noti-bot-api --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
 
       - name: Delete untagged images in ECR (api)
         run: |
           # Get untagged image digest
-          UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ai-news-noti-bot-real-api --query 'imageDetails[?imageTags==null].imageDigest' --output json)
+          UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ai-news-noti-bot-api-real --query 'imageDetails[?imageTags==null].imageDigest' --output json)
           
           # Delete untagged images
           if [ -n "$UNTAGGED_IMAGES" ]; then
             for IMAGE_DIGEST in $(echo "$UNTAGGED_IMAGES" | jq -r '.[]'); do
-              aws ecr batch-delete-image --repository-name ai-news-noti-bot-real-api --image-ids imageDigest=$IMAGE_DIGEST
+              aws ecr batch-delete-image --repository-name ai-news-noti-bot-api-real --image-ids imageDigest=$IMAGE_DIGEST
             done
           fi
