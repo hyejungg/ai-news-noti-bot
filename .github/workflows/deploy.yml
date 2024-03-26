@@ -66,7 +66,7 @@ jobs:
 
       - name: Build docker image and push docker images to ecr (api)
         run: |
-          docker build -t ai-news-noti-bot-real-api -f DockefileApi .
+          docker build -t ai-news-noti-bot-real-api -f DockerfileApi .
           docker tag ai-news-noti-bot-real-api:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real-api:latest
             docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-real-api:latest
 
