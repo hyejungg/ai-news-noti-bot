@@ -23,7 +23,7 @@ RUN pnpm build \
     && cp ../../common/package.json ./dist/common \
     && cd ./dist \
     && pnpm install \
-    && cp ../../../common/.env ./common/.env \
+    && cp ../../../common/.env ./common/.env
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 
