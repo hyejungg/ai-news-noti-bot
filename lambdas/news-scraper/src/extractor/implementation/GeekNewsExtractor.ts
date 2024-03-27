@@ -56,7 +56,7 @@ export default class GeekNewsExtractor implements Extractor {
 
     return {
       title: titleName,
-      url: detailUrl,
+      url: `https://news.hada.io/${detailUrl}`,
     };
   }
 
