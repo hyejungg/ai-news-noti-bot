@@ -38,7 +38,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Sync static web files
-        run: aws s3 sync ./pages s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+        run: aws s3 sync ./pages/postSiteForm s3://${{ secrets.AWS_S3_BUCKET_NAME }}
 
       - name: AWS ECR login
         run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
