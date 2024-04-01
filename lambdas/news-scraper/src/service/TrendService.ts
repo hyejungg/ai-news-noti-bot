@@ -12,9 +12,12 @@ const getInfoFromSite = async () => {
 
   const result = [];
   for await (const site of sites) {
-    const message =
-      await ExtractorFactory.createExtractor(site).extractToMessage();
-    result.push(message);
+    try {
+      const message = await ExtractorFactory.createExtractor(site).extractToMessage();
+      result.push(message);
+    } catch (error) {
+      console.error(`${site.name} : 데이터 추출 중 에러가 발생했습니다.`, error);
+    }
   }
 
   return result;
