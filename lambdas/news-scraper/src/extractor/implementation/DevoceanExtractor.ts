@@ -20,7 +20,7 @@ export default class DevoceanExtractor implements Extractor {
       waitUntil: "networkidle2",
     });
 
-    const clickSelector = `div.sec-area > ul.sec-area-list01 > li:first-child > div`;
+    const clickSelector = `div.sec-area > ul.sec-area-list01 > li:first-child > div a > h3.pc_view`;
     await page.click(clickSelector);
     await page.waitForNavigation();
 
