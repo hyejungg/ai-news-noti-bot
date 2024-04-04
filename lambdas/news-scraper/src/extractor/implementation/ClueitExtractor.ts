@@ -67,6 +67,7 @@ export default class ClueitExtractor implements Extractor {
     await this.puppeteerManager.close();
 
     console.log(`${this.site.name} : 데이터 추출 성공`);
+    console.log(filteredSiteDataArray);
     return {
       siteName: this.site.name,
       siteDataArray: filteredSiteDataArray,

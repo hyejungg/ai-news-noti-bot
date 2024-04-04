@@ -66,6 +66,7 @@ export default class DevoceanExtractor implements Extractor {
     await this.puppeteerManager.close();
 
     console.log(`${this.site.name} : 데이터 추출 성공`);
+    console.log(siteDataArray);
     return {
       siteName: this.site.name,
       siteDataArray,

@@ -97,6 +97,7 @@ export default class GeekNewsExtractor implements Extractor {
     console.log("geeknews extractToMessage after close");
 
     console.log(`${this.site.name} : 데이터 추출 성공`);
+    console.log(filteredSiteDataArray);
     return {
       siteName: this.site.name,
       siteDataArray: filteredSiteDataArray,
