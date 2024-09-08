@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout source code.
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       - name: Create .env file # DEV_ENV 필요
         run: |
