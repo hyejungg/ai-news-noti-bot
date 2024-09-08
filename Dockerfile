@@ -1,6 +1,9 @@
 # AWS Lambda의 Node.js 18 베이스 이미지 사용
 FROM public.ecr.aws/lambda/nodejs:18
 
+# phase
+ENV PHASE=prod
+
 # pnpm 설치
 RUN npm install -g typescript
 RUN npm install -g pnpm
