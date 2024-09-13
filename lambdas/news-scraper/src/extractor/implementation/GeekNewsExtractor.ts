@@ -43,8 +43,8 @@ export default class GeekNewsExtractor implements Extractor {
         );
       } else {
         detailUrl = await link.$eval(
-          "div.topictitle > a > h1",
-          (el) => el.textContent ?? "",
+          "div.topictitle > a",
+          (el) => el.getAttribute("href") ?? "",
         );
       }
     } catch (e) {
