@@ -1,5 +1,5 @@
 // import config from "@ai-news-noti-bot/common/config";
-import chromium from "chrome-aws-lambda";
+import chromium from "@sparticuz/chromium";
 import puppeteer, { Browser, Page } from "puppeteer-core";
 
 export default class PuppeteerManager {
@@ -12,8 +12,8 @@ export default class PuppeteerManager {
     this.browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
+      executablePath: await chromium.executablePath(),
+      headless: !!chromium.headless,
     });
     // if (config.nodeEnv === "real") {
     // } else {
