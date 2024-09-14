@@ -1,4 +1,4 @@
-name: deploy-develop
+name: develop-news-scraper-deploy
 on:
   workflow_dispatch:
     inputs:
@@ -64,20 +64,3 @@ jobs:
                   aws ecr batch-delete-image --repository-name ai-news-noti-bot-develop --image-ids imageDigest=$image
               done
             fi
-
-  deploy_static_page:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code.
-        uses: actions/checkout@v2
-        with:
-        ref: ${{ github.event.inputs.branch }}
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-
-      - name: Sync static web files
-        run: aws s3 sync ./pages/postSiteForm s3://${{ secrets.AWS_S3_BUCKET_NAME }}
-
