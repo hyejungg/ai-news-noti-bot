@@ -29,6 +29,7 @@ Resources:
           ENV: development
           PHASE: dev
       PackageType: Image
+      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-noti-bot-develop:latest
     Metadata:
       DockerTag: latest
       DockerContext: ../../
