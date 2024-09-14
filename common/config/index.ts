@@ -1,3 +1,15 @@
+import dotenv from "dotenv";
+import path from "node:path";
+
+const commonRoot = path.resolve(__dirname, "../");
+
+const envFound = dotenv.config({ path: `${commonRoot}/.env` });
+if (envFound.error) {
+  // This error should crash whole process
+
+  throw new Error("⚠️  Couldn't find .env file  ⚠️");
+}
+
 export default {
   nodeEnv: (process.env.NODE_ENV as string) || ("development" as string),
   /**

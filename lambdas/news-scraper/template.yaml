@@ -26,19 +26,22 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          MONGO_DB_URI: # db uri
           ENV: development
           PHASE: dev
-    Metadata: # Manage esbuild properties
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints:
-          - index.ts
-        External:
-          - '@sparticuz/chromium'
+      PackageType: Image
+    Metadata:
+      DockerTag: latest
+      DockerContext: ../../
+      Dockerfile: Dockerfile
+#      BuildMethod: esbuild
+#      BuildProperties:
+#        Minify: true
+#        Target: "es2020"
+#        Sourcemap: true
+#        EntryPoints:
+#          - index.ts
+#        External:
+#          - '@sparticuz/chromium'
 #          - puppeteer-core
 
 Outputs:
