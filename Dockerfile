@@ -1,18 +1,15 @@
-# AWS Lambda의 Node.js 18 베이스 이미지 사용
-FROM public.ecr.aws/lambda/nodejs:18
-
-# phase
-ENV PHASE=prod
+# build stage
+FROM node:18 AS builder
 
 # pnpm 설치
 RUN npm install -g typescript
 RUN npm install -g pnpm
 
 # 전체 파일 복사
-COPY . ${LAMBDA_TASK_ROOT}
+COPY . ./build
 
 # 디렉터리 위치 이동
-WORKDIR ${LAMBDA_TASK_ROOT}
+WORKDIR ./build
 
 RUN pnpm install
 
@@ -30,7 +27,15 @@ RUN pnpm build \
     && echo "import { handler as test } from './lambdas/news-scraper/src/index.js'" > index.mjs \
     && echo "export const handler = test;" >> index.mjs
 
+# production stage
+# AWS Lambda의 Node.js 18 베이스 이미지 사용
+FROM public.ecr.aws/lambda/nodejs:18
+
+# phase
+ENV PHASE=prod
+
 WORKDIR ${LAMBDA_TASK_ROOT}
+COPY --from=builder /build/lambdas/news-scraper/dist ./
 #COPY /home/app/lambdas/news-scraper/dist ./
 
 CMD ["lambdas/news-scraper/dist/index.handler"]
