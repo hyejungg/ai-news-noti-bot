@@ -1,9 +1,6 @@
 # build stage
 FROM node:18 AS builder
 
-# pnpm 설치
-RUN npm install -g typescript
-RUN npm install -g pnpm
 
 # 전체 파일 복사
 COPY . ./build
@@ -11,7 +8,9 @@ COPY . ./build
 # 디렉터리 위치 이동
 WORKDIR ./build
 
-RUN pnpm install
+# pnpm 설치
+RUN npm install -g typescript pnpm \
+    && pnpm install
 
 # 의존성 설치를 위한 작업 디렉토리로 변경
 WORKDIR ./lambdas/news-scraper
