@@ -35,6 +35,5 @@ ENV PHASE=prod
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 COPY --from=builder /build/lambdas/news-scraper/dist ./
-#COPY /home/app/lambdas/news-scraper/dist ./
 
 CMD ["index.handler"]
