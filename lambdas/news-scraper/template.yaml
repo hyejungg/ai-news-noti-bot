@@ -19,7 +19,7 @@ Resources:
         - arn:aws:lambda:ap-northeast-2:764866452798:layer:chrome-aws-lambda:46
       CodeUri: src/
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       MemorySize: 1024
       Timeout: 180
       Architectures:

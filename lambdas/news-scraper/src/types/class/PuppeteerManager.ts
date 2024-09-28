@@ -11,7 +11,7 @@ export default class PuppeteerManager {
     if (process.env.PHASE !== "prod") {
       this.browser = await puppeteer.launch({
         executablePath: puppeteer.executablePath(),
-        args: puppeteer.defaultArgs(),
+        args: [...puppeteer.defaultArgs(), "--no-sandbox"],
         defaultViewport: chromium.defaultViewport,
         headless: false,
       });

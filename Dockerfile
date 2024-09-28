@@ -1,5 +1,5 @@
 # build stage
-FROM node:18 AS builder
+FROM node:20 AS builder
 
 
 # 전체 파일 복사
@@ -27,13 +27,19 @@ RUN pnpm build \
     && echo "export const handler = test;" >> index.mjs
 
 # production stage
-# AWS Lambda의 Node.js 18 베이스 이미지 사용
-FROM public.ecr.aws/lambda/nodejs:18
+# AWS Lambda의 Node.js 20 베이스 이미지 사용
+FROM public.ecr.aws/lambda/nodejs:20
 
 # phase
 ENV PHASE=prod
 
+# amazonlinux2023 에서 chrome 실행에 필요한 라이브러리 설치
+RUN dnf install -y libXcomposite libXdamage libXrandr libxkbcommon pango alsa-lib atk at-spi2-atk cups-libs libdrm mesa-libgbm dbus-libs.x86_64 nss
+
 WORKDIR ${LAMBDA_TASK_ROOT}
 COPY --from=builder /build/lambdas/news-scraper/dist ./
+
+# production stage 이미지에 chrome 설치
+RUN lambdas/news-scraper/node_modules/.bin/puppeteer browsers install chrome
 
 CMD ["index.handler"]
