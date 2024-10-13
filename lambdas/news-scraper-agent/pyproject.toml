@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "news-scraper-agent"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+langgraph = "^0.2.35"
+langfuse = "^2.52.0"
+langsmith = "^0.1.134"
+langchain-openai = "^0.2.2"
+langchain = "^0.3.3"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
