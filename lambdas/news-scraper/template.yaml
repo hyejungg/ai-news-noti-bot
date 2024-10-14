@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lambda-test
+
+  Sample SAM Template for lambda-test
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+#Globals:
+#  Function:
+#    Timeout: 30
+
+Resources:
+  NewsScraperDevelop:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: ai-news-noti-bot-dev
+      CodeUri: src/
+      MemorySize: 1024
+      Timeout: 180
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          ENV: development
+          PHASE: dev
+      PackageType: Image
+    Metadata:
+      DockerTag: latest
+      DockerContext: ../../
+      Dockerfile: Dockerfile
+
+Outputs:
+  NewsScraperDevelop:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt NewsScraperDevelop.Arn
