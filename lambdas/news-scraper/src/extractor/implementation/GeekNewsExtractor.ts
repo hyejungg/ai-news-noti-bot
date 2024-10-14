@@ -2,7 +2,7 @@ import { SiteData } from "../../types/interface/SiteData";
 import Extractor from "../Extractor";
 import PuppeteerManager from "../../types/class/PuppeteerManager";
 import { SiteInfo } from "@ai-news-noti-bot/common/types/model";
-import { ElementHandle } from "puppeteer-core";
+import { ElementHandle } from "puppeteer";
 import { SendMessageDto } from "../../types/interface/SendMessageDto";
 
 export default class GeekNewsExtractor implements Extractor {
@@ -10,9 +10,7 @@ export default class GeekNewsExtractor implements Extractor {
   private site: SiteInfo;
 
   constructor(site: SiteInfo) {
-    console.log("geeknews extractor constructor");
     this.puppeteerManager = new PuppeteerManager();
-    console.log("geeknews extractor constructor 2");
     this.site = site;
   }
 
@@ -37,14 +35,15 @@ export default class GeekNewsExtractor implements Extractor {
       // 'div.topicdesc > a' 선택자가 존재하는지 확인
       const hasDetailUrl = await link.$("div.topicdesc > a");
       if (hasDetailUrl) {
-        detailUrl = await link.$eval(
+        const geekNewsDetailUrl = await link.$eval(
           "div.topicdesc > a",
           (el) => el.getAttribute("href") ?? "",
         );
+        detailUrl = `https://news.hada.io/${geekNewsDetailUrl}`;
       } else {
         detailUrl = await link.$eval(
-          "div.topictitle > a > h1",
-          (el) => el.textContent ?? "",
+          "div.topictitle > a",
+          (el) => el.getAttribute("href") ?? "",
         );
       }
     } catch (e) {
@@ -56,7 +55,7 @@ export default class GeekNewsExtractor implements Extractor {
 
     return {
       title: titleName,
-      url: `https://news.hada.io/${detailUrl}`,
+      url: detailUrl,
     };
   }
 

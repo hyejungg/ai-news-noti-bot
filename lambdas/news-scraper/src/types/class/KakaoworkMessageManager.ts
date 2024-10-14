@@ -31,6 +31,10 @@ export default class KakaoworkMessageManager {
 
   async sendMessageBlocks() {
     const data = JSON.stringify(this.createMessagePayload());
+    if (process.env.PHASE !== "prod") {
+      console.log("Sending message...");
+      return 200;
+    }
     const response = await fetch(this.webhookUrl, {
       method: HTTP_METHOD_POST,
       headers: {

@@ -1,6 +1,6 @@
 import Extractor from "../Extractor";
 import PuppeteerManager from "../../types/class/PuppeteerManager";
-import { ElementHandle } from "puppeteer-core";
+import { ElementHandle } from "puppeteer";
 import { SiteData } from "../../types/interface/SiteData";
 import { SiteInfo } from "@ai-news-noti-bot/common/types/model";
 import { SendMessageDto } from "../../types/interface/SendMessageDto";
@@ -29,7 +29,8 @@ export default class AiTimesExtractor implements Extractor {
     }
 
     try {
-      detailUrl = await link.$eval("a", (el) => el.getAttribute("href"));
+      const aiTimesLink = await link.$eval("a", (el) => el.getAttribute("href"));
+      detailUrl = `https://www.aitimes.com${aiTimesLink}`
     } catch (e) {
       console.error(
         `${this.site.name} : detailUrl을 가져오는데 실패했습니다. error = ${e}`,
@@ -37,7 +38,7 @@ export default class AiTimesExtractor implements Extractor {
       throw e;
     }
 
-    if (titleName && detailUrl) {
+    if (String(titleName).trim() !== "" && detailUrl) {
       return {
         title: titleName,
         url: detailUrl,
@@ -57,9 +58,9 @@ export default class AiTimesExtractor implements Extractor {
     const selector = `aside.side div.auto-article > div.item`;
     const links = await page.$$(selector);
     return Promise.all(
-      links
-        .map((link) => this.processLink(link))
-        .filter((siteData): siteData is Promise<SiteData> => siteData !== null),
+        links.map((link) => this.processLink(link))
+    ).then((results) =>
+        results.filter((siteData): siteData is SiteData => siteData !== null)
     );
   }
 
