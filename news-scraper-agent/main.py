@@ -1,5 +1,5 @@
 from graph import build_graph
-from loader.connect import connect_db
+from loader import connect_db
 # from utils import get_graph_image
 
 def main():

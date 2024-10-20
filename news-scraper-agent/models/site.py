@@ -1,5 +1,5 @@
 from mongoengine import Document, StringField, ListField, BooleanField, DateTimeField
-from utils.time_utils import get_datetime_kst
+from utils import get_datetime_kst
 
 class Site(Document):
     name = StringField(required=True)

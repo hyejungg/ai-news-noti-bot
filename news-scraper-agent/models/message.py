@@ -1,5 +1,5 @@
 from mongoengine import Document, StringField, ListField, EmbeddedDocument, EmbeddedDocumentField, DateTimeField
-from utils.time_utils import get_datetime_kst
+from utils import get_datetime_kst
 
 class MessageContent(EmbeddedDocument):
     name = StringField(required=False)

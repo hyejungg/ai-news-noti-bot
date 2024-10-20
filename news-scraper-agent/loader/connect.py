@@ -1,8 +1,7 @@
 from mongoengine import connect
 from config import config
 
-from models.site import Site
-from models.message import Message
+from models import Site, Message
 
 def connect_db():
     try:

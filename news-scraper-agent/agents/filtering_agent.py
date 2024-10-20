@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from config import config
-from graph.state import State, AgentResponse
+from graph import State, AgentResponse
 import time
 import threading
 
