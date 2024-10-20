@@ -1,5 +1,8 @@
 from mongoengine import connect
-from env_config import config
+from config import config
+
+from models.site import Site
+from models.message import Message
 
 def connect_db():
     try:
@@ -11,10 +14,6 @@ def connect_db():
             connect(host=config.MONGO_DB_LOCAL_URI)
 
         print("MongoDB Connected ...")
-
-        # 모델 import
-        from models.site import Site
-        from models.message import Message
 
         # 컬렉션 생성 확인
         Site.ensure_indexes()
