@@ -1,4 +1,3 @@
-from typing import Dict, Any
 from langchain_openai import ChatOpenAI
 from config import config
 from langgraph.graph import StateGraph, START, END
@@ -7,7 +6,6 @@ from langchain.schema.runnable import RunnableSequence
 from agents import CrawlingAgent, FilteringAgent, MessageAgent
 from graph import State
 from service import get_sites
-from loader.connect import connect_db
 
 LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
