@@ -4,12 +4,16 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
 class Config:
+    # app
+    PROFILE=os.getenv('PROFILE')
+
     # db
     MONGO_DB_LOCAL_URI = os.getenv('MONGO_DB_LOCAL_URI')
     MONGO_DB_DEV_URI = os.getenv('MONGO_DB_DEV_URI')
     MONGO_DB_REAL_URI = os.getenv('MONGO_DB_REAL_URI')
 
     # kakaoworks
+    KAWORK_WEBHOOK_LOCAL_URI = os.getenv('KAWORK_WEBHOOK_LOCAL_URI')
     KAWORK_WEBHOOK_DEV_URI = os.getenv('KAWORK_WEBHOOK_DEV_URI')
     KAWORK_WEBHOOK_REAL_URI = os.getenv('KAWORK_WEBHOOK_REAL_URI')
 

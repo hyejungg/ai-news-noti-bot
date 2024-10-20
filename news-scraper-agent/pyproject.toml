@@ -2,7 +2,7 @@
 name = "news-scraper-agent"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["hyejungg <kimhyejung12@naver.com>", "jongwoo328 <jongwoo328@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -14,6 +14,8 @@ langchain-openai = "^0.2.2"
 langchain = "^0.3.3"
 python-dotenv = "^1.0.1"
 typing-extensions = "^4.12.2"
+mongoengine = "^0.29.1"
+pytz = "^2024.2"
 
 
 [build-system]
