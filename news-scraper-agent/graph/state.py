@@ -1,16 +1,17 @@
-from typing import Annotated, List, Dict, Any
+from typing import List, Dict, Any
 from typing_extensions import TypedDict
-import operator
 from pydantic import BaseModel, Field
 
-class State(TypedDict):
-    sites: Annotated[List[Dict[str, Any]], operator.add]
-    out_values: Annotated[List[Dict[str, Any]], operator.add]
-    prompts: Annotated[List[str], operator.add]
+class SiteState(TypedDict):
+    site: Dict[str, Any]
+    prompts: List[Dict[str, Any]]
+    crawling_result: Dict[str, Any]
+    filtering_result: Dict[str, Any]
 
-    crawling_result: Annotated[List[Dict[str, Any]], operator.add]
-    filtering_result: Annotated[List[Dict[str, Any]], operator.add]
-    send_messages: Annotated[List[Dict[str, Any]], operator.add]
+class State(TypedDict):
+    sites: List[Dict[str, Any]]
+    parallel_results: Dict[str, Any]
+    send_messages: List[Dict[str, Any]]
 
 class AgentResponseItem(BaseModel):
     title: str = Field(description="Title of the agent response item")

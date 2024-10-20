@@ -1,48 +1,58 @@
 from langchain_openai import ChatOpenAI
+from langchain_community.llms import FakeListLLM
 from config import config
 from langgraph.graph import StateGraph, START, END
 from langchain.schema.runnable import RunnableParallel
 from langchain.schema.runnable import RunnableSequence
 from agents import CrawlingAgent, FilteringAgent, MessageAgent
-from graph import State
+from graph import SiteState, State
 from service import get_sites
 
-LLM = ChatOpenAI(model_name=config.MODEL_NAME)
+# FakeListLLM 설정
+fake_responses = [
+    "[]",
+    "[]",
+]
+LLM = FakeListLLM(responses=fake_responses) # FIXME 테스트 시 사용
+# LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
-def create_crawl_filter_sequence(LLM, site):
+# TODO 여기를 독립적인 상태를 저장하도록 코드 수정
+def create_crawl_filter_sequence(LLM, site) -> SiteState:
     crawling_agent = CrawlingAgent(LLM, site=site)
     filtering_agent = FilteringAgent(LLM)
 
-    return {
-        "parallel_results": RunnableSequence(crawling_agent, filtering_agent)
-    }
+    def process_site(site_state: SiteState) -> SiteState:
+        state = crawling_agent(site_state)
+        state = filtering_agent(state)
+        return state
+
+    return process_site
+
 
 def parallel_crawl_filter(state: State) -> State:
     sites = state["sites"]
 
     parallel_sequences = {
-        f"site_{i}": create_crawl_filter_sequence(LLM, site)
+        f"{site['name']}": create_crawl_filter_sequence(LLM, site)
         for i, site in enumerate(sites)
     }
 
     parallel_runner = RunnableParallel(**parallel_sequences)
     results = parallel_runner.invoke(state)
 
+    # filtering_result 만 추출하여 시퀀스 결과로 저장
+    filtered_results = {
+        site_name: site_state['filtering_result']
+        for site_name, site_state in results.items()
+    }
+
     new_state = state.copy()
-    new_state["parallel_results"] = results
+    new_state["parallel_results"] = filtered_results
 
     return new_state
 
-def build_graph():
+def build_graph(initial_state):
     builder = StateGraph(State)
-    initial_state = {
-        "sites": [],
-        "out_values": [],
-        "prompts": [],
-        "crawling_results": [],
-        "filtering_result": [],
-        "send_messages": []
-    }
 
     # init node
     builder.add_node("start", lambda x: initial_state)

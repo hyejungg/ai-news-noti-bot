@@ -4,18 +4,14 @@ from loader import connect_db
 
 def main():
     connect_db()
-    graph = build_graph()
     initial_state = {
         "sites": [],
-        "out_values": [],
-        "prompts": [],
-        "crawling_results": [],
-        "filtering_result": [],
+        "parallel_results": [],
         "send_messages": []
     }
+    graph = build_graph(initial_state)
 #     get_graph_image(graph)
-    result = graph.invoke(initial_state)
-    return result
+    return graph.invoke(initial_state)
 
 if __name__ == "__main__":
     result = main()
