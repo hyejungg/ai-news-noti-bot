@@ -8,15 +8,13 @@ from pydantic import BaseModel, Field
 from langgraph.graph import StateGraph, START, END
 from langfuse.decorators import observe
 from langfuse.callback import CallbackHandler
-from dotenv import load_dotenv
+
+from env_config import config
 
 import time
 import threading
 import json
-import os
 import operator
-
-load_dotenv(verbose=True)
 
 # 상태 정의
 class State(TypedDict):
@@ -34,7 +32,7 @@ class AgentResponse(BaseModel):
 
 # 크롤링 에이전트
 class CrawlingAgent:
-    crawling_prompt = os.getenv('CRAWLING_AGENT_PROMPT_EN') or os.getenv('CRAWLING_AGENT_PROMPT_KO')
+    crawling_prompt = config.CRAWLING_AGENT_PROMPT_EN or config.CRAWLING_AGENT_PROMPT_KO
 
     def __init__(self, llm: ChatOpenAI, site: Dict[str, str], prompt: str = None):
         self.llm = llm
@@ -67,7 +65,7 @@ class CrawlingAgent:
 
 # 필터링 에이전트
 class FilteringAgent:
-    filtering_prompt = os.getenv('FILTERING_AGENT_PROMPT_EN') or os.getenv('FILTERING_AGENT_PROMPT_KO')
+    filtering_prompt = config.FILTERING_AGENT_PROMPT_EN or config.FILTERING_AGENT_PROMPT_KO
 
     def __init__(self, llm: ChatOpenAI, prompt: str = None):
         self.llm = llm
@@ -103,7 +101,7 @@ def process_crawler_results(results: Dict[str, Any]) -> Dict[str, Any]:
 
 @observe()
 def main():
-    llm = ChatOpenAI(model_name="chatgpt-4o-latest")
+    llm = ChatOpenAI(model_name=config.MODEL_NAME)
 
     builder = StateGraph(State)
 
