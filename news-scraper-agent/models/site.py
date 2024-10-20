@@ -1,16 +1,16 @@
 from mongoengine import Document, StringField, ListField, BooleanField, DateTimeField
-from utils import datetime_kst
+from utils.time_utils import get_datetime_kst
 
 class Site(Document):
     name = StringField(required=True)
     url = StringField(required=True)
     keywords = ListField(StringField(), required=False)
     verified = BooleanField(required=True, default=False)
-    requested_by = StringField(required=False)
+    requestedBy = StringField(required=False)
 
-    # timestamps 옵션 대신 created_at과 updated_at 필드를 직접 정의
-    created_at = DateTimeField()
-    updated_at = DateTimeField()
+    # timestamps 옵션 대신 createdAt과 updatedAt 필드를 직접 정의
+    createdAt = DateTimeField()
+    updatedAt = DateTimeField()
 
     meta = {
         'collection': 'sites',
@@ -24,7 +24,7 @@ class Site(Document):
     }
 
     def save(self, *args, **kwargs):
-        if not self.created_at:
-            self.created_at = datetime_kst()
-        self.updated_at = datetime_kst()
+        if not self.createdAt:
+            self.createdAt = get_datetime_kst()
+        self.updatedAt = get_datetime_kst()
         return super(Site, self).save(*args, **kwargs)
