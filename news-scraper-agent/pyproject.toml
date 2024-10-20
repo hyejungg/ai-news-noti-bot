@@ -16,6 +16,7 @@ python-dotenv = "^1.0.1"
 typing-extensions = "^4.12.2"
 mongoengine = "^0.29.1"
 pytz = "^2024.2"
+langchain-community = "^0.3.3"
 
 
 [build-system]
