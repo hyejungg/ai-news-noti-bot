@@ -1,0 +1,54 @@
+# Node.js 16과 alpine Linux를 기반으로 하는 이미지 사용
+FROM node:18-alpine
+
+# puppeteer 실행을 위해 필요한 패키지들을 설치
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont udev xvfb x11vnc fluxbox dbus
+
+RUN apk add --no-cache --virtual .build-deps curl \
+    && echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    && echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+    && apk add --no-cache curl wget \
+    && apk del .build-deps  # puppeteer 다운로드를 위해 필요한 라이브러리들을 설치하고 마지막에는 빌드를 위해 추가적으로 설치한 패키지들을 삭제
+
+# puppeteer가 chromium-browser를 실행할 수 있도록 설정
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# 이미 chromium을 설치했기 때문에 puppeteer가 chromium을 다시 다운로드하지 않도록 설정
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true 
+# Xvfb에서 사용할 디스플레이 설정
+ENV DISPLAY=:99
+
+# phase
+ENV PHASE=local
+
+# pnpm 설치
+RUN npm install -g typescript
+RUN npm install -g pnpm
+
+# 전체 파일 복사
+COPY . /home/app
+
+# 디렉터리 위치 이동
+WORKDIR /home/app
+
+RUN pnpm install
+
+# 의존성 설치를 위한 작업 디렉토리로 변경
+WORKDIR /home/app/lambdas/news-scraper
+
+# 실행 환경 구성
+RUN pnpm build \
+    && cp ../../pnpm-workspace.yaml ./dist \
+    && cp ./package.json ./dist/lambdas/news-scraper \
+    && cp ../../common/package.json ./dist/common
+
+WORKDIR /home/app/lambdas/news-scraper/dist
+RUN pnpm install \
+    && cp ../../../common/.env ./common/.env
+
+# 메모리 사용량 설정
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
+# 실행
+WORKDIR /home/app/lambdas/news-scraper/dist/lambdas/news-scraper/src
+CMD Xvfb :99 -screen 0 1024x768x16 -ac & node local.js
