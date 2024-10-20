@@ -14,8 +14,7 @@ def create_crawl_filter_sequence(LLM, site):
     filtering_agent = FilteringAgent(LLM)
 
     return {
-        "crawling_result": crawling_agent,
-        "filtering_result": RunnableSequence(crawling_agent, filtering_agent)
+        "parallel_results": RunnableSequence(crawling_agent, filtering_agent)
     }
 
 def parallel_crawl_filter(state: State) -> State:
