@@ -4,7 +4,7 @@ from config import config
 from langgraph.graph import StateGraph, START, END
 from langchain.schema.runnable import RunnableParallel
 from langchain.schema.runnable import RunnableSequence
-from agents import CrawlingAgent, FilteringAgent, MessageAgent
+from agents import HtmlParserAgent, CrawlingAgent, FilteringAgent, MessageAgent
 from graph import SiteState, State
 from service import get_sites
 
@@ -16,12 +16,13 @@ fake_responses = [
 LLM = FakeListLLM(responses=fake_responses) # FIXME 테스트 시 사용
 # LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
-# TODO 여기를 독립적인 상태를 저장하도록 코드 수정
 def create_crawl_filter_sequence(LLM, site) -> SiteState:
+    html_parser_agent = HtmlParserAgent()
     crawling_agent = CrawlingAgent(LLM, site=site)
     filtering_agent = FilteringAgent(LLM)
 
     def process_site(site_state: SiteState) -> SiteState:
+        state = html_parser_agent() # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
         state = crawling_agent(site_state)
         state = filtering_agent(state)
         return state
