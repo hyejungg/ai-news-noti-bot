@@ -1,18 +1,16 @@
-from typing import Annotated, List, Dict, Any
-from langchain_community.llms import FakeListLLM
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain_core.output_parsers import JsonOutputParser
+import threading
+import time
 from config import config
 from graph import SiteState, AgentResponse
-import time
-import threading
+from langchain.prompts import PromptTemplate
+from langchain_core.language_models import BaseLanguageModel
+from langchain_core.output_parsers import JsonOutputParser
+
 
 class FilteringAgent:
     filtering_prompt = config.FILTERING_AGENT_PROMPT_EN or config.FILTERING_AGENT_PROMPT_KO
 
-    def __init__(self, llm: FakeListLLM, prompt: str = None): # FIXME 테스트 시 사용
-    # def __init__(self, llm: ChatOpenAI, prompt: str = None):
+    def __init__(self, llm: BaseLanguageModel, prompt: str = None):
         self.llm = llm
         self.prompt = PromptTemplate.from_template(prompt if prompt else self.filtering_prompt)
         self.parser = JsonOutputParser(pydantic_object=AgentResponse)
@@ -21,7 +19,7 @@ class FilteringAgent:
         start_time = time.time()
 
         chain = self.prompt | self.llm | self.parser
-        
+
         # TODO prompt 및 input_variables 재구성 필요
         input_variables = {"extract_site_info": state["crawling_result"]}
         response = chain.invoke(input_variables)

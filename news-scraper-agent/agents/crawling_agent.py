@@ -1,18 +1,17 @@
-from typing import Annotated, List, Dict, Any
-from langchain_community.llms import FakeListLLM
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain_core.output_parsers import JsonOutputParser
+import threading
+import time
 from config import config
 from graph import SiteState, AgentResponse
-import time
-import threading
+from langchain.prompts import PromptTemplate
+from langchain_core.language_models import BaseLanguageModel
+from langchain_core.output_parsers import JsonOutputParser
+from typing import Dict
+
 
 class CrawlingAgent:
     crawling_prompt = config.CRAWLING_AGENT_PROMPT_EN or config.CRAWLING_AGENT_PROMPT_KO
 
-    def __init__(self, llm: FakeListLLM, site: Dict[str, str], prompt: str = None): # FIXME 테스트 시 사용
-    # def __init__(self, llm: ChatOpenAI, site: Dict[str, str], prompt: str = None):
+    def __init__(self, llm: BaseLanguageModel, site: Dict[str, str], prompt: str = None):
         self.llm = llm
         self.prompt = PromptTemplate.from_template(prompt if prompt else self.crawling_prompt)
         self.site = site
@@ -37,7 +36,8 @@ class CrawlingAgent:
         }
 
         end_time = time.time()
-        print(f"Finished crawl for {self.site['name']} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds")
+        print(
+            f"Finished crawl for {self.site['name']} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds")
 
         new_state = state.copy()
         new_state["site"] = self.site
