@@ -1,8 +1,0 @@
-version = 0.1
-[develop.deploy.parameters]
-stack_name = "news-scraper"
-resolve_s3 = true
-s3_prefix = "news-scraper"
-region = "ap-northeast-2"
-capabilities = "CAPABILITY_IAM"
-image_repositories = ["NewsScraperDevelop=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-noti-bot-develop"]
