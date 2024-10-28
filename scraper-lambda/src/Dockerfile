@@ -15,9 +15,6 @@ ARG FUNCTION_DIR
 # Create function directory
 RUN mkdir -p ${FUNCTION_DIR}
 
-# extract dependencies to requirements.txt
-RUN poetry export -f requirements.txt --output requirements.txt --group main
-
 # Copy function code
 COPY . ${FUNCTION_DIR}
 COPY requirements.txt ${FUNCTION_DIR}/requirements.txt
