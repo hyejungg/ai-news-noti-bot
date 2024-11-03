@@ -6,29 +6,13 @@ Description: >
   Sample SAM Template for scraper-lambda
 
 Resources:
-  ScraperLambdaRepository:
-    Type: AWS::ECR::Repository
-    Properties:
-      RepositoryName: ai_news_agent/scraper_lambda
-      RepositoryPolicyText:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action:
-                - ecr:GetDownloadUrlForLayer
-                - ecr:BatchGetImage
-                - ecr:BatchCheckLayerAvailability
-      Tags:
-        - Key: Project
-          Value: AI_NEWS_AGENT
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      ImageUri: !Sub "${ScraperLambdaRepository.RepositoryUri}:latest"
+      FunctionName: scraper-lambda
+      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda:latest
       Timeout: 30
-      MemorySize: 128
+      MemorySize: 512
       PackageType: Image
       Architectures:
         - arm64
@@ -63,7 +47,19 @@ Resources:
                 - ecr:BatchCheckLayerAvailability
                 - ecr:GetDownloadUrlForLayer
                 - ecr:BatchGetImage
-              Resource: !Sub "${ScraperLambdaRepository.Arn}"
+                - ecr:PugImage
+                - ecr:InitiateLayerUpload
+              Resource: arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/scraper-lambda
+        - PolicyName: LambdaCloudWatchLogsAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/scraper-lambda:*
 
 Outputs:
   ScraperLambdaFunction:
