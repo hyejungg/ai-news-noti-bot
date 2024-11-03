@@ -6,18 +6,64 @@ Description: >
   Sample SAM Template for scraper-lambda
 
 Resources:
+  ScraperLambdaRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: ai_news_agent/scraper_lambda
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+                - ecr:GetDownloadUrlForLayer
+                - ecr:BatchGetImage
+                - ecr:BatchCheckLayerAvailability
+      Tags:
+        - Key: Project
+          Value: AI_NEWS_AGENT
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
+      ImageUri: !Sub "${ScraperLambdaRepository.RepositoryUri}:latest"
       Timeout: 30
       MemorySize: 128
       PackageType: Image
       Architectures:
         - arm64
+      Role: !GetAtt ScraperLambdaFunctionRole.Arn
+      Tags:
+        PROJECT: AI_NEWS_AGENT
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./src
-      DockerTag: python3.12-v1
+      DockerTag: latest
+  ScraperLambdaFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Tags:
+        - Key: Project
+          Value: AI_NEWS_AGENT
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaECRAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - ecr:GetAuthorizationToken
+                - ecr:BatchCheckLayerAvailability
+                - ecr:GetDownloadUrlForLayer
+                - ecr:BatchGetImage
+              Resource: !Sub "${ScraperLambdaRepository.Arn}"
 
 Outputs:
   ScraperLambdaFunction:
