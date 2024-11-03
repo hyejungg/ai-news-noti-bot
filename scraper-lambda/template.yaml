@@ -10,7 +10,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       FunctionName: scraper-lambda
-      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda:latest
+      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda
       Timeout: 30
       MemorySize: 512
       PackageType: Image
@@ -22,12 +22,12 @@ Resources:
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./src
-      DockerTag: latest
   ScraperLambdaFunctionRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: scraper-lambda-function-role
       Tags:
-        - Key: Project
+        - Key: PROJECT
           Value: AI_NEWS_AGENT
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -47,8 +47,6 @@ Resources:
                 - ecr:BatchCheckLayerAvailability
                 - ecr:GetDownloadUrlForLayer
                 - ecr:BatchGetImage
-                - ecr:PugImage
-                - ecr:InitiateLayerUpload
               Resource: arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/scraper-lambda
         - PolicyName: LambdaCloudWatchLogsAccess
           PolicyDocument:
