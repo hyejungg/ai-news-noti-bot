@@ -2,8 +2,9 @@
 name = "news-scraper-agent"
 version = "0.1.0"
 description = ""
-authors = ["hyejungg <kimhyejung12@naver.com>", "jongwoo328 <jongwoo328@gmail.com>"]
+authors = ["hyejungg <kimhyejung12@naver.com>", "JongwooLee <jongwoo328@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
