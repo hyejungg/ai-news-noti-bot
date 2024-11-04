@@ -1,10 +1,19 @@
-from mongoengine import Document, StringField, ListField, EmbeddedDocument, EmbeddedDocumentField, DateTimeField
+from mongoengine import (
+    Document,
+    StringField,
+    ListField,
+    EmbeddedDocument,
+    EmbeddedDocumentField,
+    DateTimeField,
+)
 from utils import get_datetime_kst
+
 
 class MessageContent(EmbeddedDocument):
     name = StringField(required=False)
     title = StringField(required=False)
     url = StringField(required=False)
+
 
 class Message(Document):
     type = StringField(required=True)
@@ -16,11 +25,14 @@ class Message(Document):
     updatedAt = DateTimeField()
 
     meta = {
-        'collection': 'messages',
-        'indexes': [
-            {'fields': ['createdAt'], 'expireAfterSeconds': 60 * 60 * 24 * 180}  # 180일 후 만료
+        "collection": "messages",
+        "indexes": [
+            {
+                "fields": ["createdAt"],
+                "expireAfterSeconds": 60 * 60 * 24 * 180,
+            }  # 180일 후 만료
         ],
-        'versionKey': False  # __v 필드 생성 방지
+        "versionKey": False,  # __v 필드 생성 방지
     }
 
     def save(self, *args, **kwargs):

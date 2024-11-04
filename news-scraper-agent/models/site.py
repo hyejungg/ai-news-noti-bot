@@ -1,6 +1,7 @@
 from mongoengine import Document, StringField, ListField, BooleanField, DateTimeField
 from utils import get_datetime_kst
 
+
 class Site(Document):
     name = StringField(required=True)
     url = StringField(required=True)
@@ -13,14 +14,14 @@ class Site(Document):
     updatedAt = DateTimeField()
 
     meta = {
-        'collection': 'sites',
-        'indexes': [
-            {'fields': ['name']},
-            {'fields': ['url']},
+        "collection": "sites",
+        "indexes": [
+            {"fields": ["name"]},
+            {"fields": ["url"]},
         ],
-        'auto_create_index': True,
-        'index_background': True,
-        'versionKey': False  # __v 필드 생성 방지
+        "auto_create_index": True,
+        "index_background": True,
+        "versionKey": False,  # __v 필드 생성 방지
     }
 
     def save(self, *args, **kwargs):

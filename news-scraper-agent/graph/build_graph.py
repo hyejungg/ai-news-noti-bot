@@ -13,8 +13,9 @@ fake_responses = [
     "[]",
     "[]",
 ]
-LLM = FakeListLLM(responses=fake_responses) # FIXME 테스트 시 사용
+LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 # LLM = ChatOpenAI(model_name=config.MODEL_NAME)
+
 
 def create_crawl_filter_sequence(LLM, site) -> SiteState:
     html_parser_agent = HtmlParserAgent()
@@ -22,7 +23,7 @@ def create_crawl_filter_sequence(LLM, site) -> SiteState:
     filtering_agent = FilteringAgent(LLM)
 
     def process_site(site_state: SiteState) -> SiteState:
-        state = html_parser_agent() # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
+        state = html_parser_agent()  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
         state = crawling_agent(site_state)
         state = filtering_agent(state)
         return state
@@ -43,7 +44,7 @@ def parallel_crawl_filter(state: State) -> State:
 
     # filtering_result 만 추출하여 시퀀스 결과로 저장
     filtered_results = {
-        site_name: site_state['filtering_result']
+        site_name: site_state["filtering_result"]
         for site_name, site_state in results.items()
     }
 
@@ -51,6 +52,7 @@ def parallel_crawl_filter(state: State) -> State:
     new_state["parallel_results"] = filtered_results
 
     return new_state
+
 
 def build_graph(initial_state):
     builder = StateGraph(State)

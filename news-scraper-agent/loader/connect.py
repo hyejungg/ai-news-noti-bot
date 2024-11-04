@@ -3,11 +3,12 @@ from config import config
 
 from models import Site, Message
 
+
 def connect_db():
     try:
-        if config.PROFILE == 'real':
+        if config.PROFILE == "real":
             connect(host=config.MONGO_DB_REAL_URI)
-        elif config.PROFILE == 'develop':
+        elif config.PROFILE == "develop":
             connect(host=config.MONGO_DB_DEV_URI)
         else:
             connect(host=config.MONGO_DB_LOCAL_URI)
@@ -23,6 +24,7 @@ def connect_db():
     except Exception as err:
         print(f"MongoDB connect error: {err}")
         exit(1)
+
 
 if __name__ == "__main__":
     connect_db()

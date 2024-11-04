@@ -1,6 +1,7 @@
 from models import Site
 from graph import State
 
+
 # site 정보를 가져와 node 의 상태 중 하나로 추가
 def get_sites(state: State) -> State:
     sites = list(Site.objects(verified=True))  # QuerySet을 리스트로 변환
