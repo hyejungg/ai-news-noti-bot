@@ -24,7 +24,7 @@ Example
 ```
 
 ## 배포
-1. 새로운 이미지 생성을 위해 sam build 실행
+1. sam build 실행 (이미지 빌드 및 배포용 template.yaml 파일 생성)
     ```bash
     sam build
     ```
