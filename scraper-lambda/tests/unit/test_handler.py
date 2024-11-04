@@ -60,7 +60,7 @@ def get_api_gw_event(body: RequestBody) -> dict:
 
 def test_static_page():
     event = get_api_gw_event({
-        "url": "https://img.jongwoo.me/ai-news-bot/test_static.html",
+        "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_static.html",
         "content_type": "html",
         "selector": "#content-section > section.products > div:nth-child(2) > span"
     })
@@ -74,7 +74,7 @@ def test_static_page():
 
 def test_render_page():
     event = get_api_gw_event({
-        "url": "https://img.jongwoo.me/ai-news-bot/test_render.html",
+        "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_render.html",
         "content_type": "html",
         "selector": "#content-section > section.products > div:nth-child(2) > span"
     })
