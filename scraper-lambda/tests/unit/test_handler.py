@@ -5,6 +5,7 @@ import pytest
 from src import app
 from src.used_type import RequestBody
 
+
 def get_api_gw_event(body: RequestBody) -> dict:
     return {
         "body": json.dumps(body),
@@ -58,12 +59,15 @@ def get_api_gw_event(body: RequestBody) -> dict:
         "path": "/examplepath",
     }
 
+
 def test_static_page():
-    event = get_api_gw_event({
-        "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_static.html",
-        "content_type": "html",
-        "selector": "#content-section > section.products > div:nth-child(2) > span"
-    })
+    event = get_api_gw_event(
+        {
+            "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_static.html",
+            "content_type": "html",
+            "selector": "#content-section > section.products > div:nth-child(2) > span",
+        }
+    )
 
     resp = app.handler(event, "")
     data = json.loads(resp["body"])
@@ -71,13 +75,16 @@ def test_static_page():
     assert resp["statusCode"] == 200
     assert "result" in data
     assert data["result"] == "$25"
+
 
 def test_render_page():
-    event = get_api_gw_event({
-        "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_render.html",
-        "content_type": "html",
-        "selector": "#content-section > section.products > div:nth-child(2) > span"
-    })
+    event = get_api_gw_event(
+        {
+            "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_render.html",
+            "content_type": "html",
+            "selector": "#content-section > section.products > div:nth-child(2) > span",
+        }
+    )
 
     resp = app.handler(event, "")
     data = json.loads(resp["body"])
@@ -86,11 +93,14 @@ def test_render_page():
     assert "result" in data
     assert data["result"] == "$25"
 
+
 def test_json():
-    event = get_api_gw_event({
-        "url": "https://jsonplaceholder.typicode.com/users/1",
-        "content_type": "json",
-    })
+    event = get_api_gw_event(
+        {
+            "url": "https://jsonplaceholder.typicode.com/users/1",
+            "content_type": "json",
+        }
+    )
 
     resp = app.handler(event, "")
     data = json.loads(resp["body"])

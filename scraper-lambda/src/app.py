@@ -8,12 +8,14 @@ from used_type import RequestBody
 
 def error(msg: str, status: int) -> dict:
     return {
-       "statusCode": status,
-         "body": json.dumps(
-              {
+        "statusCode": status,
+        "body": json.dumps(
+            {
                 "message": msg,
-              })
+            }
+        ),
     }
+
 
 def success(result: str) -> dict:
     return {
@@ -24,6 +26,7 @@ def success(result: str) -> dict:
             }
         ),
     }
+
 
 def handler(event, context) -> dict:
     """Sample pure Lambda function
@@ -47,7 +50,7 @@ def handler(event, context) -> dict:
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
     # body check
-    body: dict = json.loads(event['body'])
+    body: dict = json.loads(event["body"])
     # url, content_type, selector
     url = body.get("url")
     content_type = body.get("content_type")
@@ -71,9 +74,9 @@ def handler(event, context) -> dict:
                     "--disable-setuid-sandbox",
                     "--disable-dev-shm-usage",
                     "--single-process",
-                    "--disable-gpu"
+                    "--disable-gpu",
                 ],
-                headless=True
+                headless=True,
             )
             page = browser.new_page()
             page.goto(url)
@@ -83,7 +86,7 @@ def handler(event, context) -> dict:
             if selector:
                 selected = page.query_selector(selector)
                 if selected is None:
-                    return error(f'Element not found with {selector}', 400)
+                    return error(f"Element not found with {selector}", 400)
                 result = selected.inner_html()
             browser.close()
         return success(result)
