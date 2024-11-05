@@ -1,17 +1,16 @@
 from graph import build_graph
 from loader import connect_db
+
 # from utils import get_graph_image
+
 
 def main():
     connect_db()
-    initial_state = {
-        "sites": [],
-        "parallel_results": [],
-        "send_messages": []
-    }
+    initial_state = {"sites": [], "parallel_results": [], "send_messages": []}
     graph = build_graph(initial_state)
-#     get_graph_image(graph)
+    #     get_graph_image(graph)
     return graph.invoke(initial_state)
+
 
 if __name__ == "__main__":
     result = main()

@@ -8,11 +8,15 @@ from langchain_core.output_parsers import JsonOutputParser
 
 
 class FilteringAgent:
-    filtering_prompt = config.FILTERING_AGENT_PROMPT_EN or config.FILTERING_AGENT_PROMPT_KO
+    filtering_prompt = (
+        config.FILTERING_AGENT_PROMPT_EN or config.FILTERING_AGENT_PROMPT_KO
+    )
 
     def __init__(self, llm: BaseLanguageModel, prompt: str = None):
         self.llm = llm
-        self.prompt = PromptTemplate.from_template(prompt if prompt else self.filtering_prompt)
+        self.prompt = PromptTemplate.from_template(
+            prompt if prompt else self.filtering_prompt
+        )
         self.parser = JsonOutputParser(pydantic_object=AgentResponse)
 
     def __call__(self, state: SiteState) -> SiteState:
@@ -25,7 +29,9 @@ class FilteringAgent:
         response = chain.invoke(input_variables)
 
         end_time = time.time()
-        print(f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds")
+        print(
+            f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
+        )
 
         new_state = state.copy()
         new_state.setdefault("prompts", []).append(self.prompt)

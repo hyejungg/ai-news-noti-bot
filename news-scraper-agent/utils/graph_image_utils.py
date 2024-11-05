@@ -1,5 +1,6 @@
 from langgraph.graph import StateGraph
 
+
 def get_graph_image(graph: StateGraph):
     # PNG 이미지로 그래프 그리기
     png_image = graph.get_graph().draw_mermaid_png()
