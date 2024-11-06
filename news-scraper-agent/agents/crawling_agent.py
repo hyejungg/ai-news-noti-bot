@@ -5,14 +5,13 @@ from graph import SiteState, AgentResponse
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.output_parsers import JsonOutputParser
-from typing import Dict
 
 
 class CrawlingAgent:
     crawling_prompt = config.CRAWLING_AGENT_PROMPT_EN or config.CRAWLING_AGENT_PROMPT_KO
 
     def __init__(
-        self, llm: BaseLanguageModel, site: Dict[str, str], prompt: str = None
+        self, llm: BaseLanguageModel, site: dict[str, str], prompt: str = None
     ):
         self.llm = llm
         self.prompt = PromptTemplate.from_template(

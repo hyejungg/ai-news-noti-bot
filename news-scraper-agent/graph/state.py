@@ -1,19 +1,34 @@
-from typing import List, Dict, Any
+from typing import Any
 from typing_extensions import TypedDict
 from pydantic import BaseModel, Field
 
 
+class CrawlingResult(TypedDict):
+    url: str
+    title: str
+
+
+class FilteringResult(TypedDict):
+    url: str
+    title: str
+
+
+class ParallelResult(TypedDict):
+    url: str
+    title: str
+
+
 class SiteState(TypedDict):
-    site: Dict[str, Any]
-    prompts: List[Dict[str, Any]]
-    crawling_result: Dict[str, Any]
-    filtering_result: Dict[str, Any]
+    site: dict[str, Any]
+    prompts: list[dict[str, Any]]
+    crawling_result: list[CrawlingResult]
+    filtering_result: list[FilteringResult]
 
 
 class State(TypedDict):
-    sites: List[Dict[str, Any]]
-    parallel_results: Dict[str, Any]
-    send_messages: List[Dict[str, Any]]
+    sites: list[dict[str, Any]]
+    parallel_results: list[ParallelResult]
+    send_messages: list[dict[str, Any]]
 
 
 class AgentResponseItem(BaseModel):
@@ -22,4 +37,4 @@ class AgentResponseItem(BaseModel):
 
 
 class AgentResponse(BaseModel):
-    items: List[AgentResponseItem] = Field(description="List of agent response items")
+    items: list[AgentResponseItem] = Field(description="List of agent response items")

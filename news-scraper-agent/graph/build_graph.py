@@ -1,3 +1,4 @@
+from langchain_core.language_models import BaseLanguageModel
 from langchain_openai import ChatOpenAI
 from langchain_community.llms import FakeListLLM
 from config import config

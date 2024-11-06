@@ -1,4 +1,4 @@
-from typing import Annotated, List, Dict, Any
+from typing import Annotated, Any
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
