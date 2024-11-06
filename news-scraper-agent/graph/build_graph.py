@@ -1,3 +1,5 @@
+import copy
+
 from langchain_core.language_models import BaseLanguageModel
 from langchain_openai import ChatOpenAI
 from langchain_community.llms import FakeListLLM
@@ -7,6 +9,7 @@ from langchain.schema.runnable import RunnableParallel
 from langchain.schema.runnable import RunnableSequence
 from agents import HtmlParserAgent, CrawlingAgent, FilteringAgent, MessageAgent
 from graph import SiteState, State
+from models.site import SiteDto
 from service import get_sites
 
 # FakeListLLM 설정
@@ -18,7 +21,7 @@ LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 # LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
 
-def create_crawl_filter_sequence(LLM, site) -> SiteState:
+def create_crawl_filter_sequence(LLM, site: SiteDto) -> SiteState:
     html_parser_agent = HtmlParserAgent()
     crawling_agent = CrawlingAgent(LLM, site=site)
     filtering_agent = FilteringAgent(LLM)
@@ -29,14 +32,15 @@ def create_crawl_filter_sequence(LLM, site) -> SiteState:
         state = filtering_agent(state)
         return state
 
+    # ??: 여기서 반환해야할 것은 무엇인가?
     return process_site
 
 
 def parallel_crawl_filter(state: State) -> State:
-    sites = state["sites"]
+    sites = state.sites
 
     parallel_sequences = {
-        f"{site['name']}": create_crawl_filter_sequence(LLM, site)
+        f"{site.name}": create_crawl_filter_sequence(LLM, site)
         for i, site in enumerate(sites)
     }
 
@@ -49,13 +53,13 @@ def parallel_crawl_filter(state: State) -> State:
         for site_name, site_state in results.items()
     }
 
-    new_state = state.copy()
-    new_state["parallel_results"] = filtered_results
+    new_state = state.model_copy(deep=True)
+    new_state.parallel_results = filtered_results
 
     return new_state
 
 
-def build_graph(initial_state):
+def build_graph(initial_state: State):
     builder = StateGraph(State)
 
     # init node

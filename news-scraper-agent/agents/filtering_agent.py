@@ -33,8 +33,10 @@ class FilteringAgent:
             f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
 
-        new_state = state.copy()
-        new_state.setdefault("prompts", []).append(self.prompt)
-        new_state["filtering_result"] = response
+        new_state = state.model_copy(deep=True)
+        if new_state.prompts is None:
+            new_state.prompts = []
+        new_state.prompts.append(self.prompt)
+        new_state.filtering_result = response
 
         return new_state

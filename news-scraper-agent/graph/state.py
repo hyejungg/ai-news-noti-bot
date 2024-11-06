@@ -1,32 +1,33 @@
 from typing import Any
-from typing_extensions import TypedDict
 from pydantic import BaseModel, Field
 
+from models.site import SiteDto
 
-class CrawlingResult(TypedDict):
+
+class CrawlingResult(BaseModel):
     url: str
     title: str
 
 
-class FilteringResult(TypedDict):
+class FilteringResult(BaseModel):
     url: str
     title: str
 
 
-class ParallelResult(TypedDict):
+class ParallelResult(BaseModel):
     url: str
     title: str
 
 
-class SiteState(TypedDict):
+class SiteState(BaseModel):
     site: dict[str, Any]
     prompts: list[dict[str, Any]]
     crawling_result: list[CrawlingResult]
     filtering_result: list[FilteringResult]
 
 
-class State(TypedDict):
-    sites: list[dict[str, Any]]
+class State(BaseModel):
+    sites: list[SiteDto]
     parallel_results: list[ParallelResult]
     send_messages: list[dict[str, Any]]
 

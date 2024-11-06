@@ -1,12 +1,17 @@
-from graph import build_graph
+from graph import build_graph, State
 from loader import connect_db
+
 
 # from utils import get_graph_image
 
 
 def main():
     connect_db()
-    initial_state = {"sites": [], "parallel_results": [], "send_messages": []}
+    initial_state: State = State(
+        sites=[],
+        parallel_results=[],
+        send_messages=[]
+    )
     graph = build_graph(initial_state)
     #     get_graph_image(graph)
     return graph.invoke(initial_state)
