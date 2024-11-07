@@ -9,26 +9,15 @@ class CrawlingResult(BaseModel):
     title: str
 
 
-class FilteringResult(BaseModel):
-    url: str
-    title: str
-
-
-class ParallelResult(BaseModel):
-    url: str
-    title: str
-
-
 class SiteState(BaseModel):
-    site: dict[str, Any]
-    prompts: list[dict[str, Any]]
     crawling_result: list[CrawlingResult]
-    filtering_result: list[FilteringResult]
+    filtering_result: list[CrawlingResult]
+    parser_result: list[Any]
 
 
 class State(BaseModel):
     sites: list[SiteDto]
-    parallel_results: list[ParallelResult]
+    parallel_results: list[CrawlingResult]
     send_messages: list[dict[str, Any]]
 
 

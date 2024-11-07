@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from config import config
-from graph import State
+from graph import State, SiteState
 import time
 import threading
 
@@ -14,7 +14,8 @@ class HtmlParserAgent:
         # none
         pass
 
-    def __call__(self, state: State = None) -> State:  # FIXME 수정 필요
+    def __call__(self, state: SiteState = None) -> SiteState:  # FIXME 수정 필요
+        return state
         # FIXME
         # html parser
         pass

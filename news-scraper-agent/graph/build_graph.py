@@ -1,4 +1,5 @@
 import copy
+from typing import Callable
 
 from langchain_core.language_models import BaseLanguageModel
 from langchain_openai import ChatOpenAI
@@ -21,14 +22,19 @@ LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 # LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
 
-def create_crawl_filter_sequence(LLM, site: SiteDto) -> SiteState:
+def create_crawl_filter_sequence(LLM, site: SiteDto) -> Callable[[], SiteState]:
     html_parser_agent = HtmlParserAgent()
     crawling_agent = CrawlingAgent(LLM, site=site)
     filtering_agent = FilteringAgent(LLM)
 
-    def process_site(site_state: SiteState) -> SiteState:
-        state = html_parser_agent()  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
-        state = crawling_agent(site_state)
+    def process_site() -> SiteState:
+        initial_site_state = SiteState(
+            crawling_result=[],
+            filtering_result=[],
+            parser_result=[]
+        )
+        state = html_parser_agent(initial_site_state)  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
+        state = crawling_agent(state)
         state = filtering_agent(state)
         return state
 
