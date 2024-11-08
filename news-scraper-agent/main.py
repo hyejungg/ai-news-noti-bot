@@ -9,8 +9,7 @@ def main():
     connect_db()
     initial_state: State = State(
         sites=[],
-        parallel_results=[],
-        send_messages=[]
+        parallel_result={},
     )
     graph = build_graph(initial_state)
     #     get_graph_image(graph)

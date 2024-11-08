@@ -6,14 +6,17 @@ from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.output_parsers import JsonOutputParser
 
+from models.site import SiteDto
+
 
 class FilteringAgent:
     filtering_prompt = (
         config.FILTERING_AGENT_PROMPT_EN or config.FILTERING_AGENT_PROMPT_KO
     )
 
-    def __init__(self, llm: BaseLanguageModel, prompt: str = None):
+    def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
         self.llm = llm
+        self.site = site
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.filtering_prompt
         )
@@ -25,18 +28,13 @@ class FilteringAgent:
         chain = self.prompt | self.llm | self.parser
 
         # TODO prompt 및 input_variables 재구성 필요
-        input_variables = {"extract_site_info": state["crawling_result"]}
-        response = chain.invoke(input_variables)
+        input_variables = {"extract_site_info": state.crawling_result}
+        response: list = chain.invoke(input_variables)
 
         end_time = time.time()
         print(
             f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
+        state.filtering_result[self.site.name] = response
 
-        new_state = state.model_copy(deep=True)
-        if new_state.prompts is None:
-            new_state.prompts = []
-        new_state.prompts.append(self.prompt)
-        new_state.filtering_result = response
-
-        return new_state
+        return state
