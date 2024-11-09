@@ -1,4 +1,3 @@
-from typing import Any, TypedDict
 from pydantic import BaseModel, Field
 
 from models.site import SiteDto
@@ -11,6 +10,7 @@ class PageCrawlingData(BaseModel):
 
 type CrawlingResult = dict[str, list[PageCrawlingData]]
 type ParserResult = dict[str, str]
+
 
 class SiteState(BaseModel):
     crawling_result: CrawlingResult

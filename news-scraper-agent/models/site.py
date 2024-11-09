@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from mongoengine import Document, StringField, ListField, BooleanField, DateTimeField

@@ -13,9 +13,7 @@ from models.site import SiteDto
 class CrawlingAgent:
     crawling_prompt = config.CRAWLING_AGENT_PROMPT_EN or config.CRAWLING_AGENT_PROMPT_KO
 
-    def __init__(
-        self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None
-    ):
+    def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
         self.llm = llm
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.crawling_prompt

@@ -1,13 +1,9 @@
-import copy
 from typing import Callable
 
-from langchain_core.language_models import BaseLanguageModel
-from langchain_openai import ChatOpenAI
-from langchain_community.llms import FakeListLLM
-from config import config
-from langgraph.graph import StateGraph, START, END
 from langchain.schema.runnable import RunnableParallel
-from langchain.schema.runnable import RunnableSequence
+from langchain_community.llms import FakeListLLM
+from langgraph.graph import StateGraph, START, END
+
 from agents import HtmlParserAgent, CrawlingAgent, FilteringAgent, MessageAgent
 from graph import SiteState, State
 from models.site import SiteDto
@@ -29,11 +25,11 @@ def create_crawl_filter_sequence(LLM, site: SiteDto) -> Callable[[State], SiteSt
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
-            crawling_result={},
-            filtering_result={},
-            parser_result=[]
+            crawling_result={}, filtering_result={}, parser_result=[]
         )
-        state = html_parser_agent(initial_site_state)  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
+        state = html_parser_agent(
+            initial_site_state
+        )  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
         state = crawling_agent(state)
         state = filtering_agent(state)
         return state
