@@ -2,6 +2,7 @@ from typing import Callable
 
 from langchain.schema.runnable import RunnableParallel
 from langchain_community.llms import FakeListLLM
+from langchain_core.language_models import BaseChatModel
 from langgraph.graph import StateGraph, START, END
 
 from agents import HtmlParserAgent, CrawlingAgent, FilteringAgent, MessageAgent
@@ -18,10 +19,10 @@ LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 # LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
 
-def create_crawl_filter_sequence(LLM, site: SiteDto) -> Callable[[State], SiteState]:
+def create_crawl_filter_sequence(llm: BaseChatModel, site: SiteDto) -> Callable[[State], SiteState]:
     html_parser_agent = HtmlParserAgent()
-    crawling_agent = CrawlingAgent(LLM, site=site)
-    filtering_agent = FilteringAgent(LLM, site=site)
+    crawling_agent = CrawlingAgent(llm, site=site)
+    filtering_agent = FilteringAgent(llm, site=site)
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
