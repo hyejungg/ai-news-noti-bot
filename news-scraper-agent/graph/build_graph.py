@@ -1,11 +1,13 @@
-from langchain_openai import ChatOpenAI
-from langchain_community.llms import FakeListLLM
-from config import config
-from langgraph.graph import StateGraph, START, END
+from typing import Callable
+
 from langchain.schema.runnable import RunnableParallel
-from langchain.schema.runnable import RunnableSequence
+from langchain_community.llms import FakeListLLM
+from langchain_core.language_models import BaseLanguageModel
+from langgraph.graph import StateGraph, START, END
+
 from agents import HtmlParserAgent, CrawlingAgent, FilteringAgent, MessageAgent
 from graph import SiteState, State
+from models.site import SiteDto
 from service import get_sites
 
 # FakeListLLM 설정
@@ -17,14 +19,21 @@ LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 # LLM = ChatOpenAI(model_name=config.MODEL_NAME)
 
 
-def create_crawl_filter_sequence(LLM, site) -> SiteState:
+def create_crawl_filter_sequence(
+    llm: BaseLanguageModel, site: SiteDto
+) -> Callable[[State], SiteState]:
     html_parser_agent = HtmlParserAgent()
-    crawling_agent = CrawlingAgent(LLM, site=site)
-    filtering_agent = FilteringAgent(LLM)
+    crawling_agent = CrawlingAgent(llm, site=site)
+    filtering_agent = FilteringAgent(llm, site=site)
 
-    def process_site(site_state: SiteState) -> SiteState:
-        state = html_parser_agent()  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
-        state = crawling_agent(site_state)
+    def process_site(state: State) -> SiteState:
+        initial_site_state = SiteState(
+            crawling_result={}, filtering_result={}, parser_result=[]
+        )
+        state = html_parser_agent(
+            initial_site_state
+        )  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
+        state = crawling_agent(state)
         state = filtering_agent(state)
         return state
 
@@ -32,29 +41,26 @@ def create_crawl_filter_sequence(LLM, site) -> SiteState:
 
 
 def parallel_crawl_filter(state: State) -> State:
-    sites = state["sites"]
+    sites = state.sites
 
     parallel_sequences = {
-        f"{site['name']}": create_crawl_filter_sequence(LLM, site)
+        f"{site.name}": create_crawl_filter_sequence(LLM, site)
         for i, site in enumerate(sites)
     }
 
     parallel_runner = RunnableParallel(**parallel_sequences)
-    results = parallel_runner.invoke(state)
+    results: dict[str, SiteState] = parallel_runner.invoke(state)
 
-    # filtering_result 만 추출하여 시퀀스 결과로 저장
-    filtered_results = {
-        site_name: site_state["filtering_result"]
-        for site_name, site_state in results.items()
-    }
+    filtered_results = {}
+    for result in results.values():
+        filtered_results.update(result.filtering_result)
 
-    new_state = state.copy()
-    new_state["parallel_results"] = filtered_results
+    state.parallel_result = filtered_results
 
-    return new_state
+    return state
 
 
-def build_graph(initial_state):
+def build_graph(initial_state: State):
     builder = StateGraph(State)
 
     # init node

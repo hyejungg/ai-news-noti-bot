@@ -1,6 +1,6 @@
 from mongoengine import connect
-from config import config
 
+from config import config
 from models import Site, Message
 
 

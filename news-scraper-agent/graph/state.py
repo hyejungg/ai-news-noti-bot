@@ -1,25 +1,27 @@
-from typing import List, Dict, Any
-from typing_extensions import TypedDict
 from pydantic import BaseModel, Field
 
-
-class SiteState(TypedDict):
-    site: Dict[str, Any]
-    prompts: List[Dict[str, Any]]
-    crawling_result: Dict[str, Any]
-    filtering_result: Dict[str, Any]
+from models.site import SiteDto
 
 
-class State(TypedDict):
-    sites: List[Dict[str, Any]]
-    parallel_results: Dict[str, Any]
-    send_messages: List[Dict[str, Any]]
+class PageCrawlingData(BaseModel):
+    url: str
+    title: str
 
 
-class AgentResponseItem(BaseModel):
-    title: str = Field(description="Title of the agent response item")
-    url: str = Field(description="URL of the agent response item")
+type CrawlingResult = dict[str, list[PageCrawlingData]]
+type ParserResult = dict[str, str]
+
+
+class SiteState(BaseModel):
+    crawling_result: CrawlingResult
+    filtering_result: CrawlingResult
+    parser_result: list[ParserResult]
+
+
+class State(BaseModel):
+    sites: list[SiteDto]
+    parallel_result: CrawlingResult
 
 
 class AgentResponse(BaseModel):
-    items: List[AgentResponseItem] = Field(description="List of agent response items")
+    items: list[PageCrawlingData] = Field(description="List of agent response items")

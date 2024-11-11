@@ -1,11 +1,4 @@
-from typing import Annotated, List, Dict, Any
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain_core.output_parsers import JsonOutputParser
-from config import config
-from graph import State
-import time
-import threading
+from graph import SiteState
 
 
 # TODO 아래 코드 작성하기
@@ -14,7 +7,8 @@ class HtmlParserAgent:
         # none
         pass
 
-    def __call__(self, state: State = None) -> State:  # FIXME 수정 필요
+    def __call__(self, state: SiteState = None) -> SiteState:  # FIXME 수정 필요
+        return state
         # FIXME
         # html parser
         pass
