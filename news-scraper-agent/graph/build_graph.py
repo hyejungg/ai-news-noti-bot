@@ -3,6 +3,7 @@ from typing import Callable
 from langchain.schema.runnable import RunnableParallel
 from langchain_community.llms import FakeListLLM
 from langchain_core.language_models import BaseLanguageModel
+from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 
 from agents.crawling_agent import CrawlingAgent
@@ -18,26 +19,26 @@ fake_responses = [
     "[]",
     "[]",
 ]
-LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
-# LLM = ChatOpenAI(model_name=config.MODEL_NAME)
+# llm = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 
 
-def create_crawl_filter_sequence(
-    llm: BaseLanguageModel, site: SiteDto
-) -> Callable[[State], SiteState]:
-    html_parser_agent = HtmlParserAgent()
-    crawling_agent = CrawlingAgent(llm, site=site)
-    filtering_agent = FilteringAgent(llm, site=site)
+def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
+    # html_parser_agent = HtmlParserAgent()
+    # crawling_agent = CrawlingAgent(site=site)
+    filtering_agent = FilteringAgent(
+        ChatOpenAI(model_name="gpt-4o-mini-2024-07-18"), site=site
+    )
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
             crawling_result={}, filtering_result={}, parser_result=[]
         )
-        state = html_parser_agent(
-            initial_site_state
-        )  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
-        state = crawling_agent(state)
-        state = filtering_agent(state)
+        # TODO 우선 필터링 에이전트만 동작 확인을 위해 주석, merge 전에 주석 풀기
+        # state = html_parser_agent(
+        #     initial_site_state
+        # )  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
+        # state = crawling_agent(state)
+        state = filtering_agent(initial_site_state)
         return state
 
     return process_site
@@ -47,7 +48,7 @@ def parallel_crawl_filter(state: State) -> State:
     sites = state.sites
 
     parallel_sequences = {
-        f"{site.name}": create_crawl_filter_sequence(LLM, site)
+        f"{site.name}": create_crawl_filter_sequence(site)
         for i, site in enumerate(sites)
     }
 
