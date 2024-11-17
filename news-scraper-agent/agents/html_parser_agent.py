@@ -3,6 +3,7 @@ from typing import TypedDict, Optional, Literal, NotRequired
 
 import boto3
 
+from config.log import logger
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -13,14 +14,12 @@ class ParsingLambdaRequestBody(TypedDict):
     selector: NotRequired[str]
 
 
-# TODO 아래 코드 작성하기
 class HtmlParserAgent:
     def __init__(self, site: SiteDto):
         self.site = site
         self.lambda_client = boto3.client("lambda", region_name="ap-northeast-2")
 
-    def __call__(self, state: SiteState = None) -> SiteState:  # FIXME 수정 필요
-
+    def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
         response = self.lambda_client.invoke(
             FunctionName="scraper-lambda",
@@ -28,11 +27,12 @@ class HtmlParserAgent:
             Payload=request_body,
         )
         if response["StatusCode"] != 200:
-            print(response["FunctionError"])
-            print(response["LogResult"])
+            logger.error(response["FunctionError"])
+            logger.error(response["LogResult"])
             raise Exception("Lambda 호출 실패")
 
         response_data = json.loads(json.load(response["Payload"])["body"])["result"]
+        logger.info(f"{self.site.name} 파싱 완료")
         state.parser_result = response_data
         return state
 
@@ -63,4 +63,5 @@ class HtmlParserAgent:
                     "selector": ".cont_list .item strong.md_tit",
                 }
             case _:
+                logger.error(f"정의되지 않은 페이지 (url: ${url})")
                 raise ValueError("정의되지 않은 페이지 입니다.")

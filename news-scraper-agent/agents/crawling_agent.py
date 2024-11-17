@@ -5,6 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.output_parsers import JsonOutputParser
 
+from config.log import logger
 from graph.state import PageCrawlingData, SiteState, AgentResponse
 from models.site import SiteDto
 
@@ -29,7 +30,7 @@ class CrawlingAgent:
         input_variables = {"site_name": self.site.name, "site_url": self.site.url}
         response: list[PageCrawlingData] = chain.invoke(input_variables)
         end_time = time.time()
-        print(
+        logger.info(
             f"Finished crawl for {self.site.name} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
         state.crawling_result[self.site.name] = response
