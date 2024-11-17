@@ -2,7 +2,7 @@ import json
 import requests
 
 from typing import get_type_hints, get_args
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, ElementHandle
 from used_type import RequestBody
 
 
@@ -18,7 +18,7 @@ def error(msg: str, status: int) -> dict:
     }
 
 
-def success(result: str) -> dict:
+def success(result: list) -> dict:
     return {
         "statusCode": 200,
         "body": json.dumps(
@@ -84,12 +84,12 @@ def handler(event, context) -> dict:
             page.goto(url, timeout=80000)
             page.wait_for_load_state("networkidle", timeout=80000)
             page_content = page.content()
-            result = page_content
+            result = [page_content]
             if selector:
-                selected = page.query_selector_all(selector)
+                selected: list[ElementHandle] = page.query_selector_all(selector)
                 if selected is None:
                     return error(f"Element not found with {selector}", 400)
-                result = list(map(lambda x: x.inner_text(), selected))
+                result = list(map(lambda x: x.evaluate("(element) => element.outerHTML"), selected))
             browser.close()
         return success(result)
 

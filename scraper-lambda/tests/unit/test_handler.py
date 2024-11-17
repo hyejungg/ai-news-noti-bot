@@ -70,7 +70,7 @@ def test_static_page():
 
     assert resp["statusCode"] == 200
     assert "result" in data
-    assert data["result"][0] == "$25"
+    assert data["result"][0] == '<span class="price">$25</span>'
 
 
 def test_render_page():
@@ -83,7 +83,7 @@ def test_render_page():
 
     assert resp["statusCode"] == 200
     assert "result" in data
-    assert data["result"][0] == "$25"
+    assert data["result"][0] == '<span class="price">$25</span>'
 
 
 def test_json():
@@ -96,12 +96,3 @@ def test_json():
     assert resp["statusCode"] == 200
     assert "result" in data
     assert data["result"]["username"] == "Bret"
-
-def test_news_hada():
-    resp = app.handler({
-        "url": "https://news.hada.io",
-        "content_type": "html",
-        "selector": "body > main > article > div.topics > div.topic_row",
-    }, "")
-    data = json.loads(resp["body"])
-    print(data)
