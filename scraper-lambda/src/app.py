@@ -84,10 +84,10 @@ def handler(event, context) -> dict:
             page_content = page.content()
             result = page_content
             if selector:
-                selected = page.query_selector(selector)
+                selected = page.query_selector_all(selector)
                 if selected is None:
                     return error(f"Element not found with {selector}", 400)
-                result = selected.inner_html()
+                result = list(map(lambda x: x.inner_text(), selected))
             browser.close()
         return success(result)
 
