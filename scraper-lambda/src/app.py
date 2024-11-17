@@ -50,7 +50,7 @@ def handler(event, context) -> dict:
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
     # body check
-    body: dict = json.loads(event["body"])
+    body: dict = event
     # url, content_type, selector
     url = body.get("url")
     content_type = body.get("content_type")
