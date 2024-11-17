@@ -10,7 +10,8 @@ from agents.crawling_agent import CrawlingAgent
 from agents.filtering_agent import FilteringAgent
 from agents.html_parser_agent import HtmlParserAgent
 from agents.message_agent import MessageAgent
-from graph.state import SiteState, State
+from agents.sorting_agent import SortingAgent
+from graph.state import SiteState, State, SortedFilteringData, PageCrawlingData
 from models.site import SiteDto
 from service import get_sites
 
@@ -28,10 +29,13 @@ def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
     filtering_agent = FilteringAgent(
         ChatOpenAI(model_name="gpt-4o-mini-2024-07-18"), site=site
     )
+    sorting_agent = SortingAgent(
+        ChatOpenAI(model_name="gpt-4o-mini-2024-07-18"), site=site
+    )
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
-            crawling_result={}, filtering_result={}, parser_result=[]
+            crawling_result={}, filtering_result={}, parser_result=[], sorted_result={}
         )
         # TODO 우선 필터링 에이전트만 동작 확인을 위해 주석, merge 전에 주석 풀기
         # state = html_parser_agent(
@@ -39,6 +43,7 @@ def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
         # )  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
         # state = crawling_agent(state)
         state = filtering_agent(initial_site_state)
+        state = sorting_agent(state)
         return state
 
     return process_site
@@ -56,8 +61,12 @@ def parallel_crawl_filter(state: State) -> State:
     results: dict[str, SiteState] = parallel_runner.invoke(state)
 
     filtered_results = {}
-    for result in results.values():
-        filtered_results.update(result.filtering_result)
+    for site_name, result in results.items():
+        exclusive_reason_results = [
+            PageCrawlingData(url=item.url, title=item.title)
+            for item in result.sorted_result[site_name]
+        ]
+        filtered_results[site_name] = exclusive_reason_results
 
     state.parallel_result = filtered_results
 
