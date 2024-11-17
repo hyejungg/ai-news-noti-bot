@@ -80,7 +80,7 @@ def handler(event, context) -> dict:
             )
             page = browser.new_page()
             page.goto(url)
-            page.wait_for_load_state("networkidle", timeout=30000)
+            page.wait_for_load_state("networkidle", timeout=80000)
             page_content = page.content()
             result = page_content
             if selector:
