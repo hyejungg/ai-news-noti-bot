@@ -1,4 +1,4 @@
-from graph import SiteState
+from graph.state import SiteState
 
 
 # TODO 아래 코드 작성하기
