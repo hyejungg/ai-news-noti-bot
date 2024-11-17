@@ -12,7 +12,8 @@ def error(msg: str, status: int) -> dict:
         "body": json.dumps(
             {
                 "message": msg,
-            }
+            },
+            ensure_ascii=False,
         ),
     }
 
@@ -23,7 +24,8 @@ def success(result: str) -> dict:
         "body": json.dumps(
             {
                 "result": result,
-            }
+            },
+            ensure_ascii=False,
         ),
     }
 
