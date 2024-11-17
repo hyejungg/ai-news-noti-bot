@@ -79,7 +79,7 @@ def handler(event, context) -> dict:
                 headless=True,
             )
             page = browser.new_page()
-            page.goto(url)
+            page.goto(url, timeout=80000)
             page.wait_for_load_state("networkidle", timeout=80000)
             page_content = page.content()
             result = page_content
