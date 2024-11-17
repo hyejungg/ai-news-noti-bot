@@ -25,7 +25,7 @@ LLM = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 def create_crawl_filter_sequence(
     llm: BaseLanguageModel, site: SiteDto
 ) -> Callable[[State], SiteState]:
-    html_parser_agent = HtmlParserAgent()
+    html_parser_agent = HtmlParserAgent(site=site)
     crawling_agent = CrawlingAgent(llm, site=site)
     filtering_agent = FilteringAgent(llm, site=site)
 
