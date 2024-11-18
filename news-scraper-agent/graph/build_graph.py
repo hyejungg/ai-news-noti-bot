@@ -31,7 +31,7 @@ def create_crawl_filter_sequence(
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
-            crawling_result={}, filtering_result={}, parser_result=[]
+            crawling_result={}, filtering_result={}, parser_result={}
         )
         state = html_parser_agent(
             initial_site_state

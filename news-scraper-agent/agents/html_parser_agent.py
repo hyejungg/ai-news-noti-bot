@@ -31,9 +31,11 @@ class HtmlParserAgent:
             logger.error(response["LogResult"])
             raise Exception("Lambda 호출 실패")
 
-        response_data = json.loads(json.load(response["Payload"])["body"])["result"]
+        response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
+            "result"
+        ]
         logger.info(f"{self.site.name} 파싱 완료")
-        state.parser_result = response_data
+        state.parser_result[self.site.name] = "".join(response_data)
         return state
 
     def __create_payload(self) -> ParsingLambdaRequestBody:

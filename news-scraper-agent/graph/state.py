@@ -15,7 +15,7 @@ type ParserResult = dict[str, str]
 class SiteState(BaseModel):
     crawling_result: CrawlingResult
     filtering_result: CrawlingResult
-    parser_result: list[ParserResult]
+    parser_result: ParserResult
 
 
 class State(BaseModel):
