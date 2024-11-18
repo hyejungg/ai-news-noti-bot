@@ -5,8 +5,11 @@ from langchain_community.llms import FakeListLLM
 from langchain_core.language_models import BaseLanguageModel
 from langgraph.graph import StateGraph, START, END
 
-from agents import HtmlParserAgent, CrawlingAgent, FilteringAgent, MessageAgent
-from graph import SiteState, State
+from agents.crawling_agent import CrawlingAgent
+from agents.filtering_agent import FilteringAgent
+from agents.html_parser_agent import HtmlParserAgent
+from agents.message_agent import MessageAgent
+from graph.state import SiteState, State
 from models.site import SiteDto
 from service import get_sites
 

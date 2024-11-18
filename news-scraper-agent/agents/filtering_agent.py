@@ -6,7 +6,7 @@ from langchain_core.language_models import BaseLanguageModel
 from langchain_core.output_parsers import JsonOutputParser
 
 from config import config
-from graph import SiteState, AgentResponse
+from graph.state import AgentResponse, SiteState
 from models.site import SiteDto
 
 

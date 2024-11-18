@@ -1,4 +1,5 @@
-from graph import build_graph, State
+from graph.build_graph import build_graph
+from graph.state import State
 from loader import connect_db
 
 

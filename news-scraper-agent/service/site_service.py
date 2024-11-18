@@ -1,4 +1,4 @@
-from graph import State
+from graph.state import State
 from models import Site
 from models.site import SiteDto
 
