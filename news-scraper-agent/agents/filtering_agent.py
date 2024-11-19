@@ -3,10 +3,9 @@ import time
 
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
-from langchain_core.output_parsers import JsonOutputParser
 
 from config import config
-from graph.state import AgentResponse, SiteState, PageCrawlingData
+from graph.state import SiteState, AgentResponse
 from models.site import SiteDto
 
 
@@ -21,7 +20,6 @@ class FilteringAgent:
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.filtering_prompt
         )
-        self.parser = JsonOutputParser(pydantic_object=AgentResponse)
 
     def __call__(self, state: SiteState) -> SiteState:
         # TODO 임시로 crawling_result 생성. merge 전에 state.crawling_results 초기화 하는 부분 삭제하기!!
@@ -117,16 +115,14 @@ class FilteringAgent:
             ]
         }
 
-        chain = self.prompt | self.llm | self.parser
-        input_variables = {"crawling_result": state.crawling_result[self.site.name]}
-        response: list = chain.invoke(input_variables)
+        formatted_prompt = self.prompt.format(crawling_result=state.crawling_result[self.site.name])
+        llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
+        response:AgentResponse = llm_with_structured_output.invoke(formatted_prompt)
 
         end_time = time.time()
         print(
             f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
-        state.filtering_result[self.site.name] = [
-            PageCrawlingData(**item) for item in response
-        ]
+        state.filtering_result[self.site.name] = response.items
 
         return state

@@ -3,10 +3,9 @@ import time
 
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
-from langchain_core.output_parsers import JsonOutputParser
 
 from config import config
-from graph.state import SiteState, SortAgentResponse, SortedFilteringData
+from graph.state import SiteState, SortAgentResponse
 from models.site import SiteDto
 
 
@@ -19,7 +18,6 @@ class SortingAgent:
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.sorting_prompt
         )
-        self.parser = JsonOutputParser(pydantic_object=SortAgentResponse)
 
     def __call__(self, state: SiteState) -> SiteState:
         # TODO 임시로 filtering_result 생성. merge 전에 state.filtering_result 초기화 하는 부분 삭제하기!!
@@ -49,16 +47,14 @@ class SortingAgent:
             ]
         }
 
-        chain = self.prompt | self.llm | self.parser
-        input_variables = {"filtering_result": state.filtering_result[self.site.name]}
-        response: list = chain.invoke(input_variables)
+        formatted_prompt = self.prompt.format(filtering_result=state.filtering_result[self.site.name])
+        llm_with_structured_output = self.llm.with_structured_output(SortAgentResponse)
+        response:SortAgentResponse = llm_with_structured_output.invoke(formatted_prompt)
 
         end_time = time.time()
         print(
             f"Finished sorting on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
-        state.sorted_result[self.site.name] = [
-            SortedFilteringData(**item) for item in response
-        ]
+        state.sorted_result[self.site.name] = response.items
 
         return state
