@@ -81,8 +81,8 @@ def handler(event, context) -> dict:
                 headless=True,
             )
             page = browser.new_page()
-            page.goto(url, timeout=80000)
-            page.wait_for_load_state("networkidle", timeout=80000)
+            page.goto(url, timeout=80000) # 80초
+            page.wait_for_load_state("networkidle", timeout=80000) # 80초
             page_content = page.content()
             result = [page_content]
             if selector:
