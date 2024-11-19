@@ -6,6 +6,7 @@ from langchain_core.language_models import BaseLanguageModel
 from langchain_core.output_parsers import JsonOutputParser
 
 from config import config
+from config.log import logger
 from graph.state import AgentResponse, SiteState
 from models.site import SiteDto
 
@@ -33,7 +34,7 @@ class FilteringAgent:
         response: list = chain.invoke(input_variables)
 
         end_time = time.time()
-        print(
+        logger.info(
             f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
         state.filtering_result[self.site.name] = response
