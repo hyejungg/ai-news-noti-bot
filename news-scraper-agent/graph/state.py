@@ -9,7 +9,7 @@ class PageCrawlingData(BaseModel):
 
 
 type CrawlingResult = dict[str, list[PageCrawlingData]]
-type ParserResult = dict[str, str]
+type ParserResult = dict[str, list[str]]
 
 
 class SiteState(BaseModel):

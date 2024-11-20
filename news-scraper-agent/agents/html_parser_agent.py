@@ -35,7 +35,8 @@ class HtmlParserAgent:
             "result"
         ]
         logger.info(f"{self.site.name} 파싱 완료")
-        state.parser_result[self.site.name] = "".join(response_data)
+
+        state.parser_result[self.site.name] = response_data
         return state
 
     def __create_payload(self) -> ParsingLambdaRequestBody:
