@@ -1,6 +1,6 @@
 import threading
 import time
-from config import config
+from config import defaultPrompt
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.output_parsers import JsonOutputParser
@@ -10,7 +10,9 @@ from models.site import SiteDto
 
 
 class CrawlingAgent:
-    crawling_prompt = config.CRAWLING_AGENT_PROMPT_EN or config.CRAWLING_AGENT_PROMPT_KO
+    crawling_prompt = (
+        defaultPrompt.CRAWLING_AGENT_PROMPT_EN or defaultPrompt.CRAWLING_AGENT_PROMPT_KO
+    )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
         self.llm = llm
