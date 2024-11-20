@@ -20,32 +20,7 @@ class SortingAgent:
         )
 
     def __call__(self, state: SiteState) -> SiteState:
-        # TODO 임시로 filtering_result 생성. merge 전에 state.filtering_result 초기화 하는 부분 삭제하기!!
         start_time = time.time()
-        state.filtering_result = {
-            self.site.name: [
-                {
-                    "title": "GN⁺: 보이스피싱범의 시간을 낭비하는 AI 할머니 데이지",
-                    "url": "https://news.virginmediao2.co.uk",
-                },
-                {
-                    "title": "Google Web AI Summit 2024 요약: 개발자를 위한 클라이언트 측 AI",
-                    "url": "https://developers.googleblog.com",
-                },
-                {
-                    "title": "Firecrawl - 웹사이트 전체를 LLM에서 사용가능하게 만드는 도구",
-                    "url": "https://github.com/mendableai",
-                },
-                {
-                    "title": "Show GN: 고양이도 발로 코딩한다는 'MOUSE' AI 서비스.",
-                    "url": "https://openfree-mouse.hf.space",
-                },
-                {
-                    "title": "Integuru - 내부 API를 리버스 엔지니어링 해서 외부용 통합 코드를 생성하는 AI에이전트",
-                    "url": "https://github.com/Integuru-AI",
-                },
-            ]
-        }
 
         formatted_prompt = self.prompt.format(filtering_result=state.filtering_result[self.site.name])
         llm_with_structured_output = self.llm.with_structured_output(SortAgentResponse)

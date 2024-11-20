@@ -2,7 +2,6 @@ from typing import Callable
 
 from langchain.schema.runnable import RunnableParallel
 from langchain_community.llms import FakeListLLM
-from langchain_core.language_models import BaseLanguageModel
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 
@@ -11,7 +10,7 @@ from agents.filtering_agent import FilteringAgent
 from agents.html_parser_agent import HtmlParserAgent
 from agents.message_agent import MessageAgent
 from agents.sorting_agent import SortingAgent
-from graph.state import SiteState, State, SortedFilteringData, PageCrawlingData
+from graph.state import SiteState, State, PageCrawlingData
 from models.site import SiteDto
 from service import get_sites
 
@@ -24,8 +23,10 @@ fake_responses = [
 
 
 def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
-    # html_parser_agent = HtmlParserAgent()
-    # crawling_agent = CrawlingAgent(site=site)
+    html_parser_agent = HtmlParserAgent()
+    crawling_agent = CrawlingAgent(
+        ChatOpenAI(model_name="gpt-4o-mini"), site=site
+    )
     filtering_agent = FilteringAgent(
         ChatOpenAI(model_name="gpt-4o-mini"), site=site
     )
@@ -37,12 +38,9 @@ def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
         initial_site_state = SiteState(
             crawling_result={}, filtering_result={}, parser_result=[], sorted_result={}
         )
-        # TODO 우선 필터링 에이전트만 동작 확인을 위해 주석, merge 전에 주석 풀기
-        # state = html_parser_agent(
-        #     initial_site_state
-        # )  # FIXME 어떤 상태를 넘길지는 구현 시 수정 필요
-        # state = crawling_agent(state)
-        state = filtering_agent(initial_site_state)
+        state = html_parser_agent(initial_site_state)
+        state = crawling_agent(state)
+        state = filtering_agent(state)
         state = sorting_agent(state)
         return state
 
