@@ -30,7 +30,7 @@ def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
         ChatOpenAI(model_name="gpt-4o-mini"), site=site
     )
     sorting_agent = SortingAgent(
-        ChatOpenAI(model_name="gpt-4o-mini"), site=site
+        ChatOpenAI(model_name="gpt-4o"), site=site
     )
 
     def process_site(state: State) -> SiteState:
