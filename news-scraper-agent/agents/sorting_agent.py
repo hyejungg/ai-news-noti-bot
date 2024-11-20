@@ -4,13 +4,15 @@ import time
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config import config
+from config import defaultPrompt
 from graph.state import SiteState, SortAgentResponse
 from models.site import SiteDto
 
 
 class SortingAgent:
-    sorting_prompt = config.SORTING_AGENT_PROMPT_EN or config.SORTING_AGENT_PROMPT_KO
+    sorting_prompt = (
+        defaultPrompt.SORTING_AGENT_PROMPT_EN or defaultPrompt.SORTING_AGENT_PROMPT_KO
+    )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
         self.llm = llm
@@ -22,9 +24,13 @@ class SortingAgent:
     def __call__(self, state: SiteState) -> SiteState:
         start_time = time.time()
 
-        formatted_prompt = self.prompt.format(filtering_result=state.filtering_result[self.site.name])
+        formatted_prompt = self.prompt.format(
+            filtering_result=state.filtering_result[self.site.name]
+        )
         llm_with_structured_output = self.llm.with_structured_output(SortAgentResponse)
-        response:SortAgentResponse = llm_with_structured_output.invoke(formatted_prompt)
+        response: SortAgentResponse = llm_with_structured_output.invoke(
+            formatted_prompt
+        )
 
         end_time = time.time()
         print(
