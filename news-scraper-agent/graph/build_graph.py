@@ -27,10 +27,10 @@ def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
     # html_parser_agent = HtmlParserAgent()
     # crawling_agent = CrawlingAgent(site=site)
     filtering_agent = FilteringAgent(
-        ChatOpenAI(model_name="gpt-4o-mini-2024-07-18"), site=site
+        ChatOpenAI(model_name="gpt-4o-mini"), site=site
     )
     sorting_agent = SortingAgent(
-        ChatOpenAI(model_name="gpt-4o-mini-2024-07-18"), site=site
+        ChatOpenAI(model_name="gpt-4o-mini"), site=site
     )
 
     def process_site(state: State) -> SiteState:
