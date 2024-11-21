@@ -1,6 +1,3 @@
-import os
-
-
 class DefaultPromptTemplate:
     # crawling llm agent prompt TODO 여기 바꾸세요 !!
     CRAWLING_AGENT_PROMPT_EN = """<Roles and objectives>

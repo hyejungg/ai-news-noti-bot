@@ -1,5 +1,5 @@
 import json
-from typing import TypedDict, Optional, Literal, NotRequired
+from typing import TypedDict, Literal, NotRequired
 
 import boto3
 
