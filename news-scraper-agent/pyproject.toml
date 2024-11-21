@@ -17,6 +17,7 @@ typing-extensions = "^4.12.2"
 mongoengine = "^0.29.1"
 pytz = "^2024.2"
 langchain-community = "^0.3.3"
+boto3 = "^1.35.63"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,6 +1,7 @@
 from mongoengine import connect
 
 from config import config
+from config.log import logger
 from models import Site, Message
 
 
@@ -13,16 +14,16 @@ def connect_db():
         else:
             connect(host=config.MONGO_DB_LOCAL_URI)
 
-        print("MongoDB Connected ...")
+        logger.info("MongoDB Connected ...")
 
         # 컬렉션 생성 확인
         Site.ensure_indexes()
-        print("Site Collection is ready!")
+        logger.info("Site Collection is ready!")
         Message.ensure_indexes()
-        print("Message Collection is ready!")
+        logger.info("Message Collection is ready!")
 
     except Exception as err:
-        print(f"MongoDB connect error: {err}")
+        logger.error(f"MongoDB connect error: {err}")
         exit(1)
 
 

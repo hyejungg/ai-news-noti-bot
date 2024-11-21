@@ -23,7 +23,7 @@ fake_responses = [
 
 
 def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
-    html_parser_agent = HtmlParserAgent()
+    html_parser_agent = HtmlParserAgent(site=site)
     crawling_agent = CrawlingAgent(
         ChatOpenAI(model_name="gpt-4o-mini"), site=site
     )
@@ -36,7 +36,7 @@ def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
-            crawling_result={}, filtering_result={}, parser_result=[], sorted_result={}
+            crawling_result={}, filtering_result={}, parser_result={}, sorted_result={}
         )
         state = html_parser_agent(initial_site_state)
         state = crawling_agent(state)

@@ -1,5 +1,7 @@
 from langgraph.graph import StateGraph
 
+from config.log import logger
+
 
 def get_graph_image(graph: StateGraph):
     # PNG 이미지로 그래프 그리기
@@ -9,4 +11,4 @@ def get_graph_image(graph: StateGraph):
     with open("graph.png", "wb") as f:
         f.write(png_image)
 
-    print("Image saved as graph.png")
+    logger.info("Image saved as graph.png")

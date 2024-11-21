@@ -2,7 +2,7 @@ import json
 import requests
 
 from typing import get_type_hints, get_args
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, ElementHandle
 from used_type import RequestBody
 
 
@@ -12,18 +12,20 @@ def error(msg: str, status: int) -> dict:
         "body": json.dumps(
             {
                 "message": msg,
-            }
+            },
+            ensure_ascii=False,
         ),
     }
 
 
-def success(result: str) -> dict:
+def success(result: list) -> dict:
     return {
         "statusCode": 200,
         "body": json.dumps(
             {
                 "result": result,
-            }
+            },
+            ensure_ascii=False,
         ),
     }
 
@@ -50,7 +52,7 @@ def handler(event, context) -> dict:
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
     # body check
-    body: dict = json.loads(event["body"])
+    body: dict = event
     # url, content_type, selector
     url = body.get("url")
     content_type = body.get("content_type")
@@ -79,15 +81,15 @@ def handler(event, context) -> dict:
                 headless=True,
             )
             page = browser.new_page()
-            page.goto(url)
-            page.wait_for_load_state("networkidle", timeout=30000)
+            page.goto(url, timeout=80000) # 80초
+            page.wait_for_load_state("networkidle", timeout=80000) # 80초
             page_content = page.content()
-            result = page_content
+            result = [page_content]
             if selector:
-                selected = page.query_selector(selector)
+                selected: list[ElementHandle] = page.query_selector_all(selector)
                 if selected is None:
                     return error(f"Element not found with {selector}", 400)
-                result = selected.inner_html()
+                result = list(map(lambda x: x.evaluate("(element) => element.outerHTML"), selected))
             browser.close()
         return success(result)
 

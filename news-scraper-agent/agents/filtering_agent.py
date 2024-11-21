@@ -5,6 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
 from config import defaultPrompt
+from config.log import logger
 from graph.state import SiteState, AgentResponse
 from models.site import SiteDto
 
@@ -32,7 +33,7 @@ class FilteringAgent:
         response: AgentResponse = llm_with_structured_output.invoke(formatted_prompt)
 
         end_time = time.time()
-        print(
+        logger.info(
             f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
         state.filtering_result[self.site.name] = response.items

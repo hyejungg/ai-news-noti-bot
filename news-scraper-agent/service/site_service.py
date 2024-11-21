@@ -18,7 +18,6 @@ def get_sites(state: State) -> State:
         )
         for site in site_document_list
     ]
-    print(f"sites: {sites}")
 
     # 기존 상태를 복사하고 sites를 추가
     new_state = state.model_copy(deep=True)

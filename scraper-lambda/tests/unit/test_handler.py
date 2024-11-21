@@ -61,48 +61,36 @@ def get_api_gw_event(body: RequestBody) -> dict:
 
 
 def test_static_page():
-    event = get_api_gw_event(
-        {
-            "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_static.html",
-            "content_type": "html",
-            "selector": "#content-section > section.products > div:nth-child(2) > span",
-        }
-    )
-
-    resp = app.handler(event, "")
+    resp = app.handler({
+        "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_static.html",
+        "content_type": "html",
+        "selector": "#content-section > section.products > div:nth-child(2) > span",
+    }, "")
     data = json.loads(resp["body"])
 
     assert resp["statusCode"] == 200
     assert "result" in data
-    assert data["result"] == "$25"
+    assert data["result"][0] == '<span class="price">$25</span>'
 
 
 def test_render_page():
-    event = get_api_gw_event(
-        {
-            "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_render.html",
-            "content_type": "html",
-            "selector": "#content-section > section.products > div:nth-child(2) > span",
-        }
-    )
-
-    resp = app.handler(event, "")
+    resp = app.handler({
+        "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_render.html",
+        "content_type": "html",
+        "selector": "#content-section > section.products > div:nth-child(2) > span",
+    }, "")
     data = json.loads(resp["body"])
 
     assert resp["statusCode"] == 200
     assert "result" in data
-    assert data["result"] == "$25"
+    assert data["result"][0] == '<span class="price">$25</span>'
 
 
 def test_json():
-    event = get_api_gw_event(
-        {
-            "url": "https://jsonplaceholder.typicode.com/users/1",
-            "content_type": "json",
-        }
-    )
-
-    resp = app.handler(event, "")
+    resp = app.handler({
+        "url": "https://jsonplaceholder.typicode.com/users/1",
+        "content_type": "json",
+    }, "")
     data = json.loads(resp["body"])
 
     assert resp["statusCode"] == 200
