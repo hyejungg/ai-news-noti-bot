@@ -36,5 +36,9 @@ class Config:
     FILTERING_AGENT_PROMPT_EN = os.getenv("FILTERING_AGENT_PROMPT_EN")
     FILTERING_AGENT_PROMPT_KO = os.getenv("FILTERING_AGENT_PROMPT_KO")
 
+    # sorting llm agent prompt
+    SORTING_AGENT_PROMPT_EN = os.getenv("SORTING_AGENT_PROMPT_EN")
+    SORTING_AGENT_PROMPT_KO = os.getenv("SORTING_AGENT_PROMPT_KO")
+
 
 config = Config()
