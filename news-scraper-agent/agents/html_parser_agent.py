@@ -1,4 +1,5 @@
 import json
+import re
 from typing import TypedDict, Literal, NotRequired
 
 import boto3
@@ -34,6 +35,9 @@ class HtmlParserAgent:
         response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
             "result"
         ]
+        if self.site.name == "데보션":
+            response_data = self.__parse_devocean_detail(response_data)
+
         logger.info(f"{self.site.name} 파싱 완료")
 
         state.parser_result[self.site.name] = response_data
@@ -51,7 +55,7 @@ class HtmlParserAgent:
                 return {
                     "url": url,
                     "content_type": "html",
-                    "selector": "aside.side div.auto-article > div.item",
+                    "selector": ".header-line",
                 }
             case url if "devocean.sk.com" in url:
                 return {
@@ -68,3 +72,40 @@ class HtmlParserAgent:
             case _:
                 logger.error(f"정의되지 않은 페이지 (url: ${url})")
                 raise ValueError("정의되지 않은 페이지 입니다.")
+
+    def __parse_devocean_detail(self, result: list[str]):
+        title_html = result[0]
+        pattern = r"onclick=\"goDetail\(this,'(\d+)',event\)"
+
+        matched = re.search(pattern, title_html)
+        if not matched:
+            raise ValueError(f"{self.site.name} 파싱 실패")
+
+        detail_page = (
+            f"https://devocean.sk.com/blog/techBoardDetail.do?ID={matched.group(1)}"
+        )
+
+        body = json.dumps(
+            {
+                "url": detail_page,
+                "content_type": "html",
+                "selector": ".toastui-editor-contents",
+            }
+        )
+        response = self.lambda_client.invoke(
+            FunctionName="scraper-lambda",
+            InvocationType="RequestResponse",
+            Payload=body,
+        )
+
+        if response["StatusCode"] != 200:
+            logger.error(response["FunctionError"])
+            logger.error(response["LogResult"])
+            raise Exception("Lambda 호출 실패")
+
+        response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
+            "result"
+        ]
+        logger.info(f"{self.site.name} 상세 페이지 파싱 완료")
+
+        return response_data

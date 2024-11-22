@@ -1,6 +1,6 @@
 class DefaultPromptTemplate:
     CRAWLING_AGENT_PROMPT_EN = """<Roles and objectives>
-Please find the articles about AI on the html based on the information below
+Please find the articles by extracting information from the html based on the information below 
 
 <Context>
 The site information is as follows.
@@ -14,10 +14,11 @@ The site information is as follows.
 3. The extracted information should not be changed arbitrarily.
 4. The answer must be in JSON array form, responding to the article title and the article's website link in key-value form as follows.
 5. If the article information has not been imported, respond in the form of an empty array: ex. '[]'
-6. Be sure to follow the instructions above."""
+6. If the site name is 데보션(Devocean), exclude the content corresponding to Geeknews.
+7. Be sure to follow the instructions above."""
 
     CRAWLING_AGENT_PROMPT_KO = """<역할 및 목표>
-아래 정보를 바탕으로 html에서 AI와 관련된 아티클을 찾아주세요
+아래 정보를 바탕으로 html에서 아티클을 찾아주세요
 
 <문맥>
 사이트 정보는 다음과 같습니다.
@@ -32,7 +33,8 @@ The site information is as follows.
 3. 추출한 정보를 임의로 변경해선 안됩니다.
 4. 답변은 반드시 JSON 배열 형태로 기사 제목(title)과 기사의 웹사이트 링크(url)를 다음과 같은 key-value 형태로 응답합니다.
 5. 기사 정보를 못가져 온 경우 다음과 같이 빈 배열 형태로 응답합니다. ex. '[]'
-6. 반드시 위 지침을 따르세요."""
+6. 사이트 이름이 데보션(devocean)인 경우, Geeknews에 해당하는 내용은 제외하세요
+7. 반드시 위 지침을 따르세요."""
 
     # filtering llm agent prompt
     FILTERING_AGENT_PROMPT_EN = """<Role & Goal>
