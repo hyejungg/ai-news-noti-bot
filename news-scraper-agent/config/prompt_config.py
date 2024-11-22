@@ -1,15 +1,15 @@
 class DefaultPromptTemplate:
-    # crawling llm agent prompt TODO 여기 바꾸세요 !!
     CRAWLING_AGENT_PROMPT_EN = """<Roles and objectives>
-Please find the information you want on the site based on the information below
+Please find the articles about AI on the html based on the information below
 
 <Context>
 The site information is as follows.
 - Site name: {site_name}
 - Site link: {site_url}
+- html: {parser_result}
 
 <Instructions>
-1. Make sure to extract information from the site that is delivered.
+1. Make sure to extract information from the html that is delivered.
 2. If additional information is available, use the additional information to extract the article title and website link.
 3. The extracted information should not be changed arbitrarily.
 4. The answer must be in JSON array form, responding to the article title and the article's website link in key-value form as follows.
@@ -17,15 +17,17 @@ The site information is as follows.
 6. Be sure to follow the instructions above."""
 
     CRAWLING_AGENT_PROMPT_KO = """<역할 및 목표>
-아래 정보를 바탕으로 사이트에서 원하는 정보를 찾아주세요
+아래 정보를 바탕으로 html에서 AI와 관련된 아티클을 찾아주세요
 
 <문맥>
 사이트 정보는 다음과 같습니다.
 - 사이트 이름: {site_name}
 - 사이트 링크: {site_url}
+- html: {parser_result}
+
 
 <지시문>
-1. 반드시 전달되는 사이트 내에서 정보를 추출합니다.
+1. 반드시 전달되는 html 내에서 정보를 추출합니다.
 2. 추가 정보가 있는 경우 추가 정보를 활용하여 기사 제목과 웹사이트 링크를 추출합니다.
 3. 추출한 정보를 임의로 변경해선 안됩니다.
 4. 답변은 반드시 JSON 배열 형태로 기사 제목(title)과 기사의 웹사이트 링크(url)를 다음과 같은 key-value 형태로 응답합니다.

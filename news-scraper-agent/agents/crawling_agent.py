@@ -1,12 +1,15 @@
 import threading
 import time
-from config import defaultPrompt
+
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
-from langchain_core.output_parsers import JsonOutputParser
 
+from config import defaultPrompt
 from config.log import logger
-from graph.state import PageCrawlingData, SiteState, AgentResponse
+from graph.state import (
+    SiteState,
+    CrawlingAgentResponse,
+)
 from models.site import SiteDto
 
 
@@ -21,20 +24,27 @@ class CrawlingAgent:
             prompt if prompt else self.crawling_prompt
         )
         self.site = site
-        self.parser = JsonOutputParser(pydantic_object=AgentResponse)
 
     def __call__(self, state: SiteState) -> SiteState:
         start_time = time.time()
 
-        chain = self.prompt | self.llm | self.parser
+        formatted_prompt = self.crawling_prompt.format(
+            site_name=self.site.name,
+            site_url=self.site.url,
+            parser_result=state.parser_result[self.site.name],
+        )
 
-        # TODO prompt 및 input_variables 재구성 필요
-        input_variables = {"site_name": self.site.name, "site_url": self.site.url}
-        response: list[PageCrawlingData] = chain.invoke(input_variables)
+        llm_with_structured_output = self.llm.with_structured_output(
+            CrawlingAgentResponse
+        )
+        response: CrawlingAgentResponse = llm_with_structured_output.invoke(
+            formatted_prompt
+        )
+
         end_time = time.time()
         logger.info(
             f"Finished crawl for {self.site.name} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
-        state.crawling_result[self.site.name] = response
+        state.crawling_result[self.site.name] = response.items
 
         return state
