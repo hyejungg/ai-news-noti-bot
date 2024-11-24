@@ -117,7 +117,6 @@ class CrawlingAgentTest(unittest.TestCase):
         )
         state_after = crawling_agent(state_before)
 
-        logger.info("TEST")
         for v in state_after.crawling_result[site.name]:
             logger.info(v)
 
