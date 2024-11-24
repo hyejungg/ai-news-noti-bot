@@ -41,9 +41,3 @@ class SortAgentResponse(BaseModel):
     items: list[SortedFilteringData] = Field(
         description="List of agent response items (title, url, reason)"
     )
-
-
-class CrawlingAgentResponse(BaseModel):
-    items: list[PageCrawlingData] = Field(
-        description="List of agent response items (title, url)"
-    )

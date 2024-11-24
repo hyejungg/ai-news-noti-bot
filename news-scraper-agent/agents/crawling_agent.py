@@ -8,7 +8,7 @@ from config import defaultPrompt
 from config.log import logger
 from graph.state import (
     SiteState,
-    CrawlingAgentResponse,
+    AgentResponse,
 )
 from models.site import SiteDto
 
@@ -34,12 +34,8 @@ class CrawlingAgent:
             parser_result=state.parser_result[self.site.name],
         )
 
-        llm_with_structured_output = self.llm.with_structured_output(
-            CrawlingAgentResponse
-        )
-        response: CrawlingAgentResponse = llm_with_structured_output.invoke(
-            formatted_prompt
-        )
+        llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
+        response: AgentResponse = llm_with_structured_output.invoke(formatted_prompt)
 
         end_time = time.time()
         logger.info(
