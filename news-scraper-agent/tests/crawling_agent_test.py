@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 
 from langchain_openai import ChatOpenAI
@@ -7,6 +8,9 @@ from agents.crawling_agent import CrawlingAgent
 from config.log import logger
 from graph.state import SiteState
 from models.site import SiteDto
+
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class CrawlingAgentTest(unittest.TestCase):
@@ -54,7 +58,10 @@ class CrawlingAgentTest(unittest.TestCase):
         site = self.geek_news
         crawling_agent = CrawlingAgent(llm=self.gpt_4o_mini, site=site)
 
-        with open("./fixtures/crawling_agent_test_gn.json", "r") as f:
+        with open(
+            f"{current_dir}/fixtures/crawling_agent_test_gn.json",
+            "r",
+        ) as f:
             parser_result = json.load(f)
 
         state_before = SiteState(
@@ -80,7 +87,7 @@ class CrawlingAgentTest(unittest.TestCase):
         site = self.devocean
         crawling_agent = CrawlingAgent(llm=self.gpt_4o, site=site)
 
-        with open("./fixtures/crawling_agent_test_dvc.json", "r") as f:
+        with open(f"{current_dir}/fixtures/crawling_agent_test_dvc.json", "r") as f:
             parser_result = json.load(f)
 
         state_before = SiteState(
@@ -106,7 +113,7 @@ class CrawlingAgentTest(unittest.TestCase):
         site = self.aitimes
         crawling_agent = CrawlingAgent(llm=self.gpt_4o, site=site)
 
-        with open("./fixtures/crawling_agent_test_aitimes.json", "r") as f:
+        with open(f"{current_dir}/fixtures/crawling_agent_test_aitimes.json", "r") as f:
             parser_result = json.load(f)
 
         state_before = SiteState(
@@ -128,7 +135,7 @@ class CrawlingAgentTest(unittest.TestCase):
         site = self.sds
         crawling_agent = CrawlingAgent(llm=self.gpt_4o, site=site)
 
-        with open("./fixtures/crawling_agent_test_sds.json", "r") as f:
+        with open(f"{current_dir}/fixtures/crawling_agent_test_sds.json", "r") as f:
             parser_result = json.load(f)
 
         state_before = SiteState(
