@@ -5,6 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
 from config import defaultPrompt
+from config.log import logger
 from graph.state import SiteState, SortAgentResponse
 from models.site import SiteDto
 
@@ -33,7 +34,7 @@ class SortingAgent:
         )
 
         end_time = time.time()
-        print(
+        logger.info(
             f"Finished sorting on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
         )
         state.sorted_result[self.site.name] = response.items
