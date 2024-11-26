@@ -1,3 +1,5 @@
+from typing import Optional
+
 from mongoengine import (
     Document,
     StringField,
@@ -6,6 +8,7 @@ from mongoengine import (
     EmbeddedDocumentField,
     DateTimeField,
 )
+from pydantic import BaseModel
 
 from utils import get_datetime_kst
 
@@ -41,3 +44,17 @@ class Message(Document):
             self.createdAt = get_datetime_kst()
         self.updatedAt = get_datetime_kst()
         return super(Message, self).save(*args, **kwargs)
+
+
+class MessageContentDto(BaseModel):
+    name: str
+    title: str
+    url: str
+
+
+class MessageDto(BaseModel):
+    type: str
+    status: str
+    messages: list[MessageContentDto]
+    createdAt: Optional[str]
+    updatedAt: Optional[str]
