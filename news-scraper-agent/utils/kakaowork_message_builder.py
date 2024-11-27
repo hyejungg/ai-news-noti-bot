@@ -30,9 +30,6 @@ WEBHOOK_URL_MAP = {
 
 class KakaoworkMessageBuilder:
     def __init__(self):
-        # self.today = datetime.now().strftime(
-        #    "%Y-%m-%d"
-        # )  # TODO 타임존 한국으로 지정하기
         # none
         pass
 
