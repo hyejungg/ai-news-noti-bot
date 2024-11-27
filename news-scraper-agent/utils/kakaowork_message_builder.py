@@ -98,4 +98,4 @@ class KakaoworkMessageBuilder:
             )
         )
 
-        return KakaoworkMessageRequest(blocks=blocks)
+        return KakaoworkMessageRequest(text=f"📢 {today} AI 소식", blocks=blocks)
