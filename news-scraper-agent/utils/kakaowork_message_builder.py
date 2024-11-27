@@ -68,6 +68,9 @@ class KakaoworkMessageBuilder:
             )
         else:
             for site_name, site_data in unique_site_news_dict.items():
+                if len(site_data) == 0:
+                    continue
+
                 blocks.append(
                     TextBlock(
                         text=site_name,
