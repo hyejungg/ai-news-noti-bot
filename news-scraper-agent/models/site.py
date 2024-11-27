@@ -3,7 +3,7 @@ from typing import Optional
 from mongoengine import Document, StringField, ListField, BooleanField, DateTimeField
 from pydantic import BaseModel
 
-from utils import get_datetime_kst
+from utils.time_utils import get_datetime_kst
 
 
 class Site(Document):

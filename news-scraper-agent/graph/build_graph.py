@@ -12,7 +12,7 @@ from agents.message_agent import MessageAgent
 from agents.sorting_agent import SortingAgent
 from graph.state import SiteState, State, PageCrawlingData
 from models.site import SiteDto
-from service import get_sites
+from service.site_service import get_sites
 
 # FakeListLLM 설정
 fake_responses = [

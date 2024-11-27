@@ -1,9 +1,10 @@
 import logging
 from datetime import datetime
 
-from .env_config import config
 
 from zoneinfo import ZoneInfo  # Python 3.9 이상에서 사용 가능
+
+from config.env_config import env
 
 
 class KSTColorFormatter(logging.Formatter):
@@ -39,7 +40,7 @@ formatter = KSTColorFormatter(
 # Logger 설정
 logger = logging.getLogger("NewsScraperAgent")
 
-if config.PROFILE == "real":
+if env.PROFILE == "real":
     logger.setLevel(logging.INFO)
 else:
     logger.setLevel(logging.DEBUG)

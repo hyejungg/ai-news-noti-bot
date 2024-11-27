@@ -1,5 +1,5 @@
 from config.log import logger
-from models import Message
+from models.message import Message
 from models.message import MessageDto, MessageContentDto
 
 
