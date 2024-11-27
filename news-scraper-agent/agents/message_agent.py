@@ -16,7 +16,7 @@ class MessageAgent:
         pass
 
     def __call__(self, state: State) -> None:
-        logger.info("@@ messageAgent 시작")
+        logger.info("messageAgent 시작")
         parallel_result = state.parallel_result.copy()
 
         # 1. db 조회를 위해 list[PageCrawlingData]로 변환
@@ -48,9 +48,9 @@ class MessageAgent:
         )
 
         # 4. 중복된 title 제거하여 unique한 뉴스 제목만 추출
-        unique_news_title = target_titles - duplicate_message_titles
+        unique_news_titles = target_titles - duplicate_message_titles
         logger.info(
-            f"unique_news_title (len: {len(unique_news_title)}): {unique_news_title}"
+            f"unique_news_titles (len: {len(unique_news_titles)}): {unique_news_titles}"
         )
 
         # 5. 원본 딕셔너리(parallel_result)에서 중복된 value 제거한 새로운 딕셔너리 생성
@@ -58,7 +58,7 @@ class MessageAgent:
             site_name: [
                 PageCrawlingData(title=item.title, url=item.url)
                 for item in site_data
-                if item.title in unique_news_title
+                if item.title in unique_news_titles
             ]
             for site_name, site_data in parallel_result.items()
         }

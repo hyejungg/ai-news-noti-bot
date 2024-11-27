@@ -37,11 +37,17 @@ class KakaoworkMessageBuilder:
     def send_message(request: KakaoworkMessageRequest) -> int:
         webhook_url = WEBHOOK_URL_MAP.get(config.PROFILE)
         try:
+            logger.info(
+                f"raw request body: {request.model_dump_json(indent=2, exclude_none=True)}"
+            )
             response = requests.post(
                 webhook_url,
                 headers={"Content-Type": "application/json"},
-                data=request.model_dump_json(),
+                data=request.model_dump_json(exclude_none=True),
             )
+            # 응답 코드와 상세 정보 로깅
+            logger.info(f"response status_code: {response.status_code}")
+            logger.info(f"response body: {response.text}")  # 응답 본문 텍스트
             return response.status_code
         except requests.RequestException as e:
             logger.error(f"Error sending message: {e}")
@@ -49,11 +55,10 @@ class KakaoworkMessageBuilder:
 
     @staticmethod
     def build(unique_site_news_dict: CrawlingResult) -> KakaoworkMessageRequest:
-        has_empty_list = any(
+        has_empty_list = all(
             len(page_crawling_data_list) == 0
             for site_name, page_crawling_data_list in unique_site_news_dict.items()
         )
-        logger.info(f"has_empty_list: {has_empty_list}")
 
         today = datetime.now(tz=ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
 
