@@ -1,6 +1,6 @@
 from config.log import logger
 from models import Message
-from models.message import MessageDto
+from models.message import MessageDto, MessageContentDto
 
 
 def get_messages(target_titles: list[str]) -> list[MessageDto]:
@@ -11,13 +11,14 @@ def get_messages(target_titles: list[str]) -> list[MessageDto]:
     )  # QuerySet을 리스트로 변환
     messages: list[MessageDto] = [
         MessageDto(
-            **{
-                "type": message.type,
-                "status": message.status,
-                "message": [MessageDto(**{**message.messages.to_mongo().to_dict()})],
-                "createdAt": message.createdAt or None,
-                "updatedAt": message.updatedAt or None,
-            }
+            type=message.type,
+            status=message.status,
+            messages=[
+                MessageContentDto(**msg.to_mongo().to_dict())
+                for msg in message.messages
+            ],
+            createdAt=message.createdAt.isoformat() if message.createdAt else None,
+            updatedAt=message.updatedAt.isoformat() if message.updatedAt else None,
         )
         for message in messages_document_list
     ]
