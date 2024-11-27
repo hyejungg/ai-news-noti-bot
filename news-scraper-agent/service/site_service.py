@@ -1,6 +1,5 @@
 from graph.state import State
-from models import Site
-from models.site import SiteDto
+from models.site import SiteDto, Site
 
 
 # site 정보를 가져와 node 의 상태 중 하나로 추가

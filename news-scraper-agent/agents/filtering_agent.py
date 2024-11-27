@@ -4,8 +4,8 @@ import time
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config import defaultPrompt
 from config.log import logger
+from config.prompt_config import defaultPrompt
 from graph.state import SiteState, AgentResponse
 from models.site import SiteDto
 

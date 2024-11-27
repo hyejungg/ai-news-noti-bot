@@ -1,8 +1,9 @@
 from mongoengine import connect
 
-from config import config
+from config.env_config import config
 from config.log import logger
-from models import Site, Message
+from models.message import Message
+from models.site import Site
 
 
 def connect_db():

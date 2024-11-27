@@ -1,7 +1,7 @@
 from config.log import logger
 from graph.build_graph import build_graph
 from graph.state import State
-from loader import connect_db
+from loader.connect import connect_db
 
 
 # from utils import get_graph_image

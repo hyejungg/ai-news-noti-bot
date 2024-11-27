@@ -7,7 +7,7 @@ from mongoengine import (
     DateTimeField,
 )
 
-from utils import get_datetime_kst
+from utils.time_utils import get_datetime_kst
 
 
 class MessageContent(EmbeddedDocument):
