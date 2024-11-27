@@ -1,44 +1,50 @@
-import os
+from typing import Optional
 
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv(verbose=True)
+
+load_dotenv()
 
 
-class Config:
+class Environment(BaseSettings):
     # app
-    PROFILE = os.getenv("PROFILE")
+    PROFILE: str
 
     # db
-    MONGO_DB_LOCAL_URI = os.getenv("MONGO_DB_LOCAL_URI")
-    MONGO_DB_DEV_URI = os.getenv("MONGO_DB_DEV_URI")
-    MONGO_DB_REAL_URI = os.getenv("MONGO_DB_REAL_URI")
+    MONGO_DB_LOCAL_URI: str
+    MONGO_DB_DEV_URI: str
+    MONGO_DB_REAL_URI: str
 
     # kakaoworks
-    KAWORK_WEBHOOK_LOCAL_URI = os.getenv("KAWORK_WEBHOOK_LOCAL_URI")
-    KAWORK_WEBHOOK_DEV_URI = os.getenv("KAWORK_WEBHOOK_DEV_URI")
-    KAWORK_WEBHOOK_REAL_URI = os.getenv("KAWORK_WEBHOOK_REAL_URI")
+    KAWORK_WEBHOOK_LOCAL_URI: str
+    KAWORK_WEBHOOK_DEV_URI: str
+    KAWORK_WEBHOOK_REAL_URI: str
 
     # langsmith
-    LANGCHAIN_ENDPOINT = os.getenv("LANGCHAIN_ENDPOINT")
-    LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
-    LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT")
+    LANGCHAIN_ENDPOINT: Optional[str] = None
+    LANGCHAIN_API_KEY: Optional[str] = None
+    LANGCHAIN_PROJECT: Optional[str] = None
 
     # llm
-    MODEL_NAME = os.getenv("MODEL_NAME")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    MODEL_NAME: str
+    OPENAI_API_KEY: str
 
     # crawling llm agent prompt
-    CRAWLING_AGENT_PROMPT_EN = os.getenv("CRAWLING_AGENT_PROMPT_EN")
-    CRAWLING_AGENT_PROMPT_KO = os.getenv("CRAWLING_AGENT_PROMPT_KO")
+    CRAWLING_AGENT_PROMPT_EN: str
+    CRAWLING_AGENT_PROMPT_KO: str
 
     # filtering llm agent prompt
-    FILTERING_AGENT_PROMPT_EN = os.getenv("FILTERING_AGENT_PROMPT_EN")
-    FILTERING_AGENT_PROMPT_KO = os.getenv("FILTERING_AGENT_PROMPT_KO")
+    FILTERING_AGENT_PROMPT_EN: str
+    FILTERING_AGENT_PROMPT_KO: str
 
     # sorting llm agent prompt
-    SORTING_AGENT_PROMPT_EN = os.getenv("SORTING_AGENT_PROMPT_EN")
-    SORTING_AGENT_PROMPT_KO = os.getenv("SORTING_AGENT_PROMPT_KO")
+    SORTING_AGENT_PROMPT_EN: str
+    SORTING_AGENT_PROMPT_KO: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+    )
 
 
-config = Config()
+env = Environment()

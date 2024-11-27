@@ -1,6 +1,6 @@
 from mongoengine import connect
 
-from config.env_config import config
+from config.env_config import env
 from config.log import logger
 from models.message import Message
 from models.site import Site
@@ -8,12 +8,12 @@ from models.site import Site
 
 def connect_db():
     try:
-        if config.PROFILE == "real":
-            connect(host=config.MONGO_DB_REAL_URI)
-        elif config.PROFILE == "develop":
-            connect(host=config.MONGO_DB_DEV_URI)
+        if env.PROFILE == "real":
+            connect(host=env.MONGO_DB_REAL_URI)
+        elif env.PROFILE == "develop":
+            connect(host=env.MONGO_DB_DEV_URI)
         else:
-            connect(host=config.MONGO_DB_LOCAL_URI)
+            connect(host=env.MONGO_DB_LOCAL_URI)
 
         logger.info("MongoDB Connected ...")
 
