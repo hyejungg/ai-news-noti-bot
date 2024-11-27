@@ -4,15 +4,16 @@ import time
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config import defaultPrompt
 from config.log import logger
+from config.prompt_config import DefaultPromptTemplate
 from graph.state import SiteState, SortAgentResponse
 from models.site import SiteDto
 
 
 class SortingAgent:
     sorting_prompt = (
-        defaultPrompt.SORTING_AGENT_PROMPT_EN or defaultPrompt.SORTING_AGENT_PROMPT_KO
+        DefaultPromptTemplate.SORTING_AGENT_PROMPT_EN
+        or DefaultPromptTemplate.SORTING_AGENT_PROMPT_KO
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):

@@ -1,7 +1,7 @@
 from typing import Any
 
 from config.log import logger
-from models import Message
+from models.message import Message
 
 
 def get_messages(target_titles: list[str]) -> list[dict[str, Any]]:
