@@ -1,4 +1,4 @@
-from typing import Optional, Literal, Union
+from typing import Optional, Literal
 
 from pydantic import BaseModel
 
@@ -56,7 +56,7 @@ class ButtonBlock(BaseModel):
 class TextBlock(BaseModel):
     type: str = "text"
     text: str = "text sample"
-    inlines: list[Union[InnerTextBlock, InnerTextUrlBlock]]
+    inlines: list[InnerTextBlock | InnerTextUrlBlock]
 
 
 class SectionBlock(BaseModel):
@@ -67,4 +67,4 @@ class SectionBlock(BaseModel):
 
 class KakaoworkMessageRequest(BaseModel):
     text: str = "카카오워크 메시지"
-    blocks: list[Union[HeaderBlock, TextBlock, DividerBlock, SectionBlock, ButtonBlock]]
+    blocks: list[HeaderBlock | TextBlock | DividerBlock | SectionBlock | ButtonBlock]
