@@ -27,20 +27,11 @@ class Environment(BaseSettings):
     LANGCHAIN_PROJECT: Optional[str] = None
 
     # llm
-    MODEL_NAME: str
     OPENAI_API_KEY: str
 
-    # crawling llm agent prompt
-    CRAWLING_AGENT_PROMPT_EN: str
-    CRAWLING_AGENT_PROMPT_KO: str
-
-    # filtering llm agent prompt
-    FILTERING_AGENT_PROMPT_EN: str
-    FILTERING_AGENT_PROMPT_KO: str
-
-    # sorting llm agent prompt
-    SORTING_AGENT_PROMPT_EN: str
-    SORTING_AGENT_PROMPT_KO: str
+    # aws
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
