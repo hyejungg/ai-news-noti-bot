@@ -6,7 +6,7 @@ from datetime import datetime
 
 from graph.state import CrawlingResult
 from config.log import logger
-from type.kakaowork_message import (
+from external.kakaowork.message_blocks import (
     KakaoworkMessageRequest,
     HeaderBlock,
     DividerBlock,
@@ -18,40 +18,11 @@ from type.kakaowork_message import (
     InnerTextUrlBlock,
 )
 
-HTTP_METHOD_POST = "POST"
-HTTP_CONTENT_TYPE = "application/json"
-
-WEBHOOK_URL_MAP = {
-    "real": config.KAWORK_WEBHOOK_REAL_URI,
-    "dev": config.KAWORK_WEBHOOK_DEV_URI,
-    "local": config.KAWORK_WEBHOOK_LOCAL_URI,
-}
-
 
 class KakaoworkMessageBuilder:
     def __init__(self):
         # none
         pass
-
-    @staticmethod
-    def send_message(request: KakaoworkMessageRequest) -> int:
-        webhook_url = WEBHOOK_URL_MAP.get(config.PROFILE)
-        try:
-            logger.info(
-                f"raw request body: {request.model_dump_json(indent=2, exclude_none=True)}"
-            )
-            response = requests.post(
-                webhook_url,
-                headers={"Content-Type": "application/json"},
-                data=request.model_dump_json(exclude_none=True),
-            )
-            # 응답 코드와 상세 정보 로깅
-            logger.info(f"response status_code: {response.status_code}")
-            logger.info(f"response body: {response.text}")  # 응답 본문 텍스트
-            return response.status_code
-        except requests.RequestException as e:
-            logger.error(f"Error sending message: {e}")
-            return 500  # 에러 상태 코드 반환
 
     @staticmethod
     def build(unique_site_news_dict: CrawlingResult) -> KakaoworkMessageRequest:
