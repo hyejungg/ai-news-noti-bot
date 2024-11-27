@@ -1,9 +1,10 @@
-from config import logger, config
+import config
+from config.log import logger
 from external.kakaowork.client import KakaoworkClient
 from graph.state import State, CrawlingResult, PageCrawlingData
-from models import Message
+from models.message import Message
 from models.message import MessageContent, MessageContentDto
-from service import get_messages
+from service.message_service import get_messages
 from external.kakaowork.message_builder import KakaoworkMessageBuilder
 
 MESSAGE_TYPE = "KAKAOWORK"

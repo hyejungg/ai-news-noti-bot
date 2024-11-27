@@ -1,11 +1,8 @@
 from zoneinfo import ZoneInfo
 
-import requests
-from config import config
 from datetime import datetime
 
 from graph.state import CrawlingResult
-from config.log import logger
 from external.kakaowork.message_blocks import (
     KakaoworkMessageRequest,
     HeaderBlock,
