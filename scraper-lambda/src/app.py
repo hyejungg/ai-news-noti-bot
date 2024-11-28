@@ -87,7 +87,7 @@ def handler(event, context) -> dict:
             result = [page_content]
             if selector:
                 selected: list[ElementHandle] = page.query_selector_all(selector)
-                if selected is None:
+                if len(selected) == 0:
                     return error(f"Element not found with {selector}", 400)
                 result = list(map(lambda x: x.evaluate("(element) => element.outerHTML"), selected))
             browser.close()
