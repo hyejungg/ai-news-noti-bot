@@ -2,7 +2,7 @@ import json
 import requests
 
 from typing import get_type_hints, get_args
-from playwright.sync_api import sync_playwright, ElementHandle
+from playwright.sync_api import sync_playwright, ElementHandle, TimeoutError as PlaywrightTimeoutError
 from used_type import RequestBody
 
 
@@ -66,32 +66,44 @@ def handler(event, context) -> dict:
         return error(f"Invalid content type: {content_type}", 400)
 
     if content_type == "json":
-        return success(requests.get(url).json())
+        try:
+            response = requests.get(url, timeout=10)  # 10초 타임아웃
+            response.raise_for_status()  # HTTP 오류 확인 -> 발생 시 RequestException으로 catch
+            return success(response.json())
+        except requests.Timeout:
+            return error("Request timed out while fetching JSON", 408)
+        except requests.RequestException as e:
+            return error(f"Request failed: {str(e)}", 400)
 
     elif content_type == "html":
-        with sync_playwright() as p:
-            browser = p.chromium.launch(
-                args=[
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--single-process",
-                    "--disable-gpu",
-                ],
-                headless=True,
-            )
-            page = browser.new_page()
-            page.goto(url, timeout=80000) # 80초
-            page.wait_for_load_state("networkidle", timeout=80000) # 80초
-            page_content = page.content()
-            result = [page_content]
-            if selector:
-                selected: list[ElementHandle] = page.query_selector_all(selector)
-                if len(selected) == 0:
-                    return error(f"Element not found with {selector}", 400)
-                result = list(map(lambda x: x.evaluate("(element) => element.outerHTML"), selected))
-            browser.close()
-        return success(result)
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    args=[
+                        "--no-sandbox",
+                        "--disable-setuid-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--single-process",
+                        "--disable-gpu",
+                    ],
+                    headless=True,
+                )
+                page = browser.new_page()
+                page.goto(url, timeout=80000) # 80초
+                page.wait_for_load_state("networkidle", timeout=80000) # 80초
+                page_content = page.content()
+                result = [page_content]
+                if selector:
+                    selected: list[ElementHandle] = page.query_selector_all(selector)
+                    if len(selected) == 0:
+                        return error(f"Element not found with {selector}", 400)
+                    result = list(map(lambda x: x.evaluate("(element) => element.outerHTML"), selected))
+                browser.close()
+            return success(result)
+        except PlaywrightTimeoutError:
+            return error("HTML rendering timed out", 408)
+        except Exception as e:
+            return error(f"An unexpected error occurred: {str(e)}", 500)
 
     else:
         return error(f"Invalid content type: {content_type}", 400)
