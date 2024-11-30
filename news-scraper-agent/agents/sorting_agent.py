@@ -54,12 +54,8 @@ class SortingAgent:
         except Exception as e:
             logger.error(f"Error occurred while sorting {self.site.name}: {e}")
             logger.warning(f"Skip sorting {self.site.name}")
-            state.sorted_result[self.site.name] = list(
-                map(
-                    lambda result: SortedFilteringData(
-                        url=result.url, title=result.title, reason=""
-                    ),
-                    state.filtering_result[self.site.name],
-                )
-            )
+            state.sorted_result[self.site.name] = [
+                SortedFilteringData(url=result.url, title=result.title, reason="")
+                for result in state.filtering_result[self.site.name]
+            ]
         return state
