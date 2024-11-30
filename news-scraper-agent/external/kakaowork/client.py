@@ -1,15 +1,16 @@
 import requests
 
-from config import config, logger
+from config.env_config import env
+from config.log import logger
 from external.kakaowork.message_blocks import KakaoworkMessageRequest
 
 HTTP_METHOD_POST = "POST"
 HTTP_CONTENT_TYPE = "application/json"
 
 WEBHOOK_URL_MAP = {
-    "real": config.KAWORK_WEBHOOK_REAL_URI,
-    "dev": config.KAWORK_WEBHOOK_DEV_URI,
-    "local": config.KAWORK_WEBHOOK_LOCAL_URI,
+    "real": env.KAWORK_WEBHOOK_REAL_URI,
+    "dev": env.KAWORK_WEBHOOK_DEV_URI,
+    "local": env.KAWORK_WEBHOOK_LOCAL_URI,
 }
 
 
