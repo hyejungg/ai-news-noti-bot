@@ -59,10 +59,13 @@ def handler(event, context) -> dict:
     selector = body.get("selector")
 
     if url is None:
+        print("url is required")
         return error("url is required", 400)
     if content_type is None:
+        print("content_type is required")
         return error("content_type is required", 400)
     if content_type not in get_args(get_type_hints(RequestBody)["content_type"]):
+        print(f"Invalid content type: {content_type}")
         return error(f"Invalid content type: {content_type}", 400)
 
     if content_type == "json":
@@ -71,8 +74,11 @@ def handler(event, context) -> dict:
             response.raise_for_status()  # HTTP 오류 확인 -> 발생 시 RequestException으로 catch
             return success(response.json())
         except requests.Timeout:
+            print("Request timed out while fetching JSON")
+            print(f"url={url}")
             return error("Request timed out while fetching JSON", 408)
         except requests.RequestException as e:
+            print(f"Request failed: {str(e)}")
             return error(f"Request failed: {str(e)}", 400)
 
     elif content_type == "html":
@@ -101,9 +107,12 @@ def handler(event, context) -> dict:
                 browser.close()
             return success(result)
         except PlaywrightTimeoutError:
+            print(f"HTML rendering timed out: {url}")
             return error("HTML rendering timed out", 408)
         except Exception as e:
+            print(f"An unexpected error occurred: {str(e)}")
             return error(f"An unexpected error occurred: {str(e)}", 500)
 
     else:
+        print(f"Invalid content type: {content_type}")
         return error(f"Invalid content type: {content_type}", 400)
