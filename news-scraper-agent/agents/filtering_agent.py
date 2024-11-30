@@ -34,11 +34,11 @@ class FilteringAgent:
             state.filtering_result[self.site.name] = []
             return state
 
-        formatted_prompt = self.prompt.format(
-            crawling_result=state.crawling_result[self.site.name]
-        )
-
         try:
+            formatted_prompt = self.prompt.format(
+                crawling_result=state.crawling_result[self.site.name]
+            )
+
             llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
             response: AgentResponse = llm_with_structured_output.invoke(
                 formatted_prompt

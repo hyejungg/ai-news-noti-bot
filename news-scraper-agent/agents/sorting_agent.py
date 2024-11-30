@@ -34,11 +34,12 @@ class SortingAgent:
             state.sorted_result[self.site.name] = []
             return state
 
-        formatted_prompt = self.prompt.format(
-            filtering_result=state.filtering_result[self.site.name]
-        )
-
         try:
+            raise Exception("Error occurred while sorting")
+            formatted_prompt = self.prompt.format(
+                filtering_result=state.filtering_result[self.site.name]
+            )
+
             llm_with_structured_output = self.llm.with_structured_output(
                 SortAgentResponse
             )

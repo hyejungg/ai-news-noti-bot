@@ -37,13 +37,13 @@ class CrawlingAgent:
             state.crawling_result[self.site.name] = []
             return state
 
-        formatted_prompt = self.crawling_prompt.format(
-            site_name=self.site.name,
-            site_url=self.site.url,
-            parser_result=state.parser_result[self.site.name],
-        )
-
         try:
+            formatted_prompt = self.crawling_prompt.format(
+                site_name=self.site.name,
+                site_url=self.site.url,
+                parser_result=state.parser_result[self.site.name],
+            )
+
             llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
             response: AgentResponse = llm_with_structured_output.invoke(
                 formatted_prompt

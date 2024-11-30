@@ -22,17 +22,17 @@ class HtmlParserAgent:
 
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
-        response = self.lambda_client.invoke(
-            FunctionName="scraper-lambda",
-            InvocationType="RequestResponse",
-            Payload=request_body,
-        )
-        if response["StatusCode"] != 200:
-            logger.error(response["FunctionError"])
-            logger.error(response["LogResult"])
-            raise Exception("Lambda 호출 실패")
-
         try:
+            response = self.lambda_client.invoke(
+                FunctionName="scraper-lambda",
+                InvocationType="RequestResponse",
+                Payload=request_body,
+            )
+            if response["StatusCode"] != 200:
+                logger.error(response["FunctionError"])
+                logger.error(response["LogResult"])
+                raise Exception("Lambda 호출 실패")
+
             response_data: list[str] = json.loads(
                 json.load(response["Payload"])["body"]
             )["result"]
