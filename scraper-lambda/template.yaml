@@ -11,7 +11,7 @@ Resources:
     Properties:
       FunctionName: scraper-lambda
       ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda
-      Timeout: 160 # 160초
+      Timeout: 200 # 200초
       MemorySize: 512
       PackageType: Image
       Architectures:
