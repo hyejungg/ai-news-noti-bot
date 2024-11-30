@@ -29,19 +29,33 @@ class CrawlingAgent:
     def __call__(self, state: SiteState) -> SiteState:
         start_time = time.time()
 
+        if (
+            state.parser_result[self.site.name] is None
+            or len(state.parser_result[self.site.name]) == 0
+        ):
+            logger.warning(f"No data to crawl for {self.site.name}")
+            state.crawling_result[self.site.name] = []
+            return state
+
         formatted_prompt = self.crawling_prompt.format(
             site_name=self.site.name,
             site_url=self.site.url,
             parser_result=state.parser_result[self.site.name],
         )
 
-        llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
-        response: AgentResponse = llm_with_structured_output.invoke(formatted_prompt)
+        try:
+            llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
+            response: AgentResponse = llm_with_structured_output.invoke(
+                formatted_prompt
+            )
 
-        end_time = time.time()
-        logger.info(
-            f"Finished crawl for {self.site.name} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
-        )
-        state.crawling_result[self.site.name] = response.items
+            end_time = time.time()
+            logger.info(
+                f"Finished crawl for {self.site.name} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
+            )
+            state.crawling_result[self.site.name] = response.items
+        except Exception as e:
+            logger.error(f"Error occurred while crawling {self.site.name}: {e}")
+            state.crawling_result[self.site.name] = []
 
         return state
