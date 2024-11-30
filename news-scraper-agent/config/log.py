@@ -52,11 +52,13 @@ handler.setLevel(logging.DEBUG)  # DEBUG 이상만 받는 핸들러
 
 handler.setFormatter(formatter)
 
+
 def create_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO if env.PROFILE == "real" else logging.DEBUG)
     logger.addHandler(handler)
     return logger
+
 
 if __name__ == "__main__":
     # 로그 테스트 (python -m config.log)

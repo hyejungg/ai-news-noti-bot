@@ -35,7 +35,9 @@ class MessageAgent:
         target_titles: set[str] = {
             item.title for item in flatten_parallel_result if item.title is not None
         }
-        default_logger.info(f"target_titles (len: {len(target_titles)}):  {target_titles}")
+        default_logger.info(
+            f"target_titles (len: {len(target_titles)}):  {target_titles}"
+        )
         messages = get_messages(list(target_titles))
 
         # 3. db에서 가져온 messages 중 messages 필드의 title만 추출
