@@ -1,4 +1,4 @@
-import config
+from config.env_config import env
 from config.log import logger
 from external.kakaowork.client import KakaoworkClient
 from graph.state import State, CrawlingResult, PageCrawlingData
@@ -70,7 +70,7 @@ class MessageAgent:
 
         # 6. unique_parallel_result를 카카오워크 메세지로 생성
         request = KakaoworkMessageBuilder().build(unique_parallel_result)
-        status_code = KakaoworkClient(config.PROFILE).send_message(request)
+        status_code = KakaoworkClient(env.PROFILE).send_message(request)
         status = SEND_MESSAGE_SUCCESS if status_code == 200 else SEND_MESSAGE_FAIL
 
         # 7. 성공/실패 여부를 db에 기록
