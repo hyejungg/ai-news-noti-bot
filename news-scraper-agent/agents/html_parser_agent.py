@@ -19,9 +19,9 @@ class ParsingLambdaRequestBody(TypedDict):
 
 class HtmlParserAgent:
     def __init__(self, site: SiteDto):
+        self.logger = create_logger(self.__class__.__name__)
         self.site = site
         self.lambda_client = boto3.client("lambda", region_name="ap-northeast-2")
-        self.logger = create_logger(self.__class__.__name__)
 
     @log_time_agent_method
     def __call__(self, state: SiteState = None) -> SiteState:

@@ -1,9 +1,7 @@
-import threading
-import time
-
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
+from agents.components.LangChainLLMCaller import LangChainLLMCallerWithStructure
 from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
@@ -18,12 +16,16 @@ class SortingAgent:
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
-        self.llm = llm
+        self.logger = create_logger(self.__class__.__name__)
         self.site = site
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.sorting_prompt
         )
-        self.logger = create_logger(self.__class__.__name__)
+        self.llm_caller = LangChainLLMCallerWithStructure(
+            caller_instance=self,
+            llm=llm,
+            output_structure=SortAgentResponse,
+        )
 
     @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
@@ -40,12 +42,7 @@ class SortingAgent:
                 filtering_result=state.filtering_result[self.site.name]
             )
 
-            llm_with_structured_output = self.llm.with_structured_output(
-                SortAgentResponse
-            )
-            response: SortAgentResponse = llm_with_structured_output.invoke(
-                formatted_prompt
-            )
+            response = self.llm_caller.invoke(formatted_prompt)
 
             state.sorted_result[self.site.name] = response.items
         except Exception as e:

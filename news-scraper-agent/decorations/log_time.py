@@ -43,7 +43,7 @@ def log_time_method(func):
         end_time = time.time()
 
         logger.info(
-            f"Finished {self.__class__.__name__}{func.__name__} ({end_time - start_time:.2f}s)"
+            f"Finished {self.__class__.__name__}.{func.__name__} ({end_time - start_time:.2f}s)"
         )
         return result
 
