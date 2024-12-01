@@ -1,5 +1,5 @@
 from config.env_config import env
-from config.log import logger
+from config.log import default_logger
 from external.kakaowork.client import KakaoworkClient
 from graph.state import State, CrawlingResult, PageCrawlingData
 from models.message import Message
@@ -18,7 +18,7 @@ class MessageAgent:
         pass
 
     def __call__(self, state: State) -> None:
-        logger.info("messageAgent 시작")
+        default_logger.info("messageAgent 시작")
         parallel_result = state.parallel_result.copy()
 
         # 1. db 조회를 위해 list[PageCrawlingData]로 변환
@@ -27,7 +27,7 @@ class MessageAgent:
             for page_crawling_data_list in parallel_result.values()
             for page_crawling_data in page_crawling_data_list
         ]
-        logger.info(
+        default_logger.info(
             f"flatten_parallel_result (len: {len(flatten_parallel_result)}): {flatten_parallel_result}"
         )
 
@@ -35,7 +35,7 @@ class MessageAgent:
         target_titles: set[str] = {
             item.title for item in flatten_parallel_result if item.title is not None
         }
-        logger.info(f"target_titles (len: {len(target_titles)}):  {target_titles}")
+        default_logger.info(f"target_titles (len: {len(target_titles)}):  {target_titles}")
         messages = get_messages(list(target_titles))
 
         # 3. db에서 가져온 messages 중 messages 필드의 title만 추출
@@ -45,13 +45,13 @@ class MessageAgent:
             for message in doc.messages
             if message.title
         }
-        logger.info(
+        default_logger.info(
             f"duplicate_message_titles (len: {len(duplicate_message_titles)}): {duplicate_message_titles}"
         )
 
         # 4. 중복된 title 제거하여 unique한 뉴스 제목만 추출
         unique_news_titles = target_titles - duplicate_message_titles
-        logger.info(
+        default_logger.info(
             f"unique_news_titles (len: {len(unique_news_titles)}): {unique_news_titles}"
         )
 
@@ -64,7 +64,7 @@ class MessageAgent:
             ]
             for site_name, site_data in parallel_result.items()
         }
-        logger.info(
+        default_logger.info(
             f"unique_parallel_result (len: {len(unique_parallel_result)}): {unique_parallel_result}"
         )
 

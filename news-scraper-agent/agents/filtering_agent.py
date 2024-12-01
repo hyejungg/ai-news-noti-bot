@@ -4,7 +4,7 @@ import time
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config.log import logger
+from config.log import default_logger
 from config.prompt_config import DefaultPromptTemplate
 from graph.state import SiteState, AgentResponse
 from models.site import SiteDto
@@ -30,7 +30,7 @@ class FilteringAgent:
             not state.crawling_result[self.site.name]
             or len(state.crawling_result[self.site.name]) == 0
         ):
-            logger.warning(f"No data to filter for {self.site.name}")
+            default_logger.warning(f"No data to filter for {self.site.name}")
             state.filtering_result[self.site.name] = []
             return state
 
@@ -45,12 +45,12 @@ class FilteringAgent:
             )
 
             end_time = time.time()
-            logger.info(
+            default_logger.info(
                 f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
             )
             state.filtering_result[self.site.name] = response.items
         except Exception as e:
-            logger.error(f"Error occurred while filtering {self.site.name}: {e}")
+            default_logger.error(f"Error occurred while filtering {self.site.name}: {e}")
             state.filtering_result[self.site.name] = []
 
         return state

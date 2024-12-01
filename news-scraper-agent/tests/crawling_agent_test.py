@@ -5,7 +5,7 @@ import unittest
 from langchain_openai import ChatOpenAI
 
 from agents.crawling_agent import CrawlingAgent
-from config.log import logger
+from config.log import default_logger
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -73,7 +73,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            logger.info(v)
+            default_logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)  # 키가 존재해야 함
         self.assertIsInstance(
@@ -99,7 +99,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            logger.info(v)
+            default_logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)  # 키가 존재해야 함
         self.assertIsInstance(
@@ -125,7 +125,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            logger.info(v)
+            default_logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)
         self.assertIsInstance(state_after.crawling_result[site.name], list)
@@ -147,7 +147,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            logger.info(v)
+            default_logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)
         self.assertIsInstance(state_after.crawling_result[site.name], list)

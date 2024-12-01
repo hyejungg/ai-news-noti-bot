@@ -1,4 +1,4 @@
-from config.log import logger
+from config.log import default_logger
 from models.message import Message
 from models.message import MessageDto, MessageContentDto
 
@@ -22,5 +22,5 @@ def get_messages(target_titles: list[str]) -> list[MessageDto]:
         )
         for message in messages_document_list
     ]
-    logger.info(f"messages: {messages}")
+    default_logger.info(f"messages: {messages}")
     return messages

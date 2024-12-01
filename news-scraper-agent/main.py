@@ -1,4 +1,4 @@
-from config.log import logger
+from config.log import default_logger
 from graph.build_graph import build_graph
 from graph.state import State
 from loader.connect import connect_db
@@ -20,7 +20,7 @@ def main():
 
 if __name__ == "__main__":
     result = main()
-    logger.info(result)
+    default_logger.info(result)
 # FIXME 자세한 로그를 보기 위해 우선 주석
 #     try:
 #         result = main()

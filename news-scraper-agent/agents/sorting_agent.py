@@ -4,7 +4,7 @@ import time
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config.log import logger
+from config.log import default_logger
 from config.prompt_config import DefaultPromptTemplate
 from graph.state import SiteState, SortAgentResponse, SortedFilteringData
 from models.site import SiteDto
@@ -30,7 +30,7 @@ class SortingAgent:
             not state.filtering_result[self.site.name]
             or len(state.filtering_result[self.site.name]) == 0
         ):
-            logger.warning(f"No data to sort for {self.site.name}")
+            default_logger.warning(f"No data to sort for {self.site.name}")
             state.sorted_result[self.site.name] = []
             return state
 
@@ -48,13 +48,13 @@ class SortingAgent:
             )
 
             end_time = time.time()
-            logger.info(
+            default_logger.info(
                 f"Finished sorting on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
             )
             state.sorted_result[self.site.name] = response.items
         except Exception as e:
-            logger.error(f"Error occurred while sorting {self.site.name}: {e}")
-            logger.warning(f"Skip sorting {self.site.name}")
+            default_logger.error(f"Error occurred while sorting {self.site.name}: {e}")
+            default_logger.warning(f"Skip sorting {self.site.name}")
             state.sorted_result[self.site.name] = [
                 SortedFilteringData(url=result.url, title=result.title, reason="")
                 for result in state.filtering_result[self.site.name]
