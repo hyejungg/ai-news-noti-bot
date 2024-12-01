@@ -1,5 +1,6 @@
 import json
 import re
+import time
 from typing import TypedDict, Literal, NotRequired
 
 import boto3
@@ -26,6 +27,8 @@ class HtmlParserAgent:
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
         try:
+            start = time.time()
+            self.logger.info(f"Started scraper-lambda invocation for {self.site.name}")
             response = self.lambda_client.invoke(
                 FunctionName="scraper-lambda",
                 InvocationType="RequestResponse",
@@ -39,10 +42,13 @@ class HtmlParserAgent:
             response_data: list[str] = json.loads(
                 json.load(response["Payload"])["body"]
             )["result"]
+            end = time.time()
+            self.logger.info(
+                f"Ended scraper-lambda invocation for {self.site.name}. Time: {end - start:.2f}s"
+            )
+
             if self.site.name == "데보션":
                 response_data = self.__parse_devocean_detail(response_data)
-
-            self.logger.info(f"{self.site.name} 파싱 완료")
 
             state.parser_result[self.site.name] = response_data
         except Exception as e:
@@ -99,6 +105,9 @@ class HtmlParserAgent:
                 "selector": ".toastui-editor-contents",
             }
         )
+
+        self.logger.info("Started scraper-lambda for devocean detail")
+        start = time.time()
         response = self.lambda_client.invoke(
             FunctionName="scraper-lambda",
             InvocationType="RequestResponse",
@@ -108,11 +117,14 @@ class HtmlParserAgent:
         if response["StatusCode"] != 200:
             self.logger.error(response["FunctionError"])
             self.logger.error(response["LogResult"])
-            raise Exception("Lambda 호출 실패")
+            raise Exception("Failed invocation scraper-lambda for devocean detail")
 
         response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
             "result"
         ]
-        self.logger.info(f"{self.site.name} 상세 페이지 파싱 완료")
+        end = time.time()
+        self.logger.info(
+            f"Ended scraper-lambda for devocean detail. ({end - start:.2f}s)"
+        )
 
         return response_data

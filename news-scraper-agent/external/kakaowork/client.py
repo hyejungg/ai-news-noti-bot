@@ -2,6 +2,7 @@ import requests
 
 from config.env_config import env
 from config.log import create_logger
+from decorations.log_time import log_time_method
 from external.kakaowork.message_blocks import KakaoworkMessageRequest
 
 HTTP_METHOD_POST = "POST"
@@ -19,6 +20,7 @@ class KakaoworkClient:
         self.webhook_url = WEBHOOK_URL_MAP.get(profile)
         self.logger = create_logger(self.__class__.__name__)
 
+    @log_time_method
     def send_message(self, request: KakaoworkMessageRequest) -> int:
         try:
             self.logger.info(
