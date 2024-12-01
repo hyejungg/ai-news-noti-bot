@@ -19,13 +19,14 @@ class CrawlingAgent:
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
-        self.logger = create_logger(self.__class__.__name__)
+        logger = create_logger(self.__class__.__name__)
+        self.logger = logger
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.crawling_prompt
         )
         self.site = site
         self.llm_caller = LangChainLLMCallerWithStructure(
-            caller_instance=self,
+            logger=logger,
             llm=llm,
             output_structure=AgentResponse,
         )

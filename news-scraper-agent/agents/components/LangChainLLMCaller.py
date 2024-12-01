@@ -1,3 +1,5 @@
+import logging
+
 from langchain_core.language_models import BaseLanguageModel
 from typing_extensions import TypeVar, Generic
 
@@ -11,17 +13,15 @@ T = TypeVar("T")
 class LangChainLLMCallerWithStructure(Generic[T]):
     def __init__(
         self,
-        caller_instance,
         llm: BaseLanguageModel,
         output_structure: T,
+        logger: logging.Logger = None,
     ):
         self.structured_output: T = output_structure
         self.llm_with_structured_output = llm.with_structured_output(output_structure)
 
         self.logger = (
-            caller_instance.logger
-            if hasattr(caller_instance, "logger")
-            else create_logger(self.__class__.__name__)
+            logger if logger is not None else create_logger(self.__class__.__name__)
         )
 
     @log_time_method
