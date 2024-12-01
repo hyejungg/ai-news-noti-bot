@@ -92,6 +92,11 @@ class MessageAgent:
                     )
             self.console.print(table)
 
+        # 6. unique_parallel_result를 카카오워크 메세지로 생성
+        request = KakaoworkMessageBuilder().build(unique_parallel_result)
+        status_code = KakaoworkClient(env.PROFILE).send_message(request)
+        status = SEND_MESSAGE_SUCCESS if status_code == 200 else SEND_MESSAGE_FAIL
+
         # 7. 성공/실패 여부를 db에 기록
         message_dto_list = [
             MessageContentDto(name=site_name, title=data.title, url=data.url)
