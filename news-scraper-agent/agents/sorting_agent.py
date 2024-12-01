@@ -35,7 +35,6 @@ class SortingAgent:
             return state
 
         try:
-            raise Exception("Error occurred while sorting")
             formatted_prompt = self.prompt.format(
                 filtering_result=state.filtering_result[self.site.name]
             )
