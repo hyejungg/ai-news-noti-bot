@@ -44,7 +44,7 @@ class HtmlParserAgent:
             )["result"]
             end = time.time()
             self.logger.info(
-                f"Ended scraper-lambda invocation for {self.site.name}. Time: {end - start:.2f}s"
+                f"Ended scraper-lambda invocation for {self.site.name}. ({end - start:.2f}s)"
             )
 
             if self.site.name == "데보션":

@@ -54,4 +54,5 @@ class CrawlingAgent:
             self.logger.error(f"Error occurred while crawling {self.site.name}: {e}")
             state.crawling_result[self.site.name] = []
 
+        state.print_state(crawling_result=True)
         return state

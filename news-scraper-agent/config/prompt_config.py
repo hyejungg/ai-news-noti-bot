@@ -14,8 +14,9 @@ The site information is as follows.
 3. The extracted information should not be changed arbitrarily.
 4. The answer must be in JSON array form, responding to the article title and the article's website link in key-value form as follows.
 5. If the article information has not been imported, respond in the form of an empty array: ex. '[]'
-6. If the site name is 데보션(Devocean), exclude the content corresponding to Geeknews.
-7. Be sure to follow the instructions above."""
+6. If the url is not a full url starting with a protocol(http, https), use relative paths based on the provided site link to convert it into a complete url.
+7. If the site name is 데보션(Devocean), exclude the content corresponding to Geeknews.
+8. Be sure to follow the instructions above."""
 
     CRAWLING_AGENT_PROMPT_KO = """<역할 및 목표>
 아래 정보를 바탕으로 html에서 아티클을 찾아주세요
@@ -33,8 +34,9 @@ The site information is as follows.
 3. 추출한 정보를 임의로 변경해선 안됩니다.
 4. 답변은 반드시 JSON 배열 형태로 기사 제목(title)과 기사의 웹사이트 링크(url)를 다음과 같은 key-value 형태로 응답합니다.
 5. 기사 정보를 못가져 온 경우 다음과 같이 빈 배열 형태로 응답합니다. ex. '[]'
-6. 사이트 이름이 데보션(devocean)인 경우, Geeknews에 해당하는 내용은 제외하세요
-7. 반드시 위 지침을 따르세요."""
+6. 주소가 프로토콜(http, https)로 시작하는 전체 url이 아닌 경우 제공된 사이트 링크를 기준으로 상대경로를 사용하여 완전한 url로 변환하여 사용하세요.
+7. 사이트 이름이 데보션(devocean)인 경우, Geeknews에 해당하는 내용은 제외하세요
+8. 반드시 위 지침을 따르세요."""
 
     # filtering llm agent prompt
     FILTERING_AGENT_PROMPT_EN = """<Role & Goal>

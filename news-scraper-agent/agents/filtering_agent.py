@@ -49,4 +49,5 @@ class FilteringAgent:
             self.logger.error(f"Error occurred while filtering {self.site.name}: {e}")
             state.filtering_result[self.site.name] = []
 
+        state.print_state(filtering_result=True)
         return state

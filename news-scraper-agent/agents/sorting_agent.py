@@ -52,4 +52,6 @@ class SortingAgent:
                 SortedFilteringData(url=result.url, title=result.title, reason="")
                 for result in state.filtering_result[self.site.name]
             ]
+
+        state.print_state(sorted_result=True)
         return state
