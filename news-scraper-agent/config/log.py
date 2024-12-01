@@ -33,7 +33,7 @@ class KSTColorFormatter(logging.Formatter):
 
 
 formatter = KSTColorFormatter(
-    fmt="%(asctime)s - %(name)16s - %(levelname)s - %(message)s",
+    fmt="%(asctime)s - %(name)16s - %(levelname)7s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 

@@ -6,6 +6,7 @@ from langchain_core.language_models import BaseLanguageModel
 
 from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
+from decorations.log_time import log_time_agent_method
 from graph.state import SiteState, AgentResponse
 from models.site import SiteDto
 
@@ -24,9 +25,8 @@ class FilteringAgent:
         )
         self.logger = create_logger(self.__class__.__name__)
 
+    @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
-        start_time = time.time()
-
         if (
             not state.crawling_result[self.site.name]
             or len(state.crawling_result[self.site.name]) == 0
@@ -45,10 +45,6 @@ class FilteringAgent:
                 formatted_prompt
             )
 
-            end_time = time.time()
-            self.logger.info(
-                f"Finished filtering on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
-            )
             state.filtering_result[self.site.name] = response.items
         except Exception as e:
             self.logger.error(f"Error occurred while filtering {self.site.name}: {e}")

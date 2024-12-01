@@ -1,5 +1,6 @@
 from config.env_config import env
 from config.log import create_logger
+from decorations.log_time import log_time_agent_method
 from external.kakaowork.client import KakaoworkClient
 from graph.state import State, CrawlingResult, PageCrawlingData
 from models.message import Message
@@ -16,8 +17,8 @@ class MessageAgent:
     def __init__(self):
         self.logger = create_logger(self.__class__.__name__)
 
+    @log_time_agent_method
     def __call__(self, state: State) -> None:
-        self.logger.info("messageAgent 시작")
         parallel_result = state.parallel_result.copy()
 
         # 1. db 조회를 위해 list[PageCrawlingData]로 변환

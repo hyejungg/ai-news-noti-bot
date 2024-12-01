@@ -5,6 +5,7 @@ from typing import TypedDict, Literal, NotRequired
 import boto3
 
 from config.log import create_logger
+from decorations.log_time import log_time_agent_method
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -21,6 +22,7 @@ class HtmlParserAgent:
         self.lambda_client = boto3.client("lambda", region_name="ap-northeast-2")
         self.logger = create_logger(self.__class__.__name__)
 
+    @log_time_agent_method
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
         try:

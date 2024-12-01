@@ -6,6 +6,7 @@ from langchain_core.language_models import BaseLanguageModel
 
 from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
+from decorations.log_time import log_time_agent_method
 from graph.state import SiteState, SortAgentResponse, SortedFilteringData
 from models.site import SiteDto
 
@@ -24,9 +25,8 @@ class SortingAgent:
         )
         self.logger = create_logger(self.__class__.__name__)
 
+    @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
-        start_time = time.time()
-
         if (
             not state.filtering_result[self.site.name]
             or len(state.filtering_result[self.site.name]) == 0
@@ -36,7 +36,6 @@ class SortingAgent:
             return state
 
         try:
-            raise Exception("Error occurred while sorting")
             formatted_prompt = self.prompt.format(
                 filtering_result=state.filtering_result[self.site.name]
             )
@@ -48,10 +47,6 @@ class SortingAgent:
                 formatted_prompt
             )
 
-            end_time = time.time()
-            self.logger.info(
-                f"Finished sorting on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
-            )
             state.sorted_result[self.site.name] = response.items
         except Exception as e:
             self.logger.error(f"Error occurred while sorting {self.site.name}: {e}")
