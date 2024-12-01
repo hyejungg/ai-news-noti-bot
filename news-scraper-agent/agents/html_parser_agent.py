@@ -1,12 +1,11 @@
 import json
 import re
-import time
 from typing import TypedDict, Literal, NotRequired
 
-import boto3
 
 from config.log import create_logger
 from decorations.log_time import log_time_agent_method
+from external.aws_lambda.client import LambdaInvoker
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -19,20 +18,20 @@ class ParsingLambdaRequestBody(TypedDict):
 
 class HtmlParserAgent:
     def __init__(self, site: SiteDto):
-        self.logger = create_logger(self.__class__.__name__)
+        logger = create_logger(self.__class__.__name__)
+        self.logger = logger
         self.site = site
-        self.lambda_client = boto3.client("lambda", region_name="ap-northeast-2")
+        self.lambda_invoker = LambdaInvoker(logger=logger)
 
     @log_time_agent_method
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
         try:
-            start = time.time()
-            self.logger.info(f"Started scraper-lambda invocation for {self.site.name}")
-            response = self.lambda_client.invoke(
+            response = self.lambda_invoker.invoke(
                 FunctionName="scraper-lambda",
                 InvocationType="RequestResponse",
                 Payload=request_body,
+                logging_name=f"scraper-lambda for {self.site.name}",
             )
             if response["StatusCode"] != 200:
                 self.logger.error(response["FunctionError"])
@@ -42,10 +41,6 @@ class HtmlParserAgent:
             response_data: list[str] = json.loads(
                 json.load(response["Payload"])["body"]
             )["result"]
-            end = time.time()
-            self.logger.info(
-                f"Ended scraper-lambda invocation for {self.site.name}. ({end - start:.2f}s)"
-            )
 
             if self.site.name == "데보션":
                 response_data = self.__parse_devocean_detail(response_data)
@@ -106,12 +101,11 @@ class HtmlParserAgent:
             }
         )
 
-        self.logger.info("Started scraper-lambda for devocean detail")
-        start = time.time()
-        response = self.lambda_client.invoke(
+        response = self.lambda_invoker.invoke(
             FunctionName="scraper-lambda",
             InvocationType="RequestResponse",
             Payload=body,
+            logging_name=f"scraper-lambda for devocean detail",
         )
 
         if response["StatusCode"] != 200:
@@ -122,9 +116,5 @@ class HtmlParserAgent:
         response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
             "result"
         ]
-        end = time.time()
-        self.logger.info(
-            f"Ended scraper-lambda for devocean detail. ({end - start:.2f}s)"
-        )
 
         return response_data

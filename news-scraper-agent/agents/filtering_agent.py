@@ -43,7 +43,10 @@ class FilteringAgent:
                 crawling_result=state.crawling_result[self.site.name]
             )
 
-            response = self.llm_caller.invoke(formatted_prompt)
+            response = self.llm_caller.invoke(
+                formatted_prompt,
+                logging_name=f"LLM invocation for Filtering {self.site.name}",
+            )
 
             state.filtering_result[self.site.name] = response.items
         except Exception as e:

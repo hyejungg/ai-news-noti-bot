@@ -48,7 +48,10 @@ class CrawlingAgent:
                 parser_result=state.parser_result[self.site.name],
             )
 
-            response = self.llm_caller.invoke(formatted_prompt)
+            response = self.llm_caller.invoke(
+                formatted_prompt,
+                logging_name=f"LLM invocation for Crawling {self.site.name}",
+            )
 
             state.crawling_result[self.site.name] = response.items
         except Exception as e:
