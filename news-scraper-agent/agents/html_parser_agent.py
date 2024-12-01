@@ -4,7 +4,7 @@ from typing import TypedDict, Literal, NotRequired
 
 import boto3
 
-from config.log import default_logger
+from config.log import create_logger
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -19,6 +19,7 @@ class HtmlParserAgent:
     def __init__(self, site: SiteDto):
         self.site = site
         self.lambda_client = boto3.client("lambda", region_name="ap-northeast-2")
+        self.logger = create_logger(self.__class__.__name__)
 
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
@@ -29,8 +30,8 @@ class HtmlParserAgent:
                 Payload=request_body,
             )
             if response["StatusCode"] != 200:
-                default_logger.error(response["FunctionError"])
-                default_logger.error(response["LogResult"])
+                self.logger.error(response["FunctionError"])
+                self.logger.error(response["LogResult"])
                 raise Exception("Lambda 호출 실패")
 
             response_data: list[str] = json.loads(
@@ -39,11 +40,11 @@ class HtmlParserAgent:
             if self.site.name == "데보션":
                 response_data = self.__parse_devocean_detail(response_data)
 
-            default_logger.info(f"{self.site.name} 파싱 완료")
+            self.logger.info(f"{self.site.name} 파싱 완료")
 
             state.parser_result[self.site.name] = response_data
         except Exception as e:
-            default_logger.error(f"Error occurred while parsing {self.site.name}: {e}")
+            self.logger.error(f"Error occurred while parsing {self.site.name}: {e}")
             state.parser_result[self.site.name] = []
         return state
 
@@ -74,7 +75,7 @@ class HtmlParserAgent:
                     "selector": ".cont_list .item strong.md_tit",
                 }
             case _:
-                default_logger.error(f"정의되지 않은 페이지 (url: ${url})")
+                self.logger.error(f"정의되지 않은 페이지 (url: ${url})")
                 raise ValueError("정의되지 않은 페이지 입니다.")
 
     def __parse_devocean_detail(self, result: list[str]):
@@ -103,13 +104,13 @@ class HtmlParserAgent:
         )
 
         if response["StatusCode"] != 200:
-            default_logger.error(response["FunctionError"])
-            default_logger.error(response["LogResult"])
+            self.logger.error(response["FunctionError"])
+            self.logger.error(response["LogResult"])
             raise Exception("Lambda 호출 실패")
 
         response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
             "result"
         ]
-        default_logger.info(f"{self.site.name} 상세 페이지 파싱 완료")
+        self.logger.info(f"{self.site.name} 상세 페이지 파싱 완료")
 
         return response_data

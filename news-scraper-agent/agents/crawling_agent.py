@@ -4,7 +4,7 @@ import time
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config.log import default_logger
+from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
 from graph.state import (
     SiteState,
@@ -25,6 +25,7 @@ class CrawlingAgent:
             prompt if prompt else self.crawling_prompt
         )
         self.site = site
+        self.logger = create_logger(self.__class__.__name__)
 
     def __call__(self, state: SiteState) -> SiteState:
         start_time = time.time()
@@ -33,7 +34,7 @@ class CrawlingAgent:
             state.parser_result[self.site.name] is None
             or len(state.parser_result[self.site.name]) == 0
         ):
-            default_logger.warning(f"No data to crawl for {self.site.name}")
+            self.logger.warning(f"No data to crawl for {self.site.name}")
             state.crawling_result[self.site.name] = []
             return state
 
@@ -50,12 +51,12 @@ class CrawlingAgent:
             )
 
             end_time = time.time()
-            default_logger.info(
+            self.logger.info(
                 f"Finished crawl for {self.site.name} on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
             )
             state.crawling_result[self.site.name] = response.items
         except Exception as e:
-            default_logger.error(f"Error occurred while crawling {self.site.name}: {e}")
+            self.logger.error(f"Error occurred while crawling {self.site.name}: {e}")
             state.crawling_result[self.site.name] = []
 
         return state
