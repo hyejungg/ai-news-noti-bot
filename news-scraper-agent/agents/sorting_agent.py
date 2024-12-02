@@ -1,7 +1,6 @@
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from agents.components.LangChainLLMCaller import LangChainLLMCallerWithStructure
 from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
@@ -22,11 +21,7 @@ class SortingAgent:
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.sorting_prompt
         )
-        self.llm_caller = LangChainLLMCallerWithStructure(
-            logger=logger,
-            llm=llm,
-            output_structure=SortAgentResponse,
-        )
+        self.llm = llm
 
     @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
@@ -43,9 +38,11 @@ class SortingAgent:
                 filtering_result=state.filtering_result[self.site.name]
             )
 
-            response = self.llm_caller.invoke(
-                formatted_prompt,
-                logging_name=f"LLM invocation for Sorting {self.site.name}",
+            llm_with_structured_output = self.llm.with_structured_output(
+                SortAgentResponse
+            )
+            response: SortAgentResponse = llm_with_structured_output.invoke(
+                formatted_prompt
             )
 
             state.sorted_result[self.site.name] = response.items
