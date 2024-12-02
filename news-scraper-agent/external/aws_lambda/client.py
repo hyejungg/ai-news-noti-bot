@@ -17,7 +17,6 @@ class LambdaInvoker:
 
     def invoke(
         self,
-        *args,
         logging_name: str = None,
         **kwargs,
     ):
@@ -25,7 +24,7 @@ class LambdaInvoker:
 
         start = time.time()
         self.logger.info(f"Started {name} ")
-        response = self.client.invoke(*args, **kwargs)
+        response = self.client.invoke(**kwargs)
         end = time.time()
         self.logger.info(f"Finished {name} ({end - start:.2f}s)")
         return response
