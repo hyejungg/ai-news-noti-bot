@@ -61,18 +61,7 @@ class MessageAgent:
         }
 
         if self.print_data:
-            table = Table(title="unique_parallel_result")
-            table.add_column("idx", no_wrap=True)
-            table.add_column("site_name", style="cyan", no_wrap=True)
-            table.add_column("url", overflow="fold")
-            table.add_column("title", style="magenta", overflow="fold")
-            for idx_1, (site_name, page_crawling_data) in enumerate(
-                unique_parallel_result.items(), start=1
-            ):
-                for idx_2, item in enumerate(page_crawling_data, start=1):
-                    table.add_row(
-                        str(idx_1 + idx_2 - 1), site_name, item.url, item.title
-                    )
+            table = self._get_parallel_result_table(unique_parallel_result)
             self.console.print(table)
 
         # 6. unique_parallel_result를 카카오워크 메세지로 생성
@@ -95,3 +84,16 @@ class MessageAgent:
             messages=message_contents,
         )
         message.save()
+
+    def _get_parallel_result_table(self, result: CrawlingResult) -> Table:
+        table = Table(title="unique_parallel_result")
+        table.add_column("idx", no_wrap=True)
+        table.add_column("site_name", style="cyan", no_wrap=True)
+        table.add_column("url", overflow="fold")
+        table.add_column("title", style="magenta", overflow="fold")
+        for idx_1, (site_name, page_crawling_data) in enumerate(
+            result.items(), start=1
+        ):
+            for idx_2, item in enumerate(page_crawling_data, start=1):
+                table.add_row(str(idx_1 + idx_2 - 1), site_name, item.url, item.title)
+        return table
