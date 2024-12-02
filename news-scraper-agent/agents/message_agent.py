@@ -17,10 +17,9 @@ SEND_MESSAGE_FAIL = "SEND_MESSAGE_FAIL"
 
 
 class MessageAgent:
-    def __init__(self, print_data: bool = False):
+    def __init__(self):
         self.logger = create_logger(self.__class__.__name__)
         self.console = Console()
-        self.print_data = print_data
 
     @log_time_agent_method
     def __call__(self, state: State) -> None:
@@ -60,7 +59,7 @@ class MessageAgent:
             for site_name, site_data in parallel_result.items()
         }
 
-        if self.print_data:
+        if env.ENABLE_MESSAGE_AGENT_LOG:
             table = self._get_parallel_result_table(unique_parallel_result)
             self.console.print(table)
 

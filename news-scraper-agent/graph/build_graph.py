@@ -72,7 +72,7 @@ def build_graph(initial_state: State):
     builder.add_node("start", lambda x: initial_state)
     builder.add_node("get_sites", get_sites)
     builder.add_node("parallel_crawl_filter", parallel_crawl_filter)
-    builder.add_node("send_message", MessageAgent(print_data=True))
+    builder.add_node("send_message", MessageAgent())
 
     # connect edge
     builder.add_edge(START, "start")
