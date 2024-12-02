@@ -33,15 +33,6 @@ class MessageAgent:
             for page_crawling_data in page_crawling_data_list
         ]
 
-        if self.print_data:
-            table = Table(title="flatten_parallel_result")
-            table.add_column("idx", no_wrap=True)
-            table.add_column("url", no_wrap=True)
-            table.add_column("title", style="magenta")
-            for idx, item in enumerate(flatten_parallel_result, start=1):
-                table.add_row(str(idx), item.url, item.title)
-            self.console.print(table)
-
         # 2. title만 뽑아서 db 전체 조회해서 이미 보낸 뉴스가 있는지 확인
         target_titles: set[str] = {
             item.title for item in flatten_parallel_result if item.title is not None
@@ -55,14 +46,6 @@ class MessageAgent:
             for message in doc.messages
             if message.title
         }
-
-        if self.print_data:
-            table = Table(title="duplicate_message_titles")
-            table.add_column("idx", no_wrap=True)
-            table.add_column("title", style="magenta", no_wrap=True)
-            for idx, title in enumerate(duplicate_message_titles, start=1):
-                table.add_row(str(idx), title)
-            self.console.print(table)
 
         # 4. 중복된 title 제거하여 unique한 뉴스 제목만 추출
         unique_news_titles = target_titles - duplicate_message_titles
@@ -81,8 +64,8 @@ class MessageAgent:
             table = Table(title="unique_parallel_result")
             table.add_column("idx", no_wrap=True)
             table.add_column("site_name", style="cyan", no_wrap=True)
-            table.add_column("url")
-            table.add_column("title", style="magenta")
+            table.add_column("url", overflow="fold")
+            table.add_column("title", style="magenta", overflow="fold")
             for idx_1, (site_name, page_crawling_data) in enumerate(
                 unique_parallel_result.items(), start=1
             ):

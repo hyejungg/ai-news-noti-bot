@@ -39,7 +39,7 @@ class SiteState(BaseModel):
             for site, results in self.parser_result.items():
                 table = Table(title=f"[{site}] ParserResult")
                 table.add_column("idx", no_wrap=True)
-                table.add_column("result", no_wrap=True)
+                table.add_column("result", overflow="fold")
                 for idx, result in enumerate(results, start=1):
                     table.add_row(str(idx), result)
                 console.print(table)
@@ -48,8 +48,8 @@ class SiteState(BaseModel):
             for site, results in self.crawling_result.items():
                 table = Table(title=f"[{site}] CrawlingResult")
                 table.add_column("idx", no_wrap=True)
-                table.add_column("url", no_wrap=True)
-                table.add_column("title", style="magenta")
+                table.add_column("url", overflow="fold")
+                table.add_column("title", style="magenta", overflow="fold")
                 for idx, result in enumerate(results, start=1):
                     table.add_row(str(idx), result.url, result.title)
                 console.print(table)
@@ -58,8 +58,8 @@ class SiteState(BaseModel):
             for site, results in self.filtering_result.items():
                 table = Table(title=f"[{site}] FilteringResult")
                 table.add_column("idx", no_wrap=True)
-                table.add_column("url", no_wrap=True)
-                table.add_column("title", style="magenta")
+                table.add_column("url", overflow="fold")
+                table.add_column("title", style="magenta", overflow="fold")
                 for idx, result in enumerate(results, start=1):
                     table.add_row(str(idx), result.url, result.title)
                 console.print(table)
@@ -68,9 +68,9 @@ class SiteState(BaseModel):
             for site, results in self.sorted_result.items():
                 table = Table(title=f"[{site}] SortedResult")
                 table.add_column("idx", no_wrap=True)
-                table.add_column("url", no_wrap=True)
-                table.add_column("title", style="magenta")
-                table.add_column("reason", style="cyan")
+                table.add_column("url", overflow="fold")
+                table.add_column("title", style="magenta", overflow="fold")
+                table.add_column("reason", style="cyan", overflow="fold")
                 for idx, result in enumerate(results, start=1):
                     table.add_row(str(idx), result.url, result.title, result.reason)
                 console.print(table)
