@@ -1,11 +1,9 @@
-import threading
-import time
-
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config.log import logger
+from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
+from decorations.log_time import log_time_agent_method
 from graph.state import SiteState, SortAgentResponse, SortedFilteringData
 from models.site import SiteDto
 
@@ -17,20 +15,21 @@ class SortingAgent:
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
-        self.llm = llm
+        logger = create_logger(self.__class__.__name__)
+        self.logger = logger
         self.site = site
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.sorting_prompt
         )
+        self.llm = llm
 
+    @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
-        start_time = time.time()
-
         if (
             not state.filtering_result[self.site.name]
             or len(state.filtering_result[self.site.name]) == 0
         ):
-            logger.warning(f"No data to sort for {self.site.name}")
+            self.logger.warning(f"No data to sort for {self.site.name}")
             state.sorted_result[self.site.name] = []
             return state
 
@@ -46,16 +45,14 @@ class SortingAgent:
                 formatted_prompt
             )
 
-            end_time = time.time()
-            logger.info(
-                f"Finished sorting on thread {threading.get_ident()}. Time taken: {end_time - start_time:.2f} seconds"
-            )
             state.sorted_result[self.site.name] = response.items
         except Exception as e:
-            logger.error(f"Error occurred while sorting {self.site.name}: {e}")
-            logger.warning(f"Skip sorting {self.site.name}")
+            self.logger.error(f"Error occurred while sorting {self.site.name}: {e}")
+            self.logger.warning(f"Skip sorting {self.site.name}")
             state.sorted_result[self.site.name] = [
                 SortedFilteringData(url=result.url, title=result.title, reason="")
                 for result in state.filtering_result[self.site.name]
             ]
+
+        state.print_state(sorted_result=True)
         return state

@@ -33,17 +33,17 @@ class KSTColorFormatter(logging.Formatter):
 
 
 formatter = KSTColorFormatter(
-    fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    fmt="%(asctime)s - %(name)16s - %(levelname)7s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 # Logger 설정
-logger = logging.getLogger("NewsScraperAgent")
+default_logger = logging.getLogger("NewsScraperAgent")
 
 if env.PROFILE == "real":
-    logger.setLevel(logging.INFO)
+    default_logger.setLevel(logging.INFO)
 else:
-    logger.setLevel(logging.DEBUG)
+    default_logger.setLevel(logging.DEBUG)
 
 
 # Console Handler 추가
@@ -51,12 +51,19 @@ handler = logging.StreamHandler()
 handler.setLevel(logging.DEBUG)  # DEBUG 이상만 받는 핸들러
 
 handler.setFormatter(formatter)
-logger.addHandler(handler)
+
+
+def create_logger(name: str) -> logging.Logger:
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO if env.PROFILE == "real" else logging.DEBUG)
+    logger.addHandler(handler)
+    return logger
+
 
 if __name__ == "__main__":
     # 로그 테스트 (python -m config.log)
-    logger.debug("Debug message")
-    logger.info("Info message")
-    logger.warning("Warning message")
-    logger.error("Error message")
-    logger.critical("Critical message")
+    default_logger.debug("Debug message")
+    default_logger.info("Info message")
+    default_logger.warning("Warning message")
+    default_logger.error("Error message")
+    default_logger.critical("Critical message")
