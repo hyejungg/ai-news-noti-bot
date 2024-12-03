@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  python3.12
+
+  Sample SAM Template for news-scraper-agent
+
+Resources:
+  NewsScraperAgentFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: news-scraper-agent
+      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent
+      Timeout: 300 # 300초 (5분)
+      MemorySize: 512
+      PackageType: Image
+      Architectures:
+        - arm64
+      Role: !GetAtt NewsScraperAgentFunctionRole.Arn
+      Tags:
+        PROJECT: AI_NEWS_AGENT
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./
+  NewsScraperAgentFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: news-scraper-agent-function-role
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaECRAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:BatchGetImage
+                Resource: arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/news-scraper-agent
+        - PolicyName: LambdaCloudWatchLogsAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent:*
+
+Outputs:
+  NewsScraperAgentFunction:
+    Description: "News Scraper Agent Function ARN"
+    Value: !GetAtt NewsScraperAgentFunction.Arn
