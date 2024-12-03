@@ -2,9 +2,10 @@ import json
 import re
 from typing import TypedDict, Literal, NotRequired
 
-import boto3
 
-from config.log import logger
+from config.log import create_logger
+from decorations.log_time import log_time_agent_method
+from external.aws_lambda.client import LambdaInvoker
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -17,33 +18,36 @@ class ParsingLambdaRequestBody(TypedDict):
 
 class HtmlParserAgent:
     def __init__(self, site: SiteDto):
+        logger = create_logger(self.__class__.__name__)
+        self.logger = logger
         self.site = site
-        self.lambda_client = boto3.client("lambda", region_name="ap-northeast-2")
+        self.lambda_invoker = LambdaInvoker(logger=logger)
 
+    @log_time_agent_method
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
         try:
-            response = self.lambda_client.invoke(
+            response = self.lambda_invoker.invoke(
                 FunctionName="scraper-lambda",
                 InvocationType="RequestResponse",
                 Payload=request_body,
+                logging_name=f"scraper-lambda for {self.site.name}",
             )
             if response["StatusCode"] != 200:
-                logger.error(response["FunctionError"])
-                logger.error(response["LogResult"])
+                self.logger.error(response["FunctionError"])
+                self.logger.error(response["LogResult"])
                 raise Exception("Lambda 호출 실패")
 
             response_data: list[str] = json.loads(
                 json.load(response["Payload"])["body"]
             )["result"]
+
             if self.site.name == "데보션":
                 response_data = self.__parse_devocean_detail(response_data)
 
-            logger.info(f"{self.site.name} 파싱 완료")
-
             state.parser_result[self.site.name] = response_data
         except Exception as e:
-            logger.error(f"Error occurred while parsing {self.site.name}: {e}")
+            self.logger.error(f"Error occurred while parsing {self.site.name}: {e}")
             state.parser_result[self.site.name] = []
         return state
 
@@ -74,7 +78,7 @@ class HtmlParserAgent:
                     "selector": ".cont_list .item strong.md_tit",
                 }
             case _:
-                logger.error(f"정의되지 않은 페이지 (url: ${url})")
+                self.logger.error(f"정의되지 않은 페이지 (url: ${url})")
                 raise ValueError("정의되지 않은 페이지 입니다.")
 
     def __parse_devocean_detail(self, result: list[str]):
@@ -96,20 +100,21 @@ class HtmlParserAgent:
                 "selector": ".toastui-editor-contents",
             }
         )
-        response = self.lambda_client.invoke(
+
+        response = self.lambda_invoker.invoke(
             FunctionName="scraper-lambda",
             InvocationType="RequestResponse",
             Payload=body,
+            logging_name=f"scraper-lambda for devocean detail",
         )
 
         if response["StatusCode"] != 200:
-            logger.error(response["FunctionError"])
-            logger.error(response["LogResult"])
-            raise Exception("Lambda 호출 실패")
+            self.logger.error(response["FunctionError"])
+            self.logger.error(response["LogResult"])
+            raise Exception("Failed invocation scraper-lambda for devocean detail")
 
         response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
             "result"
         ]
-        logger.info(f"{self.site.name} 상세 페이지 파싱 완료")
 
         return response_data
