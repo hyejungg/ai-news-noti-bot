@@ -19,6 +19,13 @@ Resources:
       Role: !GetAtt NewsScraperAgentFunctionRole.Arn
       Tags:
         PROJECT: AI_NEWS_AGENT
+      Events:
+        Schedule:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
+            Name: news-scraper-agent
+            Description: news-scraper-agent daily scheduler
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./
@@ -49,6 +56,16 @@ Resources:
                   - ecr:BatchGetImage
                 Resource: arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/news-scraper-agent
         - PolicyName: LambdaCloudWatchLogsAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent:*
+        - PolicyName: EventBridgeSchedule
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
