@@ -112,6 +112,8 @@ def handler(event, context) -> dict:
         except Exception as e:
             print(f"An unexpected error occurred: {str(e)}")
             return error(f"An unexpected error occurred: {str(e)}", 500)
+        finally:
+            browser.close()
 
     else:
         print(f"Invalid content type: {content_type}")
