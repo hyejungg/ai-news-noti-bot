@@ -107,11 +107,12 @@ def handler(event, context) -> dict:
                     page_content = page.content()
                     result = [page_content]
                 return success(result)
-        except PlaywrightTimeoutError:
+        except PlaywrightTimeoutError as e:
+            print(f"playwright timeout: {e}")
             print(f"HTML rendering timed out: {url}")
             return error("HTML rendering timed out", 408)
         except Exception as e:
-            print(f"An unexpected error occurred: {str(e)}")
+            print(f"An unexpected error occurred: {e}")
             return error(f"An unexpected error occurred: {str(e)}", 500)
 
     else:
