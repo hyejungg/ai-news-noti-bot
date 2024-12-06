@@ -42,3 +42,28 @@ def test_json():
     assert resp["statusCode"] == 200
     assert "result" in data
     assert data["result"]["username"] == "Bret"
+
+
+def test_devocean():
+    resp = app.handler({
+        "url": "https://devocean.sk.com/blog/index.do?techType=NEWS",
+        "content_type": "html",
+        "selector": "div.sec-area > ul.sec-area-list01 > li:first-child > div a > h3.pc_view"
+    }, "")
+    data = json.loads(resp["body"])
+
+    assert resp["statusCode"] == 200
+    assert "result" in data
+    assert data["result"] is not None
+
+def test_sds():
+    resp = app.handler({
+        "url": "https://www.samsungsds.com/kr/insights/index.html?moreCnt=0&backTypeId=&category=&reqArtId=1282554",
+        "content_type": "html",
+        "selector": ".cont_list .item strong.md_tit"
+    }, "")
+    data = json.loads(resp["body"])
+
+    assert resp["statusCode"] == 200
+    assert "result" in data
+    assert data["result"] is not None
