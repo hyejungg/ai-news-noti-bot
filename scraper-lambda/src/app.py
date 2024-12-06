@@ -95,25 +95,24 @@ def handler(event, context) -> dict:
                     headless=True,
                 )
                 page = browser.new_page()
-                page.goto(url, timeout=80000) # 80초
-                page.wait_for_load_state("networkidle", timeout=80000) # 80초
-                page_content = page.content()
-                result = [page_content]
+                page.goto(url, wait_until="load", timeout=60000) # 70초
+                page.wait_for_load_state("networkidle", timeout=60000) # 70초
                 if selector:
+                    page.wait_for_selector(selector, timeout=10000) # 20초
                     selected: list[ElementHandle] = page.query_selector_all(selector)
                     if len(selected) == 0:
                         return error(f"Element not found with {selector}", 400)
                     result = list(map(lambda x: x.evaluate("(element) => element.outerHTML"), selected))
-                browser.close()
-            return success(result)
+                else:
+                    page_content = page.content()
+                    result = [page_content]
+                return success(result)
         except PlaywrightTimeoutError:
             print(f"HTML rendering timed out: {url}")
             return error("HTML rendering timed out", 408)
         except Exception as e:
             print(f"An unexpected error occurred: {str(e)}")
             return error(f"An unexpected error occurred: {str(e)}", 500)
-        finally:
-            browser.close()
 
     else:
         print(f"Invalid content type: {content_type}")
