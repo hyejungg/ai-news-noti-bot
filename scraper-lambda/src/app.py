@@ -95,10 +95,10 @@ def handler(event, context) -> dict:
                     headless=True,
                 )
                 page = browser.new_page()
-                page.goto(url, wait_until="load", timeout=60000) # 70초
-                page.wait_for_load_state("networkidle", timeout=60000) # 70초
+                page.goto(url, wait_until="domcontentloaded", timeout=70000) # 70초
+                page.wait_for_load_state("networkidle", timeout=70000) # 70초
                 if selector:
-                    page.wait_for_selector(selector, timeout=10000) # 20초
+                    page.wait_for_selector(selector, timeout=10000) # 10초
                     selected: list[ElementHandle] = page.query_selector_all(selector)
                     if len(selected) == 0:
                         return error(f"Element not found with {selector}", 400)

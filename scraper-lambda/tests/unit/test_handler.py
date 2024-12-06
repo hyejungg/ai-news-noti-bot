@@ -1,9 +1,7 @@
 import json
 
-import pytest
 
 from src import app
-from src.used_type import RequestBody
 
 
 def test_static_page():
