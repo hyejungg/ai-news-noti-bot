@@ -24,6 +24,7 @@ Resources:
           Type: ScheduleV2
           Properties:
             ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
+            ScheduleExpressionTimezone: Asia/Seoul
             Name: news-scraper-agent
             Description: news-scraper-agent daily scheduler
       Policies:
