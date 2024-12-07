@@ -1,23 +1,24 @@
 import logging
+from config.env_config import env
 from datetime import datetime
-
-
+from enum import EnumType
+from rich.console import Console
+from rich.json import JSON
+from rich.logging import RichHandler
+from rich.table import Table
+from rich.text import Text
+from typing import Any
 from zoneinfo import ZoneInfo  # Python 3.9 이상에서 사용 가능
 
-from config.env_config import env
+
+class ConsoleDataType(EnumType):
+    TABLE = "TABLE"
+    JSON = "JSON"
+    TEXT = "TEXT"
+    DICT = "DICT"
 
 
-class KSTColorFormatter(logging.Formatter):
-    # ANSI 코드 색상 정의
-    COLORS = {
-        "DEBUG": "\033[90m",  # 회색
-        "INFO": "",  # 변경 없음
-        "WARNING": "\033[93m",  # 노란색
-        "ERROR": "\033[91m",  # 빨간색
-        "CRITICAL": "\033[41m",  # 빨간 배경 (심각한 오류)
-    }
-    RESET = "\033[0m"  # 색상 초기화
-
+class KSTFormatter(logging.Formatter):
     def formatTime(self, record, datefmt=None):
         # KST로 시간 변환
         dt = datetime.fromtimestamp(record.created, tz=ZoneInfo("Asia/Seoul"))
@@ -25,39 +26,52 @@ class KSTColorFormatter(logging.Formatter):
             return dt.strftime(datefmt)
         return dt.isoformat()
 
-    def format(self, record):
-        # 레벨에 따른 색상 추가
-        log_color = self.COLORS.get(record.levelname, self.RESET)
-        record.msg = f"{log_color}{record.msg}{self.RESET}"  # 메시지에 색상 적용
-        return super().format(record)
 
-
-formatter = KSTColorFormatter(
+# Formatter 설정
+formatter = KSTFormatter(
     fmt="%(asctime)s - %(name)16s - %(levelname)7s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 # Logger 설정
 default_logger = logging.getLogger("NewsScraperAgent")
+default_logger.setLevel(logging.DEBUG if env.PROFILE != "real" else logging.INFO)
 
-if env.PROFILE == "real":
-    default_logger.setLevel(logging.INFO)
-else:
-    default_logger.setLevel(logging.DEBUG)
-
-
-# Console Handler 추가
-handler = logging.StreamHandler()
-handler.setLevel(logging.DEBUG)  # DEBUG 이상만 받는 핸들러
-
-handler.setFormatter(formatter)
+# RichHandler 추가
+console = Console()
+rich_handler = RichHandler(rich_tracebacks=True, console=console)
+rich_handler.setLevel(logging.DEBUG)
+rich_handler.setFormatter(formatter)
+default_logger.addHandler(rich_handler)
 
 
+# logger 객체 추가
 def create_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO if env.PROFILE == "real" else logging.DEBUG)
-    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG if env.PROFILE != "real" else logging.INFO)
+    logger.addHandler(rich_handler)
     return logger
+
+
+def to_console_text(data_type: ConsoleDataType, data: Any):
+    with console.capture() as capture:
+        if data_type == ConsoleDataType.TABLE and isinstance(data, Table):
+            console.print(data)
+        elif data_type == ConsoleDataType.JSON:
+            console.print(JSON.from_data(data))  # json 문자열로 표시 (" 포함)
+        elif data_type == ConsoleDataType.DICT:
+            console.print(JSON.from_data(data))  # dict를 json 형태로 예쁘게 표시
+        elif data_type == ConsoleDataType.TEXT:
+            console.print(data)
+    return Text.from_ansi(capture.get())
+
+
+def console_print(data_type: ConsoleDataType, data: Any, logger: logging.Logger = None):
+    display_text = to_console_text(data_type, data)
+    if logger is None:
+        default_logger.info(f"{display_text}")
+    else:
+        logger.info(f"{display_text}")
 
 
 if __name__ == "__main__":
