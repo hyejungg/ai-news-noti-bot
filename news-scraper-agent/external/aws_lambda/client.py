@@ -9,14 +9,18 @@ from config.log import create_logger
 
 class LambdaInvoker:
     def __init__(
-        self, name: str = None, logger: logging.Logger = None, max_retry: int = 3
+        self,
+        name: str = None,
+        logger: logging.Logger = None,
+        max_retry: int = 3,
+        retry_interval: int = 3,  # 초
     ):
         logger_name = name if name else self.__class__.__name__
         self.client = boto3.client("lambda", region_name="ap-northeast-2")
         self.logger = logger if logger is not None else create_logger(logger_name)
         self.max_retry = max_retry
         self.invoke = retry(
-            wait=wait_fixed(3),
+            wait=wait_fixed(retry_interval),
             stop=stop_after_attempt(max_retry),
             before=self.__log_before_retry(logging_name=logger_name),
         )(self.invoke)
