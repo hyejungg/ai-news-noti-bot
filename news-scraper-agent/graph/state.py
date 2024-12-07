@@ -1,9 +1,7 @@
-import rich.table
-from pydantic import BaseModel, Field
-from rich.console import Console
-from rich.table import Table
-
+from config.log import console_print, create_logger, ConsoleDataType
 from models.site import SiteDto
+from pydantic import BaseModel, Field
+from rich.table import Table
 
 
 class SortedFilteringData(BaseModel):
@@ -35,9 +33,11 @@ class SiteState(BaseModel):
         :param columns: 열 정의 리스트 (각 열의 이름, 스타일, overflow 등).
         :param data: 출력할 데이터 딕셔너리.
         """
-        console = Console()
         for site, results in data.items():
-            table = Table(title=f"[{site}] {title}")
+            table = Table(
+                title=f"[{site}] {title}",
+                title_justify="left",
+            )
             # 열 정의 추가
             for column in columns:
                 table.add_column(**{k: v for k, v in column.items() if k != "key"})
@@ -54,78 +54,143 @@ class SiteState(BaseModel):
                             if "key" in column
                         ),
                     )
-            console.print(table)
+            console_print(ConsoleDataType.TABLE, table, create_logger(title))
 
     def print_state(
-        self,
-        crawling_result: bool = False,
-        filtering_result: bool = False,
-        parser_result: bool = False,
-        sorted_result: bool = False,
+            self,
+            profile: str = "local",
+            crawling_result: bool = False,
+            filtering_result: bool = False,
+            parser_result: bool = False,
+            sorted_result: bool = False,
     ):
         if parser_result:
-            self._print_table(
-                title="ParserResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "result", "overflow": "fold", "key": "result"},
-                ],
-                data=self.parser_result,
-            )
+            if profile == "local":
+                self._print_table(
+                    title="ParserResult",
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "result",
+                            "overflow": "fold",
+                            "key": "result",
+                            "max_width": 80,
+                        },
+                    ],
+                    data=self.parser_result,
+                )
+            else:
+                console_print(
+                    ConsoleDataType.DICT,
+                    self.parser_result,
+                    create_logger("ParserResult"),
+                )
 
         if crawling_result:
-            self._print_table(
-                title="CrawlingResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "url", "overflow": "fold", "key": "url"},
-                    {
-                        "header": "title",
-                        "style": "magenta",
-                        "overflow": "fold",
-                        "key": "title",
-                    },
-                ],
-                data=self.crawling_result,
-            )
+            if profile == "local":
+                self._print_table(
+                    title="CrawlingResult",
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "url",
+                            "overflow": "fold",
+                            "key": "url",
+                            "max_width": 80,
+                        },
+                        {
+                            "header": "title",
+                            "style": "magenta",
+                            "overflow": "fold",
+                            "key": "title",
+                            "max_width": 80,
+                        },
+                    ],
+                    data=self.crawling_result,
+                )
+            else:
+                dict_result = {
+                    site: [item.model_dump() for item in items]
+                    for site, items in self.crawling_result.items()
+                }
+                console_print(
+                    ConsoleDataType.DICT,
+                    dict_result,
+                    create_logger("CrawlingResult"),
+                )
 
         if filtering_result:
-            self._print_table(
-                title="FilteringResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "url", "overflow": "fold", "key": "url"},
-                    {
-                        "header": "title",
-                        "style": "magenta",
-                        "overflow": "fold",
-                        "key": "title",
-                    },
-                ],
-                data=self.filtering_result,
-            )
+            if profile == "local":
+                self._print_table(
+                    title="FilteringResult",
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "url",
+                            "overflow": "fold",
+                            "key": "url",
+                            "max_width": 80,
+                        },
+                        {
+                            "header": "title",
+                            "style": "magenta",
+                            "overflow": "fold",
+                            "key": "title",
+                            "max_width": 80,
+                        },
+                    ],
+                    data=self.filtering_result,
+                )
+            else:
+                dict_result = {
+                    site: [item.model_dump() for item in items]
+                    for site, items in self.filtering_result.items()
+                }
+                console_print(
+                    ConsoleDataType.DICT,
+                    dict_result,
+                    create_logger("FilteringResult"),
+                )
 
         if sorted_result:
-            self._print_table(
-                title="SortedResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "url", "overflow": "fold", "key": "url"},
-                    {
-                        "header": "title",
-                        "style": "magenta",
-                        "overflow": "fold",
-                        "key": "title",
-                    },
-                    {
-                        "header": "reason",
-                        "style": "cyan",
-                        "overflow": "fold",
-                        "key": "reason",
-                    },
-                ],
-                data=self.sorted_result,
-            )
+            if profile == "local":
+                self._print_table(
+                    title="SortedResult",
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "url",
+                            "overflow": "fold",
+                            "key": "url",
+                            "max_width": 40,
+                        },
+                        {
+                            "header": "title",
+                            "style": "magenta",
+                            "overflow": "fold",
+                            "key": "title",
+                            "max_width": 40,
+                        },
+                        {
+                            "header": "reason",
+                            "style": "cyan",
+                            "overflow": "fold",
+                            "key": "reason",
+                            "max_width": 40,
+                        },
+                    ],
+                    data=self.sorted_result,
+                )
+            else:
+                dict_result = {
+                    site: [item.model_dump() for item in items]
+                    for site, items in self.sorted_result.items()
+                }
+                console_print(
+                    ConsoleDataType.DICT,
+                    dict_result,
+                    create_logger("SortedResult"),
+                )
 
 
 class State(BaseModel):

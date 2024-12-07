@@ -1,15 +1,13 @@
-from rich.console import Console
-from rich.table import Table
-
 from config.env_config import env
-from config.log import create_logger
+from config.log import create_logger, console_print, ConsoleDataType
 from decorations.log_time import log_time_agent_method
 from external.kakaowork.client import KakaoworkClient
+from external.kakaowork.message_builder import KakaoworkMessageBuilder
 from graph.state import State, CrawlingResult, PageCrawlingData
 from models.message import Message
 from models.message import MessageContent, MessageContentDto
+from rich.table import Table
 from service.message_service import get_messages
-from external.kakaowork.message_builder import KakaoworkMessageBuilder
 
 MESSAGE_TYPE = "KAKAOWORK"
 SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS"
@@ -19,7 +17,6 @@ SEND_MESSAGE_FAIL = "SEND_MESSAGE_FAIL"
 class MessageAgent:
     def __init__(self):
         self.logger = create_logger(self.__class__.__name__)
-        self.console = Console()
 
     @log_time_agent_method
     def __call__(self, state: State) -> None:
@@ -60,8 +57,11 @@ class MessageAgent:
         }
 
         if env.ENABLE_MESSAGE_AGENT_LOG:
-            table = self._get_parallel_result_table(unique_parallel_result)
-            self.console.print(table)
+            console_print(
+                ConsoleDataType.TABLE,
+                self._get_parallel_result_table(unique_parallel_result),
+                self.logger,
+            )
 
         # 6. unique_parallel_result를 카카오워크 메세지로 생성
         request = KakaoworkMessageBuilder().build(unique_parallel_result)
@@ -91,7 +91,7 @@ class MessageAgent:
         table.add_column("url", overflow="fold")
         table.add_column("title", style="magenta", overflow="fold")
         for idx_1, (site_name, page_crawling_data) in enumerate(
-            result.items(), start=1
+                result.items(), start=1
         ):
             for idx_2, item in enumerate(page_crawling_data, start=1):
                 table.add_row(str(idx_1 + idx_2 - 1), site_name, item.url, item.title)

@@ -1,6 +1,7 @@
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
+from config.env_config import env
 from config.log import create_logger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
@@ -48,5 +49,5 @@ class FilteringAgent:
             self.logger.error(f"Error occurred while filtering {self.site.name}: {e}")
             state.filtering_result[self.site.name] = []
 
-        state.print_state(filtering_result=True)
+        state.print_state(env.PROFILE, filtering_result=True)
         return state
