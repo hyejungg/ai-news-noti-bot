@@ -61,9 +61,9 @@ class SiteState(BaseModel):
         parser_result: bool = False,
         sorted_result: bool = False,
     ):
-        logger = NewsScraperAgentLogger("PrintState")
+        logger_name = "ParserResult"
+        logger = NewsScraperAgentLogger(logger_name)
         if parser_result:
-            logger_name = "ParserResult"
             if env.PROFILE == "local":
                 table = self._get_print_table(
                     title=logger_name,
@@ -80,12 +80,11 @@ class SiteState(BaseModel):
                 )
                 logger.console_print(ConsoleDataType.TABLE, table)
             else:
-                logger.console_print(
-                    ConsoleDataType.DICT, self.parser_result, logger_name
-                )
+                logger.console_print(ConsoleDataType.DICT, self.parser_result)
 
         if crawling_result:
             logger_name = "CrawlingResult"
+            logger = NewsScraperAgentLogger(logger_name)
             if env.PROFILE == "local":
                 table = self._get_print_table(
                     title=logger_name,
@@ -113,10 +112,11 @@ class SiteState(BaseModel):
                     site: [item.model_dump() for item in items]
                     for site, items in self.crawling_result.items()
                 }
-                logger.console_print(ConsoleDataType.DICT, dict_result, logger_name)
+                logger.console_print(ConsoleDataType.DICT, dict_result)
 
         if filtering_result:
             logger_name = "FilteringResult"
+            logger = NewsScraperAgentLogger(logger_name)
             if env.PROFILE == "local":
                 table = self._get_print_table(
                     title=logger_name,
@@ -144,10 +144,11 @@ class SiteState(BaseModel):
                     site: [item.model_dump() for item in items]
                     for site, items in self.filtering_result.items()
                 }
-                logger.console_print(ConsoleDataType.DICT, dict_result, logger_name)
+                logger.console_print(ConsoleDataType.DICT, dict_result)
 
         if sorted_result:
             logger_name = "SortedResult"
+            logger = NewsScraperAgentLogger(logger_name)
             if env.PROFILE == "local":
                 table = self._get_print_table(
                     title=logger_name,
@@ -182,7 +183,7 @@ class SiteState(BaseModel):
                     site: [item.model_dump() for item in items]
                     for site, items in self.sorted_result.items()
                 }
-                logger.console_print(ConsoleDataType.DICT, dict_result, logger_name)
+                logger.console_print(ConsoleDataType.DICT, dict_result)
 
 
 class State(BaseModel):

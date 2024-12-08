@@ -50,12 +50,9 @@ class NewsScraperAgentLogger(logging.Logger):
         rich_handler.setFormatter(formatter)
         self.addHandler(rich_handler)
 
-    def console_print(
-        self, data_type: ConsoleDataType, data: Any, logger_name: str = None
-    ):
-        current_logger = logging.getLogger(logger_name) if logger_name else self
+    def console_print(self, data_type: ConsoleDataType, data: Any):
         display_text = self._to_console_text(data_type, data)
-        current_logger.info(f"{display_text}")
+        self.info(f"{display_text}")
 
     def _to_console_text(self, data_type: ConsoleDataType, data: Any):
         with self.console.capture() as capture:
