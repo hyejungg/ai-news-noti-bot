@@ -1,3 +1,4 @@
+from config.env_config import env
 from config.log import console_print, create_logger, ConsoleDataType
 from models.site import SiteDto
 from pydantic import BaseModel, Field
@@ -57,15 +58,14 @@ class SiteState(BaseModel):
             console_print(ConsoleDataType.TABLE, table, create_logger(title))
 
     def print_state(
-            self,
-            profile: str = "local",
-            crawling_result: bool = False,
-            filtering_result: bool = False,
-            parser_result: bool = False,
-            sorted_result: bool = False,
+        self,
+        crawling_result: bool = False,
+        filtering_result: bool = False,
+        parser_result: bool = False,
+        sorted_result: bool = False,
     ):
         if parser_result:
-            if profile == "local":
+            if env.PROFILE == "local":
                 self._print_table(
                     title="ParserResult",
                     columns=[
@@ -87,7 +87,7 @@ class SiteState(BaseModel):
                 )
 
         if crawling_result:
-            if profile == "local":
+            if env.PROFILE == "local":
                 self._print_table(
                     title="CrawlingResult",
                     columns=[
@@ -120,7 +120,7 @@ class SiteState(BaseModel):
                 )
 
         if filtering_result:
-            if profile == "local":
+            if env.PROFILE == "local":
                 self._print_table(
                     title="FilteringResult",
                     columns=[
@@ -153,7 +153,7 @@ class SiteState(BaseModel):
                 )
 
         if sorted_result:
-            if profile == "local":
+            if env.PROFILE == "local":
                 self._print_table(
                     title="SortedResult",
                     columns=[
