@@ -1,7 +1,7 @@
 import requests
 
 from config.env_config import env
-from config.log import create_logger, console_print, ConsoleDataType
+from config.log import ConsoleDataType, NewsScraperAgentLogger
 from decorations.log_time import log_time_method
 from external.kakaowork.message_blocks import KakaoworkMessageRequest
 
@@ -18,16 +18,14 @@ WEBHOOK_URL_MAP = {
 class KakaoworkClient:
     def __init__(self, profile: str):
         self.webhook_url = WEBHOOK_URL_MAP.get(profile)
-        self.logger = create_logger(self.__class__.__name__)
+        self.logger = NewsScraperAgentLogger(self.__class__.__name__)
 
     @log_time_method
     def send_message(self, request: KakaoworkMessageRequest) -> int:
         try:
             self.logger.info("request body 👇")
-            console_print(
-                ConsoleDataType.DICT,
-                request.model_dump(exclude_none=True),
-                self.logger,
+            self.logger.console_print(
+                ConsoleDataType.DICT, request.model_dump(exclude_none=True)
             )
 
             response = requests.post(
@@ -38,7 +36,7 @@ class KakaoworkClient:
             # 응답 코드와 상세 정보 로깅
             self.logger.info(f"response status_code: {response.status_code}")
             self.logger.info("response body 👇")  # 응답 본문 텍스트
-            console_print(ConsoleDataType.DICT, response.json(), self.logger)
+            self.logger.console_print(ConsoleDataType.DICT, response.json())
             return response.status_code
         except requests.RequestException as e:
             self.logger.error(f"Error sending message: {e}")

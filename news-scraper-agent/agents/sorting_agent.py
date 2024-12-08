@@ -1,7 +1,7 @@
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from config.log import create_logger
+from config.log import NewsScraperAgentLogger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
 from graph.state import SiteState, SortAgentResponse, SortedFilteringData
@@ -15,8 +15,7 @@ class SortingAgent:
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
-        logger = create_logger(self.__class__.__name__)
-        self.logger = logger
+        self.logger = NewsScraperAgentLogger(self.__class__.__name__)
         self.site = site
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.sorting_prompt

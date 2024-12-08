@@ -1,6 +1,8 @@
 from langgraph.graph import StateGraph
 
-from config.log import default_logger
+from config.log import NewsScraperAgentLogger
+
+logger = NewsScraperAgentLogger()
 
 
 def get_graph_image(graph: StateGraph):
@@ -11,4 +13,4 @@ def get_graph_image(graph: StateGraph):
     with open("graph.png", "wb") as f:
         f.write(png_image)
 
-    default_logger.info("Image saved as graph.png")
+    logger.info("Image saved as graph.png")

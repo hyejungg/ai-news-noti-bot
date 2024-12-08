@@ -1,5 +1,5 @@
 from config.env_config import env
-from config.log import create_logger, console_print, ConsoleDataType
+from config.log import ConsoleDataType, NewsScraperAgentLogger
 from decorations.log_time import log_time_agent_method
 from external.kakaowork.client import KakaoworkClient
 from external.kakaowork.message_builder import KakaoworkMessageBuilder
@@ -16,7 +16,7 @@ SEND_MESSAGE_FAIL = "SEND_MESSAGE_FAIL"
 
 class MessageAgent:
     def __init__(self):
-        self.logger = create_logger(self.__class__.__name__)
+        self.logger = NewsScraperAgentLogger(self.__class__.__name__)
 
     @log_time_agent_method
     def __call__(self, state: State) -> None:
@@ -57,10 +57,9 @@ class MessageAgent:
         }
 
         if env.ENABLE_MESSAGE_AGENT_LOG:
-            console_print(
+            self.logger.console_print(
                 ConsoleDataType.TABLE,
                 self._get_parallel_result_table(unique_parallel_result),
-                self.logger,
             )
 
         # 6. unique_parallel_result를 카카오워크 메세지로 생성
@@ -85,13 +84,13 @@ class MessageAgent:
         message.save()
 
     def _get_parallel_result_table(self, result: CrawlingResult) -> Table:
-        table = Table(title="unique_parallel_result")
+        table = Table(title="unique_parallel_result", title_justify="left")
         table.add_column("idx", no_wrap=True)
         table.add_column("site_name", style="cyan", no_wrap=True)
         table.add_column("url", overflow="fold")
         table.add_column("title", style="magenta", overflow="fold")
         for idx_1, (site_name, page_crawling_data) in enumerate(
-                result.items(), start=1
+            result.items(), start=1
         ):
             for idx_2, item in enumerate(page_crawling_data, start=1):
                 table.add_row(str(idx_1 + idx_2 - 1), site_name, item.url, item.title)

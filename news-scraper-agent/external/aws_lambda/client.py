@@ -1,19 +1,14 @@
-import logging
 import time
 
 import boto3
 
-from config.log import create_logger
+from config.log import NewsScraperAgentLogger
 
 
 class LambdaInvoker:
-    def __init__(self, name: str = None, logger: logging.Logger = None):
+    def __init__(self):
         self.client = boto3.client("lambda", region_name="ap-northeast-2")
-        self.logger = (
-            logger
-            if logger is not None
-            else create_logger(name if name else self.__class__.__name__)
-        )
+        self.logger = NewsScraperAgentLogger(self.__class__.__name__)
 
     def invoke(
         self,

@@ -1,5 +1,5 @@
 from config.env_config import env
-from config.log import console_print, create_logger, ConsoleDataType
+from config.log import ConsoleDataType, NewsScraperAgentLogger
 from models.site import SiteDto
 from pydantic import BaseModel, Field
 from rich.table import Table
@@ -27,7 +27,7 @@ class SiteState(BaseModel):
     parser_result: ParserResult
     sorted_result: SortedFilterResult
 
-    def _print_table(self, title: str, columns: list[dict], data: dict):
+    def _get_print_table(self, title: str, columns: list[dict], data: dict) -> Table:
         """
         공통 테이블 출력 메서드.
         :param title: 테이블 제목.
@@ -35,10 +35,7 @@ class SiteState(BaseModel):
         :param data: 출력할 데이터 딕셔너리.
         """
         for site, results in data.items():
-            table = Table(
-                title=f"[{site}] {title}",
-                title_justify="left",
-            )
+            table = Table(title=f"[{site}] {title}", title_justify="left")
             # 열 정의 추가
             for column in columns:
                 table.add_column(**{k: v for k, v in column.items() if k != "key"})
@@ -55,7 +52,7 @@ class SiteState(BaseModel):
                             if "key" in column
                         ),
                     )
-            console_print(ConsoleDataType.TABLE, table, create_logger(title))
+            return table
 
     def print_state(
         self,
@@ -64,10 +61,12 @@ class SiteState(BaseModel):
         parser_result: bool = False,
         sorted_result: bool = False,
     ):
+        logger = NewsScraperAgentLogger("PrintState")
         if parser_result:
+            logger_name = "ParserResult"
             if env.PROFILE == "local":
-                self._print_table(
-                    title="ParserResult",
+                table = self._get_print_table(
+                    title=logger_name,
                     columns=[
                         {"header": "idx", "no_wrap": True},
                         {
@@ -79,17 +78,17 @@ class SiteState(BaseModel):
                     ],
                     data=self.parser_result,
                 )
+                logger.console_print(ConsoleDataType.TABLE, table)
             else:
-                console_print(
-                    ConsoleDataType.DICT,
-                    self.parser_result,
-                    create_logger("ParserResult"),
+                logger.console_print(
+                    ConsoleDataType.DICT, self.parser_result, logger_name
                 )
 
         if crawling_result:
+            logger_name = "CrawlingResult"
             if env.PROFILE == "local":
-                self._print_table(
-                    title="CrawlingResult",
+                table = self._get_print_table(
+                    title=logger_name,
                     columns=[
                         {"header": "idx", "no_wrap": True},
                         {
@@ -108,21 +107,19 @@ class SiteState(BaseModel):
                     ],
                     data=self.crawling_result,
                 )
+                logger.console_print(ConsoleDataType.TABLE, table)
             else:
                 dict_result = {
                     site: [item.model_dump() for item in items]
                     for site, items in self.crawling_result.items()
                 }
-                console_print(
-                    ConsoleDataType.DICT,
-                    dict_result,
-                    create_logger("CrawlingResult"),
-                )
+                logger.console_print(ConsoleDataType.DICT, dict_result, logger_name)
 
         if filtering_result:
+            logger_name = "FilteringResult"
             if env.PROFILE == "local":
-                self._print_table(
-                    title="FilteringResult",
+                table = self._get_print_table(
+                    title=logger_name,
                     columns=[
                         {"header": "idx", "no_wrap": True},
                         {
@@ -141,21 +138,19 @@ class SiteState(BaseModel):
                     ],
                     data=self.filtering_result,
                 )
+                logger.console_print(ConsoleDataType.TABLE, table)
             else:
                 dict_result = {
                     site: [item.model_dump() for item in items]
                     for site, items in self.filtering_result.items()
                 }
-                console_print(
-                    ConsoleDataType.DICT,
-                    dict_result,
-                    create_logger("FilteringResult"),
-                )
+                logger.console_print(ConsoleDataType.DICT, dict_result, logger_name)
 
         if sorted_result:
+            logger_name = "SortedResult"
             if env.PROFILE == "local":
-                self._print_table(
-                    title="SortedResult",
+                table = self._get_print_table(
+                    title=logger_name,
                     columns=[
                         {"header": "idx", "no_wrap": True},
                         {
@@ -181,16 +176,13 @@ class SiteState(BaseModel):
                     ],
                     data=self.sorted_result,
                 )
+                logger.console_print(ConsoleDataType.TABLE, table)
             else:
                 dict_result = {
                     site: [item.model_dump() for item in items]
                     for site, items in self.sorted_result.items()
                 }
-                console_print(
-                    ConsoleDataType.DICT,
-                    dict_result,
-                    create_logger("SortedResult"),
-                )
+                logger.console_print(ConsoleDataType.DICT, dict_result, logger_name)
 
 
 class State(BaseModel):
