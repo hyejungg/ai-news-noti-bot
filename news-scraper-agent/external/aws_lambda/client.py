@@ -10,10 +10,13 @@ class LambdaInvoker:
     def __init__(self):
         self.client = boto3.client("lambda", region_name="ap-northeast-2")
         self.logger = NewsScraperAgentLogger(self.__class__.__name__)
+
+        self.max_retry = 3  # 초
+        self.retry_interval = 3  # 초
         self.invoke = retry(
-            wait=wait_fixed(3),
-            stop=stop_after_attempt(3),
-            before=self.__log_before_retry()
+            wait=wait_fixed(self.retry_interval),
+            stop=stop_after_attempt(self.max_retry),
+            before=self.__log_before_retry(),
         )
 
     def invoke(
@@ -34,7 +37,7 @@ class LambdaInvoker:
         def log_before(retry_state):
             if retry_state.attempt_number > 1:  # 첫 시도는 로깅하지 않음
                 self.logger.info(
-                    f"Retrying Invoke lambda... {retry_state.attempt_number - 1}/{2}"
+                    f"Retrying Invoke lambda... {retry_state.attempt_number - 1}/{self.max_retry - 1}"
                 )
 
         return log_before
