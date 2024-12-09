@@ -3,7 +3,7 @@ import re
 from typing import TypedDict, Literal, NotRequired
 
 
-from config.log import create_logger
+from config.log import NewsScraperAgentLogger
 from decorations.log_time import log_time_agent_method
 from external.aws_lambda.client import LambdaInvoker
 from graph.state import SiteState
@@ -18,10 +18,9 @@ class ParsingLambdaRequestBody(TypedDict):
 
 class HtmlParserAgent:
     def __init__(self, site: SiteDto):
-        logger = create_logger(self.__class__.__name__)
-        self.logger = logger
+        self.logger = NewsScraperAgentLogger(self.__class__.__name__)
         self.site = site
-        self.lambda_invoker = LambdaInvoker(logger=logger)
+        self.lambda_invoker = LambdaInvoker()
 
     @log_time_agent_method
     def __call__(self, state: SiteState = None) -> SiteState:
