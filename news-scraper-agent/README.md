@@ -11,6 +11,16 @@ poetry install
 python {파일명}.py
 ```
 
+## 배포 방법
+```shell
+# 로컬에서 실행 방법 
+sam local invoke
+
+# 빌드 후 배포
+sam build
+sam deploy
+```
+
 ## memo
 - 현재는 langsmith 로 연결해두었는데 .. 만약에 이게 사내망에서 서비스 하는 걸로 변경된다면 langfuse 써보기!
 - 의존성 내보내기
