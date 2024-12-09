@@ -1,9 +1,11 @@
 from mongoengine import connect
 
 from config.env_config import env
-from config.log import default_logger
+from config.log import NewsScraperAgentLogger
 from models.message import Message
 from models.site import Site
+
+logger = NewsScraperAgentLogger()
 
 
 def connect_db():
@@ -15,16 +17,16 @@ def connect_db():
         else:
             connect(host=env.MONGO_DB_LOCAL_URI)
 
-        default_logger.info("MongoDB Connected ...")
+        logger.info("MongoDB Connected ...")
 
         # 컬렉션 생성 확인
         Site.ensure_indexes()
-        default_logger.info("Site Collection is ready!")
+        logger.info("Site Collection is ready!")
         Message.ensure_indexes()
-        default_logger.info("Message Collection is ready!")
+        logger.info("Message Collection is ready!")
 
     except Exception as err:
-        default_logger.error(f"MongoDB connect error: {err}")
+        logger.error(f"MongoDB connect error: {err}")
         exit(1)
 
 

@@ -1,9 +1,8 @@
-import rich.table
-from pydantic import BaseModel, Field
-from rich.console import Console
-from rich.table import Table
-
+from config.env_config import env
+from config.log import ConsoleDataType, NewsScraperAgentLogger
 from models.site import SiteDto
+from pydantic import BaseModel, Field
+from rich.table import Table
 
 
 class SortedFilteringData(BaseModel):
@@ -28,16 +27,15 @@ class SiteState(BaseModel):
     parser_result: ParserResult
     sorted_result: SortedFilterResult
 
-    def _print_table(self, title: str, columns: list[dict], data: dict):
+    def _get_print_table(self, title: str, columns: list[dict], data: dict) -> Table:
         """
         공통 테이블 출력 메서드.
         :param title: 테이블 제목.
         :param columns: 열 정의 리스트 (각 열의 이름, 스타일, overflow 등).
         :param data: 출력할 데이터 딕셔너리.
         """
-        console = Console()
         for site, results in data.items():
-            table = Table(title=f"[{site}] {title}")
+            table = Table(title=f"[{site}] {title}", title_justify="left")
             # 열 정의 추가
             for column in columns:
                 table.add_column(**{k: v for k, v in column.items() if k != "key"})
@@ -54,7 +52,7 @@ class SiteState(BaseModel):
                             if "key" in column
                         ),
                     )
-            console.print(table)
+            return table
 
     def print_state(
         self,
@@ -63,69 +61,129 @@ class SiteState(BaseModel):
         parser_result: bool = False,
         sorted_result: bool = False,
     ):
+        logger_name = "ParserResult"
+        logger = NewsScraperAgentLogger(logger_name)
         if parser_result:
-            self._print_table(
-                title="ParserResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "result", "overflow": "fold", "key": "result"},
-                ],
-                data=self.parser_result,
-            )
+            if env.PROFILE == "local":
+                table = self._get_print_table(
+                    title=logger_name,
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "result",
+                            "overflow": "fold",
+                            "key": "result",
+                            "max_width": 80,
+                        },
+                    ],
+                    data=self.parser_result,
+                )
+                logger.console_print(ConsoleDataType.TABLE, table)
+            else:
+                logger.console_print(ConsoleDataType.DICT, self.parser_result)
 
         if crawling_result:
-            self._print_table(
-                title="CrawlingResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "url", "overflow": "fold", "key": "url"},
-                    {
-                        "header": "title",
-                        "style": "magenta",
-                        "overflow": "fold",
-                        "key": "title",
-                    },
-                ],
-                data=self.crawling_result,
-            )
+            logger_name = "CrawlingResult"
+            logger = NewsScraperAgentLogger(logger_name)
+            if env.PROFILE == "local":
+                table = self._get_print_table(
+                    title=logger_name,
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "url",
+                            "overflow": "fold",
+                            "key": "url",
+                            "max_width": 80,
+                        },
+                        {
+                            "header": "title",
+                            "style": "magenta",
+                            "overflow": "fold",
+                            "key": "title",
+                            "max_width": 80,
+                        },
+                    ],
+                    data=self.crawling_result,
+                )
+                logger.console_print(ConsoleDataType.TABLE, table)
+            else:
+                dict_result = {
+                    site: [item.model_dump() for item in items]
+                    for site, items in self.crawling_result.items()
+                }
+                logger.console_print(ConsoleDataType.DICT, dict_result)
 
         if filtering_result:
-            self._print_table(
-                title="FilteringResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "url", "overflow": "fold", "key": "url"},
-                    {
-                        "header": "title",
-                        "style": "magenta",
-                        "overflow": "fold",
-                        "key": "title",
-                    },
-                ],
-                data=self.filtering_result,
-            )
+            logger_name = "FilteringResult"
+            logger = NewsScraperAgentLogger(logger_name)
+            if env.PROFILE == "local":
+                table = self._get_print_table(
+                    title=logger_name,
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "url",
+                            "overflow": "fold",
+                            "key": "url",
+                            "max_width": 80,
+                        },
+                        {
+                            "header": "title",
+                            "style": "magenta",
+                            "overflow": "fold",
+                            "key": "title",
+                            "max_width": 80,
+                        },
+                    ],
+                    data=self.filtering_result,
+                )
+                logger.console_print(ConsoleDataType.TABLE, table)
+            else:
+                dict_result = {
+                    site: [item.model_dump() for item in items]
+                    for site, items in self.filtering_result.items()
+                }
+                logger.console_print(ConsoleDataType.DICT, dict_result)
 
         if sorted_result:
-            self._print_table(
-                title="SortedResult",
-                columns=[
-                    {"header": "idx", "no_wrap": True},
-                    {"header": "url", "overflow": "fold", "key": "url"},
-                    {
-                        "header": "title",
-                        "style": "magenta",
-                        "overflow": "fold",
-                        "key": "title",
-                    },
-                    {
-                        "header": "reason",
-                        "style": "cyan",
-                        "overflow": "fold",
-                        "key": "reason",
-                    },
-                ],
-                data=self.sorted_result,
-            )
+            logger_name = "SortedResult"
+            logger = NewsScraperAgentLogger(logger_name)
+            if env.PROFILE == "local":
+                table = self._get_print_table(
+                    title=logger_name,
+                    columns=[
+                        {"header": "idx", "no_wrap": True},
+                        {
+                            "header": "url",
+                            "overflow": "fold",
+                            "key": "url",
+                            "max_width": 40,
+                        },
+                        {
+                            "header": "title",
+                            "style": "magenta",
+                            "overflow": "fold",
+                            "key": "title",
+                            "max_width": 40,
+                        },
+                        {
+                            "header": "reason",
+                            "style": "cyan",
+                            "overflow": "fold",
+                            "key": "reason",
+                            "max_width": 40,
+                        },
+                    ],
+                    data=self.sorted_result,
+                )
+                logger.console_print(ConsoleDataType.TABLE, table)
+            else:
+                dict_result = {
+                    site: [item.model_dump() for item in items]
+                    for site, items in self.sorted_result.items()
+                }
+                logger.console_print(ConsoleDataType.DICT, dict_result)
 
 
 class State(BaseModel):

@@ -1,6 +1,6 @@
 import time
 
-from config.log import create_logger, default_logger
+from config.log import NewsScraperAgentLogger
 
 
 def log_time_agent_method(func):
@@ -8,7 +8,9 @@ def log_time_agent_method(func):
     def wrapper(self, *args, **kwargs):
         has_site = hasattr(self, "site")
         logger = (
-            self.logger if hasattr(self, "logger") and self.logger else default_logger
+            self.logger
+            if hasattr(self, "logger") and self.logger
+            else NewsScraperAgentLogger()
         )
 
         logger.info(
@@ -34,7 +36,9 @@ def log_time_method(func):
     # 일반적인 클래스 메서드에서 사용
     def wrapper(self, *args, **kwargs):
         logger = (
-            self.logger if hasattr(self, "logger") and self.logger else default_logger
+            self.logger
+            if hasattr(self, "logger") and self.logger
+            else NewsScraperAgentLogger()
         )
         logger.info(f"Started {self.__class__.__name__}.{func.__name__}")
 
