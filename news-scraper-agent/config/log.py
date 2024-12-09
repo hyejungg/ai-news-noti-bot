@@ -1,6 +1,6 @@
 import logging
 from config.env_config import env
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from enum import EnumType
 from rich.console import Console
 from rich.json import JSON
@@ -8,7 +8,6 @@ from rich.logging import RichHandler
 from rich.table import Table
 from rich.text import Text
 from typing import Any
-from zoneinfo import ZoneInfo  # Python 3.9 이상에서 사용 가능
 
 
 class ConsoleDataType(EnumType):
@@ -16,15 +15,6 @@ class ConsoleDataType(EnumType):
     JSON = "JSON"
     TEXT = "TEXT"
     DICT = "DICT"
-
-
-class KSTFormatter(logging.Formatter):
-    def formatTime(self, record, datefmt=None):
-        # KST로 시간 변환
-        dt = datetime.fromtimestamp(record.created, tz=ZoneInfo("Asia/Seoul"))
-        if datefmt:
-            return dt.strftime(datefmt)
-        return dt.isoformat()
 
 
 class NewsScraperAgentLogger(logging.Logger):
@@ -36,16 +26,21 @@ class NewsScraperAgentLogger(logging.Logger):
 
     def _initialize_logger(self):
         # Formatter 설정
-        formatter = KSTFormatter(
-            fmt="%(asctime)s - %(name)16s - %(levelname)7s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+        formatter = logging.Formatter(
+            fmt="%(name)16s - %(message)s"
         )
 
         # Logger 레벨 설정
         self.setLevel(logging.DEBUG if env.PROFILE != "real" else logging.INFO)
 
         # RichHandler 추가
-        rich_handler = RichHandler(rich_tracebacks=True, console=self.console)
+        rich_handler = RichHandler(
+            rich_tracebacks=True,
+            console=self.console,
+            log_time_format=lambda dt: Text(
+                datetime.fromtimestamp(dt.timestamp(), tz=timezone(timedelta(hours=9))).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+        )
         rich_handler.setLevel(logging.DEBUG)
         rich_handler.setFormatter(formatter)
         self.addHandler(rich_handler)
