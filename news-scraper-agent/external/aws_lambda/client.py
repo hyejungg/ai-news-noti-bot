@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 import boto3
@@ -74,12 +75,18 @@ class LambdaInvoker:
         return response.Payload.body
 
     def parse_response(self, response: dict):
-        payload = json.load(response["Payload"])
+        try:
+            payload = json.load(response["Payload"])
+            body = json.loads(payload["body"])
+        except Exception as e:
+            logging.exception("Failed to parse response")
+            raise e
+
         return LambdaResponse(
             StatusCode=response["StatusCode"],
             ResponseMetadata=response["ResponseMetadata"],
             Payload=ScraperLambdaResponseBody(
-                statusCode=payload["statusCode"], body=json.loads(payload["body"])
+                statusCode=payload["statusCode"], body=body
             ),
             ExecutedVersion=response["ExecutedVersion"],
         )
