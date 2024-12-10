@@ -67,19 +67,34 @@ class LambdaInvoker:
 
         response = self.parse_response(self.client.invoke(**kwargs))
 
-        self.raise_if_error(response)
-
         end = time.time()
         self.logger.info(f"Finished {name} ({end - start:.2f}s)")
         return response.Payload.body
 
     def parse_response(self, response: dict):
+        # 파싱
         try:
-            payload = json.load(response["Payload"])
+            payload: dict = json.load(response["Payload"])
+        except Exception as e:
+            self.logger.exception("Failed to parse response")
+            raise e
+
+        # 파싱 성공하면 StatusCode를 확인
+        if payload.get("statusCode", None) != 200:
+            self.logger.error(payload)
+            raise RuntimeError(f"Lambda 호출 실패")
+
+        # StatusCode가 정상이면 body 파싱
+        try:
             body = json.loads(payload["body"])
         except Exception as e:
             self.logger.exception("Failed to parse response")
             raise e
+
+        # body 파싱 성공하면 StatusCode를 확인
+        if body.get("statusCode", None) != 200:
+            self.logger.error(body)
+            raise RuntimeError(f"Lambda 호출 실패")
 
         return LambdaResponse(
             StatusCode=response["StatusCode"],
@@ -89,8 +104,3 @@ class LambdaInvoker:
             ),
             ExecutedVersion=response["ExecutedVersion"],
         )
-
-    def raise_if_error(self, payload: LambdaResponse):
-        if payload.StatusCode != 200 or payload.Payload.statusCode != 200:
-            body = payload.Payload.body
-            raise Exception(f"Lambda 호출 실패 [message={body['message']}]")
