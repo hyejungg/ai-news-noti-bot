@@ -1,5 +1,4 @@
 import json
-import logging
 import time
 
 import boto3
@@ -79,7 +78,7 @@ class LambdaInvoker:
             payload = json.load(response["Payload"])
             body = json.loads(payload["body"])
         except Exception as e:
-            logging.exception("Failed to parse response")
+            self.logger.exception("Failed to parse response")
             raise e
 
         return LambdaResponse(
