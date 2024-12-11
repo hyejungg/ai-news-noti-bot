@@ -73,7 +73,7 @@ class LambdaInvoker:
 
     def parse_response(self, response: dict):
         # StatusCode 확인
-        if response.get("StatusCode", None) != 200:
+        if response.get("StatusCode") != 200:
             self.logger.error(response)
             raise RuntimeError(f"Lambda 호출 실패")
 
@@ -85,7 +85,7 @@ class LambdaInvoker:
             raise e
 
         # 파싱 성공하면 statusCode를 확인
-        if payload.get("statusCode", None) != 200:
+        if payload.get("statusCode") != 200:
             self.logger.error(payload)
             raise RuntimeError(f"Lambda 호출 실패")
 
