@@ -1,7 +1,7 @@
 import logging
 from config.env_config import env
 from datetime import datetime, timezone, timedelta
-from enum import EnumType
+from enum import Enum
 from rich.console import Console
 from rich.json import JSON
 from rich.logging import RichHandler
@@ -10,7 +10,7 @@ from rich.text import Text
 from typing import Any
 
 
-class ConsoleDataType(EnumType):
+class ConsoleDataType(Enum):
     TABLE = "TABLE"
     JSON = "JSON"
     TEXT = "TEXT"
@@ -26,9 +26,7 @@ class NewsScraperAgentLogger(logging.Logger):
 
     def _initialize_logger(self):
         # Formatter 설정
-        formatter = logging.Formatter(
-            fmt="%(name)16s - %(message)s"
-        )
+        formatter = logging.Formatter(fmt="%(name)16s - %(message)s")
 
         # Logger 레벨 설정
         self.setLevel(logging.DEBUG if env.PROFILE != "real" else logging.INFO)
@@ -38,7 +36,9 @@ class NewsScraperAgentLogger(logging.Logger):
             rich_tracebacks=True,
             console=self.console,
             log_time_format=lambda dt: Text(
-                datetime.fromtimestamp(dt.timestamp(), tz=timezone(timedelta(hours=9))).strftime("%Y-%m-%d %H:%M:%S")
+                datetime.fromtimestamp(
+                    dt.timestamp(), tz=timezone(timedelta(hours=9))
+                ).strftime("%Y-%m-%d %H:%M:%S")
             ),
         )
         rich_handler.setLevel(logging.DEBUG)

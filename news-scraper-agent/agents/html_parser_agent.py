@@ -32,14 +32,8 @@ class HtmlParserAgent:
                 Payload=request_body,
                 logging_name=f"scraper-lambda for {self.site.name}",
             )
-            if response["StatusCode"] != 200:
-                self.logger.error(response["FunctionError"])
-                self.logger.error(response["LogResult"])
-                raise Exception("Lambda 호출 실패")
 
-            response_data: list[str] = json.loads(
-                json.load(response["Payload"])["body"]
-            )["result"]
+            response_data: list[str] = response["result"]
 
             if self.site.name == "데보션":
                 response_data = self.__parse_devocean_detail(response_data)
@@ -107,13 +101,4 @@ class HtmlParserAgent:
             logging_name=f"scraper-lambda for devocean detail",
         )
 
-        if response["StatusCode"] != 200:
-            self.logger.error(response["FunctionError"])
-            self.logger.error(response["LogResult"])
-            raise Exception("Failed invocation scraper-lambda for devocean detail")
-
-        response_data: list[str] = json.loads(json.load(response["Payload"])["body"])[
-            "result"
-        ]
-
-        return response_data
+        return response["result"]
