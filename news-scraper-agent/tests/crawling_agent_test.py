@@ -44,15 +44,6 @@ class CrawlingAgentTest(unittest.TestCase):
             updatedAt=None,
             requestedBy="",
         )
-        self.sds = SiteDto(
-            name="삼성 SDS",
-            url="https://www.samsungsds.com/kr/insights/index.html?moreCnt=0&backTypeId=&category=&reqArtId=1282554",
-            verified=True,
-            keywords=[],
-            createdAt=None,
-            updatedAt=None,
-            requestedBy="",
-        )
 
     def test_GN(self):
         site = self.geek_news
@@ -114,28 +105,6 @@ class CrawlingAgentTest(unittest.TestCase):
         crawling_agent = CrawlingAgent(llm=self.gpt_4o, site=site)
 
         with open(f"{current_dir}/fixtures/crawling_agent_test_aitimes.json", "r") as f:
-            parser_result = json.load(f)
-
-        state_before = SiteState(
-            filtering_result={},
-            crawling_result={},
-            parser_result={site.name: parser_result},
-            sorted_result={},
-        )
-        state_after = crawling_agent(state_before)
-
-        for v in state_after.crawling_result[site.name]:
-            default_logger.info(v)
-
-        self.assertIn(site.name, state_after.crawling_result)
-        self.assertIsInstance(state_after.crawling_result[site.name], list)
-        self.assertGreater(len(state_after.crawling_result[site.name]), 0)
-
-    def test_SDS(self):
-        site = self.sds
-        crawling_agent = CrawlingAgent(llm=self.gpt_4o, site=site)
-
-        with open(f"{current_dir}/fixtures/crawling_agent_test_sds.json", "r") as f:
             parser_result = json.load(f)
 
         state_before = SiteState(

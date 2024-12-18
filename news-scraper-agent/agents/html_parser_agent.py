@@ -64,12 +64,6 @@ class HtmlParserAgent:
                     "content_type": "html",
                     "selector": "div.sec-area > ul.sec-area-list01 > li:first-child > div a > h3.pc_view",
                 }
-            case url if "samsungsds.com" in url:
-                return {
-                    "url": url,
-                    "content_type": "html",
-                    "selector": ".cont_list .item strong.md_tit",
-                }
             case _:
                 self.logger.error(f"정의되지 않은 페이지 (url: ${url})")
                 raise ValueError("정의되지 않은 페이지 입니다.")
