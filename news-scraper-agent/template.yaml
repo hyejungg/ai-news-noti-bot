@@ -11,7 +11,7 @@ Resources:
     Properties:
       FunctionName: news-scraper-agent
       ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent
-      Timeout: 300 # 300초 (5분)
+      Timeout: 600 # 600초 (10분)
       EventInvokeConfig:
         MaximumRetryAttempts: 1
         MaximumEventAgeInSeconds: 21600 # 6시간
