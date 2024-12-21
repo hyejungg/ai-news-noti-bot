@@ -40,6 +40,9 @@ Resources:
             ScheduleExpressionTimezone: Asia/Seoul
             Name: news-scraper-agent
             Description: news-scraper-agent daily scheduler
+      Environment:
+        Variables:
+          PROFILE: !Ref PROFILE
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./

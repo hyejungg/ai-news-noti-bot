@@ -29,6 +29,9 @@ Resources:
       Tags:
         PROJECT: AI_NEWS_AGENT
         PHASE: !Ref PROFILE
+      Environment:
+        Variables:
+          PROFILE: !Ref PROFILE
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./src
