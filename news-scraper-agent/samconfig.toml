@@ -31,7 +31,7 @@ warm_containers = "EAGER"
 
 [prod]
 [prod.deploy.parameters]
-stack_name = "news-scraper-agent"
+stack_name = "news-scraper-agent-prod"
 parameter_overrides = "PROFILE=prod"
 
 [dev]
