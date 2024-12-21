@@ -38,7 +38,7 @@ Resources:
           Properties:
             ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
             ScheduleExpressionTimezone: Asia/Seoul
-            Name: news-scraper-agent
+            Name: !Sub news-scraper-agent-${PROFILE}
             Description: news-scraper-agent daily scheduler
       Environment:
         Variables:

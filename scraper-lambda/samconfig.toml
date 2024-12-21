@@ -10,13 +10,6 @@ parallel = true
 [default.validate.parameters]
 lint = true
 
-[default.deploy.parameters]
-capabilities = "CAPABILITY_NAMED_IAM"
-confirm_changeset = true
-resolve_s3 = true
-resolve_image_repos = false
-image_repositories = ["ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda"]
-
 [default.package.parameters]
 resolve_s3 = true
 
@@ -33,8 +26,20 @@ warm_containers = "EAGER"
 [prod.deploy.parameters]
 stack_name = "scraper-lambda-prod"
 parameter_overrides = "PROFILE=prod"
+capabilities = "CAPABILITY_NAMED_IAM"
+confirm_changeset = true
+resolve_s3 = true
+resolve_image_repos = false
+image_repositories = ["ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda"]
+
 
 [dev]
 [dev.deploy.parameters]
 stack_name = "scraper-lambda-dev"
 parameter_overrides = "PROFILE=dev"
+capabilities = "CAPABILITY_NAMED_IAM"
+confirm_changeset = true
+resolve_s3 = true
+resolve_image_repos = false
+image_repositories = ["ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda"]
+
