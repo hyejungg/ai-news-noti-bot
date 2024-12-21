@@ -5,11 +5,20 @@ Description: >
 
   Sample SAM Template for ai-news-agent
 
+Parameters:
+  PROFILE:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - dev
+      - prod
+    Description: 배포에 사용할 phase
+
 Resources:
   NewsScraperAgentFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      FunctionName: news-scraper-agent
+      FunctionName: !Sub news-scraper-agent-${PROFILE}
       ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent
       Timeout: 600 # 600초 (10분)
       EventInvokeConfig:
@@ -22,6 +31,7 @@ Resources:
       Role: !GetAtt NewsScraperAgentFunctionRole.Arn
       Tags:
         PROJECT: AI_NEWS_AGENT
+        PHASE: !Ref PROFILE
       Events:
         Schedule:
           Type: ScheduleV2
@@ -45,7 +55,7 @@ Resources:
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      FunctionName: scraper-lambda
+      FunctionName: !Sub scraper-lambda-${PROFILE}
       ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda
       Timeout: 300 # 300초
       MemorySize: 512
@@ -55,6 +65,7 @@ Resources:
       Role: !GetAtt ScraperLambdaFunctionRole.Arn
       Tags:
         PROJECT: AI_NEWS_AGENT
+        PHASE: !Ref PROFILE
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./scraper-lambda/src
@@ -63,10 +74,12 @@ Resources:
   NewsScraperAgentFunctionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: news-scraper-agent-function-role
+      RoleName: !Sub news-scraper-agent-function-role-${PROFILE}
       Tags:
         - Key: PROJECT
           Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -95,7 +108,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent:*
+                Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent-${PROFILE}:*
         - PolicyName: EventBridgeSchedule
           PolicyDocument:
             Version: '2012-10-17'
@@ -105,7 +118,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent:*
+                Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent-${PROFILE}:*
         - PolicyName: LambdaInvokePermission
           PolicyDocument:
             Version: '2012-10-17'
@@ -118,10 +131,12 @@ Resources:
   ScraperLambdaFunctionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: scraper-lambda-function-role
+      RoleName: !Sub scraper-lambda-function-role-${PROFILE}
       Tags:
         - Key: PROJECT
           Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -150,7 +165,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/scraper-lambda:*
+                Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/scraper-lambda-${PROFILE}:*
 
 Outputs:
   NewsScraperAgentFunction:

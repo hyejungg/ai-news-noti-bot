@@ -3,8 +3,6 @@
 version = 0.1
 
 [default]
-[default.global.parameters]
-stack_name = "news-scraper-agent"
 
 [default.build.parameters]
 parallel = true
@@ -30,3 +28,13 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+[prod]
+[prod.deploy.parameters]
+stack_name = "news-scraper-agent"
+parameter_overrides = "PROFILE=prod"
+
+[dev]
+[dev.deploy.parameters]
+stack_name = "news-scraper-agent-dev"
+parameter_overrides = "PROFILE=dev"

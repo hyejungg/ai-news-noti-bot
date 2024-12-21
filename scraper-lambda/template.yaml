@@ -5,11 +5,20 @@ Description: >
 
   Sample SAM Template for scraper-lambda
 
+Parameters:
+  PROFILE:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - dev
+      - prod
+    Description: 배포에 사용할 phase
+
 Resources:
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      FunctionName: scraper-lambda
+      FunctionName: !Sub scraper-lambda-${PROFILE}
       ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda
       Timeout: 300 # 300초
       MemorySize: 512
@@ -19,16 +28,19 @@ Resources:
       Role: !GetAtt ScraperLambdaFunctionRole.Arn
       Tags:
         PROJECT: AI_NEWS_AGENT
+        PHASE: !Ref PROFILE
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./src
   ScraperLambdaFunctionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: scraper-lambda-function-role
+      RoleName: !Sub scraper-lambda-function-role-${PROFILE}
       Tags:
         - Key: PROJECT
           Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -57,7 +69,7 @@ Resources:
                 - logs:CreateLogGroup
                 - logs:CreateLogStream
                 - logs:PutLogEvents
-              Resource: arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/scraper-lambda:*
+              Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/scraper-lambda-${PROFILE}:*
 
 Outputs:
   ScraperLambdaFunction:
