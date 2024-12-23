@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: AI News Agent 스택
+Description: AI News Agent stack
 
 Parameters:
   PROFILE:
@@ -10,6 +10,9 @@ Parameters:
       - dev
       - prod
     Description: 배포에 사용할 phase
+
+Conditions:
+  IsProd: !Equals [!Ref PROFILE, prod]
 
 Resources:
   NewsScraperAgentFunction:
@@ -29,14 +32,6 @@ Resources:
       Tags:
         PROJECT: AI_NEWS_AGENT
         PHASE: !Ref PROFILE
-      Events:
-        Schedule:
-          Type: ScheduleV2
-          Properties:
-            ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
-            ScheduleExpressionTimezone: Asia/Seoul
-            Name: !Sub news-scraper-agent-${PROFILE}
-            Description: news-scraper-agent daily scheduler
       Policies:
         - LambdaInvokePolicy:
             FunctionName:
@@ -49,6 +44,19 @@ Resources:
       Dockerfile: Dockerfile
       DockerContext: ./news-scraper-agent
     DependsOn: NewsScraperAgentFunctionRole
+
+  NewsScraperAgentSchedule:
+    Type: AWS::Events::Rule
+    Condition: IsProd
+    Properties:
+      Name: !Sub news-scraper-agent-schedule-${PROFILE}
+      ScheduleExpression: 'cron(0 10 ? * 2-6 *)'
+      ScheduleExpressionTimezone: Asia/Seoul
+      Description: news-scraper-agent daily scheduler
+      State: ENABLED
+      Targets:
+        - Id: NewsScraperAgentFunction
+          Arn: !GetAtt NewsScraperAgentFunction.Arn
 
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
