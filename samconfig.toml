@@ -31,8 +31,8 @@ confirm_changeset = true
 resolve_s3 = true
 resolve_image_repos = false
 image_repositories = [
-    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent",
-    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda"
+    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-prod",
+    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-prod"
 ]
 
 
@@ -45,7 +45,7 @@ confirm_changeset = true
 resolve_s3 = true
 resolve_image_repos = false
 image_repositories = [
-    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent",
-    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda"
+    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-dev",
+    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-dev"
 ]
 

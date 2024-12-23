@@ -1,9 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  python3.12
-
-  Sample SAM Template for ai-news-agent
+Description: AI News Agent 스택
 
 Parameters:
   PROFILE:
@@ -19,7 +16,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       FunctionName: !Sub news-scraper-agent-${PROFILE}
-      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent
+      ImageUri: !Sub 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-${PROFILE}
       Timeout: 600 # 600초 (10분)
       EventInvokeConfig:
         MaximumRetryAttempts: 1
@@ -57,7 +54,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       FunctionName: !Sub scraper-lambda-${PROFILE}
-      ImageUri: 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda
+      ImageUri: !Sub 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-${PROFILE}
       Timeout: 300 # 300초
       MemorySize: 512
       PackageType: Image
@@ -102,7 +99,7 @@ Resources:
                   - ecr:BatchCheckLayerAvailability
                   - ecr:GetDownloadUrlForLayer
                   - ecr:BatchGetImage
-                Resource: arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/news-scraper-agent
+                Resource: !Sub arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/news-scraper-agent-${PROFILE}
         - PolicyName: LambdaCloudWatchLogsAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -159,7 +156,7 @@ Resources:
                   - ecr:BatchCheckLayerAvailability
                   - ecr:GetDownloadUrlForLayer
                   - ecr:BatchGetImage
-                Resource: arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/scraper-lambda
+                Resource: !Sub arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/scraper-lambda-${PROFILE}
         - PolicyName: LambdaCloudWatchLogsAccess
           PolicyDocument:
             Version: '2012-10-17'
