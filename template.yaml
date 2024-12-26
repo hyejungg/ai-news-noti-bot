@@ -5,10 +5,11 @@ Description: AI News Agent stack
 Parameters:
   PROFILE:
     Type: String
-    Default: prod
+    Default: local
     AllowedValues:
       - dev
       - prod
+      - local
     Description: 배포에 사용할 phase
 
 Conditions:
@@ -38,7 +39,6 @@ Resources:
               !Ref ScraperLambdaFunction
       Environment:
         Variables:
-          SCRAPER_LAMBDA_FUNCTION: !Ref ScraperLambdaFunction
           PROFILE: !Ref PROFILE
     Metadata:
       Dockerfile: Dockerfile
