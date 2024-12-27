@@ -3,24 +3,12 @@
 version = 0.1
 
 [default]
-[default.global.parameters]
-stack_name = "ai-news-agent"
 
 [default.build.parameters]
 parallel = true
 
 [default.validate.parameters]
 lint = true
-
-[default.deploy.parameters]
-capabilities = "CAPABILITY_NAMED_IAM"
-confirm_changeset = true
-resolve_s3 = true
-resolve_image_repos = false
-image_repositories = [
-    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent",
-    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda"
-]
 
 [default.package.parameters]
 resolve_s3 = true
@@ -33,3 +21,31 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+[prod]
+[prod.deploy.parameters]
+stack_name = "ai-news-agent-prod"
+parameter_overrides = "PROFILE=prod"
+capabilities = "CAPABILITY_NAMED_IAM"
+confirm_changeset = true
+resolve_s3 = true
+resolve_image_repos = false
+image_repositories = [
+    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-prod",
+    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-prod"
+]
+
+
+[dev]
+[dev.deploy.parameters]
+stack_name = "ai-news-agent-dev"
+parameter_overrides = "PROFILE=dev"
+capabilities = "CAPABILITY_NAMED_IAM"
+confirm_changeset = true
+resolve_s3 = true
+resolve_image_repos = false
+image_repositories = [
+    "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-dev",
+    "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-dev"
+]
+

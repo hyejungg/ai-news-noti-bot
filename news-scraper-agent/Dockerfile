@@ -12,8 +12,7 @@ COPY . /var/task/
 WORKDIR /var/task
 
 # Replace profile in .env and install poetry
-RUN sed -i 's/PROFILE="local"/PROFILE="dev"/g' .env \
-    && poetry config virtualenvs.create false \
+RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction
 
 CMD [ "main.lambda_handler" ]

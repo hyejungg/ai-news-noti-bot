@@ -2,7 +2,7 @@ import json
 import re
 from typing import TypedDict, Literal, NotRequired
 
-
+from config.env_config import env
 from config.log import NewsScraperAgentLogger
 from decorations.log_time import log_time_agent_method
 from external.aws_lambda.client import LambdaInvoker
@@ -21,13 +21,16 @@ class HtmlParserAgent:
         self.logger = NewsScraperAgentLogger(self.__class__.__name__)
         self.site = site
         self.lambda_invoker = LambdaInvoker()
+        self.function_name = f"scraper-lambda-{env.PROFILE}"
+        if env.PROFILE == "local":
+            self.function_name = "scraper-lambda-dev"
 
     @log_time_agent_method
     def __call__(self, state: SiteState = None) -> SiteState:
         request_body = json.dumps(self.__create_payload())
         try:
             response = self.lambda_invoker.invoke(
-                FunctionName="scraper-lambda",
+                FunctionName=self.function_name,
                 InvocationType="RequestResponse",
                 Payload=request_body,
                 logging_name=f"scraper-lambda for {self.site.name}",
@@ -89,7 +92,7 @@ class HtmlParserAgent:
         )
 
         response = self.lambda_invoker.invoke(
-            FunctionName="scraper-lambda",
+            FunctionName=self.function_name,
             InvocationType="RequestResponse",
             Payload=body,
             logging_name=f"scraper-lambda for devocean detail",

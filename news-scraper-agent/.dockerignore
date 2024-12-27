@@ -1,0 +1,6 @@
+.aws-sam/
+.idea/
+news-scraper-agent.iml
+.gitignore
+Dockerfile
+README.md

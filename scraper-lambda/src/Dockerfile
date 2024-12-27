@@ -17,7 +17,6 @@ RUN mkdir -p ${FUNCTION_DIR}
 
 # Copy function code
 COPY . ${FUNCTION_DIR}
-COPY requirements.txt ${FUNCTION_DIR}/requirements.txt
 
 WORKDIR ${FUNCTION_DIR}
 
