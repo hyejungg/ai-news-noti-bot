@@ -1,11 +1,6 @@
 name: deploy-ai-news-agent-stack
 on:
-#  push:
-#    branches:
-#      - main
-#      - develop
-  # TODO 나중에 삭제하기
-  pull_request:
+  push:
     branches:
       - main
       - develop
