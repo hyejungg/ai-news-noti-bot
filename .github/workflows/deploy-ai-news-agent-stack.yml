@@ -1,18 +1,18 @@
 name: deploy-ai-news-agent-stack
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: '배포할 브랜치'
-        required: true
-        default: 'main'
+#  push:
+#    branches:
+#      - main
+#      - develop
+  # TODO 나중에 삭제하기
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
   deploy-ai-news-agent-stack:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [ 18.16.0 ] # 개발환경과 동일하게 맞춤
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
