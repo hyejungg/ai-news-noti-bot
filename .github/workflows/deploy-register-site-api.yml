@@ -1,0 +1,61 @@
+name: prod-register-site-api
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: '배포할 브랜치'
+        required: true
+        default: 'main'
+
+jobs:
+  deploy-register-site-api:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.16.0 ] # 개발환경과 동일하게 맞춤
+    steps:
+      - name: Checkout source code.
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "${{ secrets.REAL_ENV }}" >> ./common/.env
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: AWS ECR login
+        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
+
+      - name: Build docker image and push docker images to ecr
+        run: |
+          docker build -t ai-news-noti-bot-api-real -f DockerfileApi .
+          docker tag ai-news-noti-bot-api-real:latest ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
+            docker push ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
+
+      - name: Update lambda function
+        run: aws lambda update-function-code --function-name ai-news-noti-bot-api-real --image-uri ${{ secrets.AWS_REGISTRY_URL }}/ai-news-noti-bot-api-real:latest
+
+      - name: Delete untagged images in ECR
+        run: |
+          # Get untagged image digest
+          UNTAGGED_IMAGES=$(aws ecr describe-images --repository-name ai-news-noti-bot-api-real --query 'imageDetails[?imageTags==null].imageDigest' --output json)
+          
+          # Delete untagged images
+          if [ -n "$UNTAGGED_IMAGES" ]; then
+            for IMAGE_DIGEST in $(echo "$UNTAGGED_IMAGES" | jq -r '.[]'); do
+              aws ecr batch-delete-image --repository-name ai-news-noti-bot-api-real --image-ids imageDigest=$IMAGE_DIGEST
+            done
+          fi
