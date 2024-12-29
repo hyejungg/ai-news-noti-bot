@@ -22,6 +22,8 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.2' # 개발 환경과 맞춤
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
