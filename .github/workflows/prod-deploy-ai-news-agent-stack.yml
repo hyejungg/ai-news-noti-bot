@@ -1,0 +1,34 @@
+name: prod-deploy-ai-news-agent-stack
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-ai-news-agent-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: Create .env file
+        run: echo "${{ secrets.NEWS_SCRAPER_LAMBDA_ENV_PROD }}" >> ./news-scraper-agent/.env
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: AWS Sam build
+        run: sam build --config-env prod
+
+      - name: AWS Sam Deploy
+        run: sam deploy --config-env prod
