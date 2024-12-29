@@ -18,7 +18,7 @@ jobs:
         uses: aws-actions/setup-sam@v2
 
       - name: Setup Poetry
-        run: pip install poetry 1.8.3
+        run: pip install poetry
 
       - name: Create .env file
         run: echo "${{ secrets.NEWS_SCRAPER_LAMBDA_ENV_PROD }}" >> ./news-scraper-agent/.env
