@@ -37,7 +37,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: AWS Sam build
-        run: sam build --config-env dev
+        run: sam build --config-env dev --debug
 
       - name: AWS Sam Deploy
         run: sam deploy --config-env dev
