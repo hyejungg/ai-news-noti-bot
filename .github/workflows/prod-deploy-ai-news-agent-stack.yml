@@ -33,4 +33,4 @@ jobs:
         run: sam build --config-env prod --use-container
 
       - name: AWS Sam Deploy
-        run: sam deploy --config-env prod
+        run: sam deploy --config-env prod --no-confirm-changeset --no-fail-on-empty-changeset
