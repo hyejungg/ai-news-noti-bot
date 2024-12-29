@@ -1,0 +1,39 @@
+name: dev-deploy-ai-news-agent-stack
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: '배포할 브랜치'
+        required: true
+        default: 'develop'
+
+jobs:
+  deploy-ai-news-agent-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: Create .env file
+        run: echo "${{ secrets.NEWS_SCRAPER_LAMBDA_ENV_DEV }}" >> ./news-scraper-agent/.env
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOY_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: AWS Sam build
+        run: sam build --config-env dev
+
+      - name: AWS Sam Deploy
+        run: sam deploy --config-env dev
