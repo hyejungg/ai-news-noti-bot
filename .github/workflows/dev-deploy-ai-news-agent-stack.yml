@@ -27,6 +27,8 @@ jobs:
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
 
       - name: Create .env file
         run: echo "${{ secrets.NEWS_SCRAPER_LAMBDA_ENV_DEV }}" >> ./news-scraper-agent/.env
