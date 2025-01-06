@@ -25,11 +25,8 @@ jobs:
         with:
           python-version: '3.12.2' # 개발 환경과 맞춤
 
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl enable --now docker
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
 
       - name: Setup SAM CLI
         run: pip install aws-sam-cli
