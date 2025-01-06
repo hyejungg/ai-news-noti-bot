@@ -29,7 +29,7 @@ jobs:
         uses: docker/setup-docker-action@v4
 
       - name: Setup SAM CLI
-        run: pip install aws-sam-cli
+        uses: aws-actions/setup-sam@v2
 
       - name: Create .env file
         run: echo "${{ secrets.NEWS_SCRAPER_LAMBDA_ENV_DEV }}" >> ./news-scraper-agent/.env
@@ -42,7 +42,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: AWS Sam build
-        run: sam build --config-env dev --debug --use-container
+        run: sam build --config-env dev --debug --no-use-container
 
       - name: AWS Sam Deploy
         run: sam deploy --config-env dev --debug --no-confirm-changeset --no-fail-on-empty-changeset
