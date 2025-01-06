@@ -25,9 +25,6 @@ jobs:
         with:
           python-version: '3.12.2' # 개발 환경과 맞춤
 
-      - name: Set up Docker
-        uses: docker/setup-docker-action@v4
-
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
 
@@ -42,7 +39,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: AWS Sam build
-        run: sam build --config-env dev --debug --no-use-container
+        run: sam build --config-env dev
 
       - name: AWS Sam Deploy
-        run: sam deploy --config-env dev --debug --no-confirm-changeset --no-fail-on-empty-changeset
+        run: sam deploy --config-env dev --no-confirm-changeset --no-fail-on-empty-changeset
