@@ -28,7 +28,7 @@ Resources:
       MemorySize: 512
       PackageType: Image
       Architectures:
-        - amd64
+        - x86_64
       Role: !GetAtt NewsScraperAgentFunctionRole.Arn
       Tags:
         PROJECT: AI_NEWS_AGENT
@@ -67,7 +67,7 @@ Resources:
       MemorySize: 512
       PackageType: Image
       Architectures:
-        - amd64
+        - x86_64
       Role: !GetAtt ScraperLambdaFunctionRole.Arn
       Tags:
         PROJECT: AI_NEWS_AGENT
