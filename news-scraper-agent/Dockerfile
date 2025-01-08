@@ -1,18 +1,11 @@
 FROM public.ecr.aws/lambda/python:3.12
 
-ENV POETRY_VERSION=1.8.3
-ENV PYTHONPATH=/var/task
-
-# poetry install
-RUN pip install "poetry==$POETRY_VERSION"
-
 # Copy all files to container
-COPY . /var/task/
+COPY . ${LAMBDA_TASK_ROOT}
 
-WORKDIR /var/task
+WORKDIR ${LAMBDA_TASK_ROOT}
 
 # Replace profile in .env and install poetry
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction
+RUN python3.12 -m pip install -r requirements.txt
 
 CMD [ "main.lambda_handler" ]

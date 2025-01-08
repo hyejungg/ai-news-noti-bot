@@ -17,7 +17,9 @@ jobs:
           ref: ${{ github.event.inputs.branch }}
 
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.2' # 개발 환경과 맞춤
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
@@ -36,4 +38,4 @@ jobs:
         run: sam build --config-env dev
 
       - name: AWS Sam Deploy
-        run: sam deploy --config-env dev
+        run: sam deploy --config-env dev --no-confirm-changeset --no-fail-on-empty-changeset

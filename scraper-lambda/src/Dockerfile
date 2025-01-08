@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/function"
 
-FROM mcr.microsoft.com/playwright/python:v1.48.0-noble-arm64
+FROM mcr.microsoft.com/playwright/python:v1.48.0-noble
 
 RUN apt-get update && \
     apt-get install -y \
