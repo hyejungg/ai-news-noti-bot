@@ -4,12 +4,21 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: '배포할 브랜치'
+        required: true
+        default: 'main'
+
 jobs:
   deploy-ai-news-agent-stack:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
