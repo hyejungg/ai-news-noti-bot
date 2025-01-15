@@ -1,30 +1,32 @@
-[tool.poetry]
+[project]
 name = "news-scraper-agent"
 version = "0.1.0"
 description = ""
-authors = ["hyejungg <kimhyejung12@naver.com>", "JongwooLee <jongwoo328@gmail.com>"]
+authors = [
+    { name = "hyejungg", email = "kimhyejung12@naver.com" },
+    { name = "Lee Jongwoo", email = "jongwoo328@gmail.com" }
+]
 readme = "README.md"
 package-mode = false
-
-[tool.poetry.dependencies]
-python = "^3.12"
-langgraph = "^0.2.35"
-langsmith = "^0.1.134"
-langchain-openai = "^0.2.2"
-langchain = "^0.3.3"
-python-dotenv = "^1.0.1"
-typing-extensions = "^4.12.2"
-mongoengine = "^0.29.1"
-pytz = "^2024.2"
-langchain-community = "^0.3.3"
-boto3 = "^1.35.63"
-rich = "^13.9.4"
-tenacity = "^9.0.0"
-
+requires-python = ">=3.12, <4.0"
+dependencies = [
+    "langgraph (>=0.2.35, <1.0.0)",
+    "langsmith (>=0.1.134, <1.0.0)",
+    "langchain-openai (>=0.2.2, <1.0.0)",
+    "langchain (>=0.3.3, <1.0.0)",
+    "python-dotenv (>=1.0.1, <2.0.0)",
+    "typing-extensions (>=4.12.2, <5.0.0)",
+    "mongoengine (>=0.29.1, <1.0.0)",
+    "pytz (>=2024.2)",
+    "langchain-community (>=0.3.3, <1.0.0)",
+    "boto3 (>=1.35.63, <2.0.0)",
+    "rich (>=13.9.4, <14.0.0)",
+    "tenacity (>=9.0.0, <10.0.0)"
+]
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0, <3.0.0"]
 build-backend = "poetry.core.masonry.api"
