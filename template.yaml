@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AI News Agent stack
+
+Parameters:
+  PROFILE:
+    Type: String
+    Default: local
+    AllowedValues:
+      - dev
+      - prod
+      - local
+    Description: 배포에 사용할 phase
+
+Conditions:
+  IsProd: !Equals [!Ref PROFILE, prod]
+
+Resources:
+  NewsScraperAgentFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: !Sub news-scraper-agent-${PROFILE}
+      ImageUri: !Sub 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-${PROFILE}
+      Timeout: 600 # 600초 (10분)
+      EventInvokeConfig:
+        MaximumRetryAttempts: 1
+        MaximumEventAgeInSeconds: 21600 # 6시간
+      MemorySize: 512
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Role: !GetAtt NewsScraperAgentFunctionRole.Arn
+      Tags:
+        PROJECT: AI_NEWS_AGENT
+        PHASE: !Ref PROFILE
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName:
+              !Ref ScraperLambdaFunction
+      Environment:
+        Variables:
+          PROFILE: !Ref PROFILE
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./news-scraper-agent
+    DependsOn: NewsScraperAgentFunctionRole
+
+  NewsScraperAgentSchedule:
+    Type: AWS::Events::Rule
+    Condition: IsProd
+    Properties:
+      Name: !Sub news-scraper-agent-schedule-${PROFILE}
+      ScheduleExpression: 'cron(0 10 ? * 2-6 *)'
+      ScheduleExpressionTimezone: Asia/Seoul
+      Description: news-scraper-agent daily scheduler
+      State: ENABLED
+      Targets:
+        - Id: NewsScraperAgentFunction
+          Arn: !GetAtt NewsScraperAgentFunction.Arn
+
+  ScraperLambdaFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: !Sub scraper-lambda-${PROFILE}
+      ImageUri: !Sub 339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-${PROFILE}
+      Timeout: 300 # 300초
+      MemorySize: 512
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Role: !GetAtt ScraperLambdaFunctionRole.Arn
+      Tags:
+        PROJECT: AI_NEWS_AGENT
+        PHASE: !Ref PROFILE
+      Environment:
+        Variables:
+          PROFILE: !Ref PROFILE
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./scraper-lambda/src
+    DependsOn: ScraperLambdaFunctionRole
+
+  NewsScraperAgentFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub news-scraper-agent-function-role-${PROFILE}
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaECRAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:BatchGetImage
+                Resource: !Sub arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/news-scraper-agent-${PROFILE}
+        - PolicyName: LambdaCloudWatchLogsAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent-${PROFILE}:*
+        - PolicyName: EventBridgeSchedule
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/news-scraper-agent-${PROFILE}:*
+        - PolicyName: LambdaInvokePermission
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: !GetAtt ScraperLambdaFunction.Arn
+
+  ScraperLambdaFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub scraper-lambda-function-role-${PROFILE}
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaECRAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:BatchGetImage
+                Resource: !Sub arn:aws:ecr:ap-northeast-2:339712918956:repository/ai-news-agent/scraper-lambda-${PROFILE}
+        - PolicyName: LambdaCloudWatchLogsAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:ap-northeast-2:339712918956:log-group:/aws/lambda/scraper-lambda-${PROFILE}:*
+
+Outputs:
+  NewsScraperAgentFunction:
+    Description: "News Scraper Agent Function ARN"
+    Value: !GetAtt NewsScraperAgentFunction.Arn
+  ScraperLambdaFunction:
+    Description: "Scraper Lambda Function ARN"
+    Value: !GetAtt ScraperLambdaFunction.Arn

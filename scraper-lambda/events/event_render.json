@@ -1,0 +1,5 @@
+{
+  "url": "https://d1qbk7p5aewspc.cloudfront.net/test/test_render.html",
+  "content_type": "html",
+  "selector": "#content-section > section.products > div:nth-child(2) > span"
+}

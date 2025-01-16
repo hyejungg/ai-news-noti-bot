@@ -1,0 +1,31 @@
+[project]
+name = "scraper-lambda"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "hyejungg", email = "kimhyejung12@naver.com" },
+    { name = "Lee Jongwoo", email = "jongwoo328@gmail.com" }
+]
+readme = "README.md"
+package-mode = false
+requires-python = ">=3.12, <4.0"
+dependencies = [
+    "playwright==1.48.0",
+    "requests (>=2.32.3, <3.0.0)",
+]
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0, <3.0.0"]
+build-backend = "poetry.core.masonry.api"

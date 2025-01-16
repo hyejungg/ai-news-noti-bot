@@ -1,0 +1,35 @@
+[project]
+name = "news-scraper-agent"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "hyejungg", email = "kimhyejung12@naver.com" },
+    { name = "Lee Jongwoo", email = "jongwoo328@gmail.com" }
+]
+readme = "README.md"
+package-mode = false
+requires-python = ">=3.12, <4.0"
+dependencies = [
+    "langgraph (>=0.2.35, <0.3.0)",
+    "langsmith (>=0.1.134, <0.2.0)",
+    "langchain-openai (>=0.2.2, <0.3.0)",
+    "langchain (>=0.3.3, <0.4.0)",
+    "python-dotenv (>=1.0.1, <2.0.0)",
+    "typing-extensions (>=4.12.2, <5.0.0)",
+    "mongoengine (>=0.29.1, <0.30.0)",
+    "pytz (>=2024.2)",
+    "langchain-community (>=0.3.3, <0.4.0)",
+    "boto3 (>=1.35.63, <2.0.0)",
+    "rich (>=13.9.4, <14.0.0)",
+    "tenacity (>=9.0.0, <10.0.0)"
+]
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0, <3.0.0"]
+build-backend = "poetry.core.masonry.api"
