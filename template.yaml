@@ -50,8 +50,7 @@ Resources:
     Condition: IsProd
     Properties:
       Name: !Sub news-scraper-agent-schedule-${PROFILE}
-      ScheduleExpression: 'cron(0 10 ? * 2-6 *)'
-      ScheduleExpressionTimezone: Asia/Seoul
+      ScheduleExpression: 'cron(0 1 ? * 2-6 *)'
       Description: news-scraper-agent daily scheduler
       State: ENABLED
       Targets:
