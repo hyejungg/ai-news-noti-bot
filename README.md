@@ -4,7 +4,7 @@ AI 뉴스 트렌드 알림 봇은 회사 내 GAI(Generative AI) 스터디원들�
 특정 사이트에 대한 뉴스 기사 중 GAI, AI와 관련된 뉴스들만 필터링 합니다. 
 현재 크롤링 중인 사이트는 '긱뉴스', '데보션', 'AI 타임즈'이고, 사이트 추가는 누구든 [링크](https://d1qbk7p5aewspc.cloudfront.net/index.html)에서 자유롭게 가능합니다.
 
-> 📍 v1은 [여기](https://github.com/hyejungg/ai-news-noti-bot/releases/tag/1.0.0-archive)에서 볼 수 있습니다.
+> 📍 v1 소스코드는 [여기](https://github.com/hyejungg/ai-news-noti-bot/tree/1.0.0-archive?tab=readme-ov-file)에서 볼 수 있습니다.
 
 ###  v1 에서 v2로 개선한 이유
 - 기존 방식은 DB에 저장되어 있는 각 사이트별 keyword를 기준으로 기사 제목에서 동일한 값이 있는 뉴스들만 필터링
