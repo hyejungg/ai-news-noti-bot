@@ -46,12 +46,14 @@ Resources:
     DependsOn: NewsScraperAgentFunctionRole
 
   NewsScraperAgentSchedule:
-    Type: AWS::Events::Rule
+    Type: AWS::Scheduler::Schedule
     Condition: IsProd
     Properties:
       Name: !Sub news-scraper-agent-schedule-${PROFILE}
-      ScheduleExpression: 'cron(0 1 ? * 2-6 *)'
       Description: news-scraper-agent daily scheduler
+      FlexibleTimeWindow: 'OFF'
+      ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
+      ScheduleExpressionTimezone: Asia/Seoul
       State: ENABLED
       Targets:
         - Id: NewsScraperAgentFunction
