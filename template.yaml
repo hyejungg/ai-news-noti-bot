@@ -51,13 +51,16 @@ Resources:
     Properties:
       Name: !Sub news-scraper-agent-schedule-${PROFILE}
       Description: news-scraper-agent daily scheduler
-      FlexibleTimeWindow: 'OFF'
+      FlexibleTimeWindow:
+        MaximumWindowInMinutes: 1
+        Mode: 'FLEXIBLE'
       ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
       ScheduleExpressionTimezone: Asia/Seoul
       State: ENABLED
-      Targets:
-        - Id: NewsScraperAgentFunction
-          Arn: !GetAtt NewsScraperAgentFunction.Arn
+      Target:
+        Arn: !GetAtt NewsScraperAgentFunction.Arn
+        RoleArn: !Sub news-scraper-agent-function-role-${PROFILE}.Arn
+
 
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
