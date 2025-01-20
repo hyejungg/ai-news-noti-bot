@@ -59,7 +59,8 @@ Resources:
       State: ENABLED
       Target:
         Arn: !GetAtt NewsScraperAgentFunction.Arn
-        RoleArn: !Sub news-scraper-agent-function-role-${PROFILE}.Arn
+        RoleArn: !GetAtt NewsScraperAgentFunctionRole.Arn
+
 
 
   ScraperLambdaFunction:
