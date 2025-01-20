@@ -29,7 +29,7 @@ class NewsScraperAgentLogger(logging.Logger):
         formatter = logging.Formatter(fmt="%(name)16s - %(message)s")
 
         # Logger 레벨 설정
-        self.setLevel(logging.DEBUG if env.PROFILE != "real" else logging.INFO)
+        self.setLevel(logging.DEBUG if env.PROFILE != "prod" else logging.INFO)
 
         # RichHandler 추가
         rich_handler = RichHandler(

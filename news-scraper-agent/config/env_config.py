@@ -1,8 +1,6 @@
-from typing import Optional
-
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from typing import Optional
 
 load_dotenv()
 
@@ -14,12 +12,12 @@ class Environment(BaseSettings):
     # db
     MONGO_DB_LOCAL_URI: str
     MONGO_DB_DEV_URI: str
-    MONGO_DB_REAL_URI: str
+    MONGO_DB_RPOD_URI: str
 
     # kakaoworks
     KAWORK_WEBHOOK_LOCAL_URI: str
     KAWORK_WEBHOOK_DEV_URI: str
-    KAWORK_WEBHOOK_REAL_URI: str
+    KAWORK_WEBHOOK_PROD_URI: str
 
     # langsmith
     LANGCHAIN_ENDPOINT: Optional[str] = None
