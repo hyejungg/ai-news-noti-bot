@@ -7,7 +7,7 @@
 
 ## 실행 방법
 ```shell
-poetry shell
+poetry env activate
 poetry install
 python {파일명}.py
 ```

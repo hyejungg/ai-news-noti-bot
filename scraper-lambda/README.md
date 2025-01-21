@@ -3,7 +3,14 @@
 ## required
 - python 3.12.2
 - poetry 2.0.1
-- 
+
+## 실행 방법
+```shell
+poetry env activate
+poetry install
+python {파일명}.py
+```
+
 ## 동작
 url, content_type, selector를 받아 해당 url의 데이터에서
 html인 경우 전체 내용 또는 selector에 해당하는 데이터를 추출하여 반환
