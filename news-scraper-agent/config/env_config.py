@@ -12,7 +12,7 @@ class Environment(BaseSettings):
     # db
     MONGO_DB_LOCAL_URI: str
     MONGO_DB_DEV_URI: str
-    MONGO_DB_RPOD_URI: str
+    MONGO_DB_PROD_URI: str
 
     # kakaoworks
     KAWORK_WEBHOOK_LOCAL_URI: str
