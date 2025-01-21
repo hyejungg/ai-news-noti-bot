@@ -9,7 +9,7 @@ HTTP_METHOD_POST = "POST"
 HTTP_CONTENT_TYPE = "application/json"
 
 WEBHOOK_URL_MAP = {
-    "prod": env.KAWORK_WEBHOOK_PROD_URI,
+    "real": env.KAWORK_WEBHOOK_REAL_URI,
     "dev": env.KAWORK_WEBHOOK_DEV_URI,
     "local": env.KAWORK_WEBHOOK_LOCAL_URI,
 }

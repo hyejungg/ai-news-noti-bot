@@ -1,3 +1,5 @@
+from mongoengine import connect
+
 from config.env_config import env
 from config.log import NewsScraperAgentLogger
 from models.message import Message
