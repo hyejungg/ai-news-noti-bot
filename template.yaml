@@ -59,7 +59,7 @@ Resources:
       State: ENABLED
       Target:
         Arn: !GetAtt NewsScraperAgentFunction.Arn
-        RoleArn: !GetAtt NewsScraperAgentFunctionRole.Arn
+        RoleArn: !GetAtt NewsScraperAgentScheduleRole.Arn
 
 
 
@@ -143,6 +143,34 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource: !GetAtt ScraperLambdaFunction.Arn
+
+  NewsScraperAgentScheduleRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub news-scraper-agent-schedule-role-${PROFILE}
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - scheduler.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaInvokePermission
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: !GetAtt NewsScraperAgentFunction.Arn
 
   ScraperLambdaFunctionRole:
     Type: AWS::IAM::Role
