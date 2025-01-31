@@ -3,10 +3,11 @@
 
 ## required
 - python 3.12.2
+- poetry 2.0.1
 
 ## 실행 방법
 ```shell
-poetry shell
+poetry env activate
 poetry install
 python {파일명}.py
 ```
@@ -17,12 +18,11 @@ python {파일명}.py
 sam local invoke
 
 # 빌드 후 배포
-sam build
-sam deploy
+sam build --config-env {phase}
+sam deploy --config-env {phase}
 ```
 
 ## memo
-- 현재는 langsmith 로 연결해두었는데 .. 만약에 이게 사내망에서 서비스 하는 걸로 변경된다면 langfuse 써보기!
 - 의존성 내보내기
   - -f, --format: 내보낼 파일의 형식을 지정합니다. 현재는 requirements.txt 형식만 지원합니다.
   - --output, -o: 내보낸 의존성 목록을 저장할 파일의 경로를 지정합니다. 지정하지 않으면 표준 출력으로 결과가 나타납니다.
@@ -31,11 +31,4 @@ sam deploy
   - --with, --without: 특정 의존성 그룹을 포함하거나 제외할 때 사용합니다.
 ```shell
 poetry export -f requirements.txt --output requirements.txt
-```
-- 프로젝트 빌드 및 배포
-  - 이 명령어는 wheel과 source archive를 생성
-  - PyPI에 배포하려면 먼저 PyPI 계정이 있어야 하며, 다음과 같이 배포 가능
-```shell
-poetry build
-poetry publish
 ```

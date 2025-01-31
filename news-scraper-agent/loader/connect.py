@@ -1,17 +1,16 @@
-from mongoengine import connect
-
 from config.env_config import env
 from config.log import NewsScraperAgentLogger
 from models.message import Message
 from models.site import Site
+from mongoengine import connect
 
 logger = NewsScraperAgentLogger()
 
 
 def connect_db():
     try:
-        if env.PROFILE == "real":
-            connect(host=env.MONGO_DB_REAL_URI)
+        if env.PROFILE == "prod":
+            connect(host=env.MONGO_DB_PROD_URI)
         elif env.PROFILE == "develop":
             connect(host=env.MONGO_DB_DEV_URI)
         else:
