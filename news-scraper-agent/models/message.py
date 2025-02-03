@@ -14,24 +14,25 @@ from utils.time_utils import get_datetime_kst
 
 
 class MessageContent(EmbeddedDocument):
-    name = StringField(required=False)
-    title = StringField(required=False)
-    url = StringField(required=False)
+    name = StringField(required=False, db_field="name")
+    title = StringField(required=False, db_field="title")
+    url = StringField(required=False, db_field="url")
 
 
 class Message(Document):
-    type = StringField(required=True)
-    status = StringField(required=True)
+    type = StringField(required=True, db_field="type")
+    status = StringField(required=True, db_field="status")
     messages = ListField(EmbeddedDocumentField(MessageContent))
 
     # timestamps 옵션 대신 createdAt과 updatedAt 필드를 직접 정의
-    createdAt = DateTimeField()
-    updatedAt = DateTimeField()
+    createdAt = DateTimeField(db_field="createdAt")
+    updatedAt = DateTimeField(db_field="updatedAt")
 
     meta = {
         "collection": "messages",
         "indexes": [
             {
+                "name": "createdAt_1",
                 "fields": ["createdAt"],
                 "expireAfterSeconds": 60 * 60 * 24 * 180,
             }  # 180일 후 만료
