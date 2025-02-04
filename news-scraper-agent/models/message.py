@@ -1,5 +1,3 @@
-from typing import Optional
-
 from mongoengine import (
     Document,
     StringField,
@@ -7,13 +5,15 @@ from mongoengine import (
     EmbeddedDocument,
     EmbeddedDocumentField,
     DateTimeField,
+    ObjectIdField,
 )
 from pydantic import BaseModel
-
+from typing import Optional
 from utils.time_utils import get_datetime_kst
 
 
 class MessageContent(EmbeddedDocument):
+    _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
     name = StringField(required=False, db_field="name")
     title = StringField(required=False, db_field="title")
     url = StringField(required=False, db_field="url")
@@ -22,7 +22,7 @@ class MessageContent(EmbeddedDocument):
 class Message(Document):
     type = StringField(required=True, db_field="type")
     status = StringField(required=True, db_field="status")
-    messages = ListField(EmbeddedDocumentField(MessageContent))
+    messages = ListField(EmbeddedDocumentField(MessageContent), db_field="messages")
 
     # timestamps 옵션 대신 createdAt과 updatedAt 필드를 직접 정의
     createdAt = DateTimeField(db_field="createdAt")
@@ -37,6 +37,7 @@ class Message(Document):
                 "expireAfterSeconds": 60 * 60 * 24 * 180,
             }  # 180일 후 만료
         ],
+        "auto_create_index": True,  # 인덱스가 없을 경우 자동 생성
         "versionKey": False,  # __v 필드 생성 방지
     }
 
