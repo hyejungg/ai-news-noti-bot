@@ -21,8 +21,7 @@ class Site(Document):
             {"name": "name_1", "fields": ["name"]},
             {"name": "url_1", "fields": ["url"]},
         ],
-        "auto_create_index": True,
-        "index_background": True,
+        "auto_create_index": True,  # 인덱스가 없을 경우 자동 생성
         "versionKey": False,  # __v 필드 생성 방지
     }
 
