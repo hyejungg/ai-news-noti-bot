@@ -46,16 +46,22 @@ Resources:
     DependsOn: NewsScraperAgentFunctionRole
 
   NewsScraperAgentSchedule:
-    Type: AWS::Events::Rule
+    Type: AWS::Scheduler::Schedule
     Condition: IsProd
     Properties:
       Name: !Sub news-scraper-agent-schedule-${PROFILE}
-      ScheduleExpression: 'cron(0 1 ? * 2-6 *)'
       Description: news-scraper-agent daily scheduler
+      FlexibleTimeWindow:
+        MaximumWindowInMinutes: 1
+        Mode: 'FLEXIBLE'
+      ScheduleExpression: 'cron(0 10 ? * 2-6 * )'
+      ScheduleExpressionTimezone: Asia/Seoul
       State: ENABLED
-      Targets:
-        - Id: NewsScraperAgentFunction
-          Arn: !GetAtt NewsScraperAgentFunction.Arn
+      Target:
+        Arn: !GetAtt NewsScraperAgentFunction.Arn
+        RoleArn: !GetAtt NewsScraperAgentScheduleRole.Arn
+
+
 
   ScraperLambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -93,7 +99,9 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: lambda.amazonaws.com
+              Service:
+                - lambda.amazonaws.com
+                - scheduler.amazonaws.com
             Action: sts:AssumeRole
       Policies:
         - PolicyName: LambdaECRAccess
@@ -136,6 +144,34 @@ Resources:
                   - lambda:InvokeFunction
                 Resource: !GetAtt ScraperLambdaFunction.Arn
 
+  NewsScraperAgentScheduleRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub news-scraper-agent-schedule-role-${PROFILE}
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - scheduler.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaInvokePermission
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: !GetAtt NewsScraperAgentFunction.Arn
+
   ScraperLambdaFunctionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -150,7 +186,8 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: lambda.amazonaws.com
+              Service:
+                - lambda.amazonaws.com
             Action: sts:AssumeRole
       Policies:
         - PolicyName: LambdaECRAccess
