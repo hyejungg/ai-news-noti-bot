@@ -7,7 +7,7 @@
 
 ## 실행 방법
 ```shell
-poetry shell
+poetry env activate
 poetry install
 python {파일명}.py
 ```
@@ -15,7 +15,8 @@ python {파일명}.py
 ## 배포 방법
 ```shell
 # 로컬에서 실행 방법 
-sam local invoke
+sam local invoke --config-env {phase} {이미지 이름}
+
 
 # 빌드 후 배포
 sam build --config-env {phase}
