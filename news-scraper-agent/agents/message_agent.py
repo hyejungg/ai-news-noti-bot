@@ -68,20 +68,24 @@ class MessageAgent:
         status = SEND_MESSAGE_SUCCESS if status_code == 200 else SEND_MESSAGE_FAIL
 
         # 7. 성공/실패 여부를 db에 기록
-        message_dto_list = [
-            MessageContentDto(name=site_name, title=data.title, url=data.url)
-            for site_name, page_crawling_data in unique_parallel_result.items()
-            for data in page_crawling_data
-        ]
-        message_contents = [
-            MessageContent(**dto.model_dump()) for dto in message_dto_list
-        ]
-        message = Message(
-            type=MESSAGE_TYPE,
-            status=status,
-            messages=message_contents,
-        )
-        message.save()
+        try:
+            message_dto_list = [
+                MessageContentDto(name=site_name, title=data.title, url=data.url)
+                for site_name, page_crawling_data in unique_parallel_result.items()
+                for data in page_crawling_data
+            ]
+            message_contents = [
+                MessageContent(**dto.model_dump()) for dto in message_dto_list
+            ]
+            message = Message(
+                type=MESSAGE_TYPE,
+                status=status,
+                messages=message_contents,
+            )
+            message.save()
+        except Exception as e:
+            self.logger.exception(f"Failed to save message. reason=({e})")
+            raise e
 
     def _get_parallel_result_table(self, result: CrawlingResult) -> Table:
         table = Table(title="unique_parallel_result", title_justify="left")
