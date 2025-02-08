@@ -38,7 +38,8 @@ class Message(Document):
                 "expireAfterSeconds": 60 * 60 * 24 * 180,
             }  # 180일 후 만료
         ],
-        # "auto_create_index": True,  # 인덱스가 없을 경우 자동 생성
+        "auto_create_index": False,  # 인덱스가 없을 경우 자동 생성
+        "index_background": True,  # 인덱스를 백그라운드에서 인덱싱해야 하는지
         "versionKey": False,  # __v 필드 생성 방지
     }
 
