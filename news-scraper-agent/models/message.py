@@ -20,6 +20,7 @@ class MessageContent(EmbeddedDocument):
 
 
 class Message(Document):
+    _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
     type = StringField(required=True, db_field="type")
     status = StringField(required=True, db_field="status")
     messages = ListField(EmbeddedDocumentField(MessageContent), db_field="messages")
@@ -37,7 +38,7 @@ class Message(Document):
                 "expireAfterSeconds": 60 * 60 * 24 * 180,
             }  # 180일 후 만료
         ],
-        "auto_create_index": True,  # 인덱스가 없을 경우 자동 생성
+        # "auto_create_index": True,  # 인덱스가 없을 경우 자동 생성
         "versionKey": False,  # __v 필드 생성 방지
     }
 
