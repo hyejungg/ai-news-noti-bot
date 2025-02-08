@@ -82,7 +82,6 @@ class MessageAgent:
                 status=status,
                 messages=message_contents,
             )
-            self.logger.info(vars(message))  # 딕셔너리로 출력
             message.save()
         except Exception as e:
             self.logger.exception(f"Failed to save message. reason=({e})")
