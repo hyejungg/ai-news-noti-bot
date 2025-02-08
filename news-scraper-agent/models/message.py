@@ -5,6 +5,7 @@ from mongoengine import (
     EmbeddedDocument,
     EmbeddedDocumentField,
     DateTimeField,
+    ObjectIdField,
 )
 from pydantic import BaseModel
 from typing import Optional
@@ -12,14 +13,14 @@ from utils.time_utils import get_datetime_kst
 
 
 class MessageContent(EmbeddedDocument):
-    # _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
+    _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
     name = StringField(required=False, db_field="name")
     title = StringField(required=False, db_field="title")
     url = StringField(required=False, db_field="url")
 
 
 class Message(Document):
-    # _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
+    _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
     type = StringField(required=True, db_field="type")
     status = StringField(required=True, db_field="status")
     messages = ListField(EmbeddedDocumentField(MessageContent), db_field="messages")

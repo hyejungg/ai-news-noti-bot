@@ -4,6 +4,7 @@ from mongoengine import (
     ListField,
     BooleanField,
     DateTimeField,
+    ObjectIdField,
 )
 from pydantic import BaseModel
 from typing import Optional
@@ -11,7 +12,7 @@ from utils.time_utils import get_datetime_kst
 
 
 class Site(Document):
-    # _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
+    _id = ObjectIdField(required=True, db_field="_id")  # _id 필드 추가
     name = StringField(required=True, db_field="name")
     url = StringField(required=True, db_field="url")
     keywords = ListField(StringField(), required=False, db_field="keywords")
