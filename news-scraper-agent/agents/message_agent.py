@@ -94,7 +94,7 @@ class MessageAgent:
         table.add_column("url", overflow="fold")
         table.add_column("title", style="magenta", overflow="fold")
         for idx_1, (site_name, page_crawling_data) in enumerate(
-                result.items(), start=1
+            result.items(), start=1
         ):
             for idx_2, item in enumerate(page_crawling_data, start=1):
                 table.add_row(str(idx_1 + idx_2 - 1), site_name, item.url, item.title)
