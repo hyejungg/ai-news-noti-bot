@@ -6,8 +6,7 @@ from rich.table import Table
 
 
 class SortedFilteringData(BaseModel):
-    url: str
-    title: str
+    id: int
     reason: str
 
 
@@ -16,7 +15,7 @@ class PageCrawlingData(BaseModel):
     title: str
 
 
-type SortedFilterResult = dict[str, list[SortedFilteringData]]
+type SortedFilterResult = dict[str, list[PageCrawlingData]]
 type CrawlingResult = dict[str, list[PageCrawlingData]]
 type ParserResult = dict[str, list[str]]
 
