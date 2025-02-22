@@ -16,13 +16,14 @@ class PageCrawlingData(BaseModel):
 
 
 type SortedFilterResult = dict[str, list[PageCrawlingData]]
+type FilteringResult = dict[str, list[PageCrawlingData]]
 type CrawlingResult = dict[str, list[PageCrawlingData]]
 type ParserResult = dict[str, list[str]]
 
 
 class SiteState(BaseModel):
     crawling_result: CrawlingResult
-    filtering_result: CrawlingResult
+    filtering_result: FilteringResult
     parser_result: ParserResult
     sorted_result: SortedFilterResult
 

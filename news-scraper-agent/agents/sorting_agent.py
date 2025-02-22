@@ -53,10 +53,7 @@ class SortingAgent:
                 filtering_result_request.append(
                     SortRequestItem(id=idx, url=item.url, title=item.title)
                 )
-
-            sort_result = list(
-                map(lambda x: x.id, self.request_sort(filtering_result_request))
-            )
+            sort_result = self.request_sort(filtering_result_request)
 
             result: list[PageCrawlingData] = list(
                 map(
