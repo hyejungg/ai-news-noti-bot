@@ -47,14 +47,20 @@ class SortingAgent:
             return state
 
         try:
+            # 필터링 결과 가져옴
             filtering_result = state.filtering_result[self.site.name]
-            filtering_result_request = []
+
+            # 필터링 결과에 id를 부여
+            filtering_result_with_id = []
             for idx, item in enumerate(filtering_result, start=1):
-                filtering_result_request.append(
+                filtering_result_with_id.append(
                     SortRequestItem(id=idx, url=item.url, title=item.title)
                 )
-            sort_result = self.request_sort(filtering_result_request)
 
+            # id만 결과로 받음
+            sort_result = self.request_sort(filtering_result_with_id)
+
+            # id를 기준으로 필터링 결과를 정렬
             result: list[PageCrawlingData] = list(
                 map(
                     lambda x: PageCrawlingData(
@@ -62,7 +68,7 @@ class SortingAgent:
                         title=x.title,
                     ),
                     sorted(
-                        filtering_result_request,
+                        filtering_result_with_id,
                         key=lambda x: sort_result.index(x.id),
                     ),
                 )
