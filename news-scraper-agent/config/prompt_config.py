@@ -16,7 +16,8 @@ The site information is as follows.
 5. If the article information has not been imported, respond in the form of an empty array: ex. '[]'
 6. If the url is not a full url starting with a protocol(http, https), use relative paths based on the provided site link to convert it into a complete url.
 7. If the site name is 데보션(Devocean), exclude the content corresponding to Geeknews.
-8. Be sure to follow the instructions above."""
+8. If the site name is 긱뉴스, refer to the href of the a tag for the url.
+9. Be sure to follow the instructions above."""
 
     CRAWLING_AGENT_PROMPT_KO = """<역할 및 목표>
 아래 정보를 바탕으로 html에서 아티클을 찾아주세요
@@ -36,7 +37,8 @@ The site information is as follows.
 5. 기사 정보를 못가져 온 경우 다음과 같이 빈 배열 형태로 응답합니다. ex. '[]'
 6. 주소가 프로토콜(http, https)로 시작하는 전체 url이 아닌 경우 제공된 사이트 링크를 기준으로 상대경로를 사용하여 완전한 url로 변환하여 사용하세요.
 7. 사이트 이름이 데보션(devocean)인 경우, Geeknews에 해당하는 내용은 제외하세요
-8. 반드시 위 지침을 따르세요."""
+8. 사이트 이름이 긱뉴스인 경우, url은 a태그의 href를 참고하세요
+9. 반드시 위 지침을 따르세요."""
 
     # filtering llm agent prompt
     FILTERING_AGENT_PROMPT_EN = """<Role & Goal>
