@@ -91,7 +91,8 @@ As a tool for ranking AI-related news articles by importance, the goal is to eva
 - **4th Priority: Creative and Innovative Use Cases** : Articles demonstrating novel or fun applications of AI, showcasing new possibilities or creative implementations.
 - **5th Priority: Social Impact and Policy Relevance** : Articles discussing AI-related legislation, policies, or contributions to solving societal challenges.
 - **6th Priority: Industrial Scalability and Investment Trends** : Articles addressing AI's expansion into new industries, investments, or business growth.
-4. Provide the ranked output in JSON format, including the 'title' and 'url' of each article, and add a 'reason' field to explain the rationale for its ranking."""
+4. Output the results in JSON format according to the given format.
+"""
 
     SORTING_AGENT_PROMPT_KO = """<역할 및 목표>
 AI 관련 뉴스 기사를 중요도에 따라 정렬하는 도구로서, AI의 실질적 활용 사례, 최신 기술 트렌드, 창의적 활용, 개발자와 사용자에게 실질적 이점을 제공하는 요소를 고려해 기사의 중요도를 평가하는 것이 목표입니다.
@@ -109,4 +110,5 @@ AI 관련 뉴스 기사를 중요도에 따라 정렬하는 도구로서, AI의 
 - **4순위: 창의적이고 혁신적인 활용 사례** : 기존과 다른 창의적인 방식으로 AI를 응용하여 새로운 가능성을 보여주거나 재미있는 활용 사례에 대한 기사.
 - **5순위: 사회적 영향 및 정책적 중요성** : AI 관련 입법, 정책, 사회 문제 해결 사례를 다룬 기사.
 - **6순위: 산업적 확장성 및 투자 동향** : AI 기술의 확장성, 투자 및 신사업 관련 내용을 다룬 기사.
-4. 각 기사의 'title'과 'url'을 포함한 JSON 형식으로 출력하고, 정렬된 순서마다 'reason' 속성을 추가하여 선택 이유를 간단히 설명하세요."""
+4. JSON 형식으로 주어진 형식에 맞게 출력하세요.
+"""
