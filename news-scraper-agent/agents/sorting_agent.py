@@ -58,7 +58,7 @@ class SortingAgent:
                 )
 
             # id만 결과로 받음
-            sort_result = self.request_sort(filtering_result_with_id)
+            sort_result = self.__request_sort(filtering_result_with_id)
 
             # id를 기준으로 필터링 결과를 정렬
             result: list[PageCrawlingData] = list(
@@ -87,7 +87,7 @@ class SortingAgent:
         state.print_state(sorted_result=True)
         return state
 
-    def request_sort(self, filtering_result: list[SortRequestItem]) -> list[int]:
+    def __request_sort(self, filtering_result: list[SortRequestItem]) -> list[int]:
         formatted_prompt = self.prompt.format(filtering_result=filtering_result)
 
         llm_with_structured_output = self.llm.with_structured_output(SortResponse)
