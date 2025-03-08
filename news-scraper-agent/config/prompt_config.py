@@ -85,13 +85,15 @@ As a tool for ranking AI-related news articles by importance, the goal is to eva
 1. Rank the given list of news articles in order of importance.
 2. Do not modify or restructure the provided list of articles arbitrarily.
 3. Evaluate the importance of each article based on the following criteria (higher rank indicates greater importance):
-- **1st Priority: Practical AI Applications** : Articles showcasing AI technologies that are commercialized to solve problems or improve user experience.
-- **2nd Priority: Latest AI Technological Trends** : Articles covering advancements in AI technology, performance improvements, or research-driven insights.
-- **3rd Priority: Latest AI Development Frameworks** : Articles about AI management frameworks, developer tools, or techniques such as RAG or fine-tuning.
-- **4th Priority: Creative and Innovative Use Cases** : Articles demonstrating novel or fun applications of AI, showcasing new possibilities or creative implementations.
-- **5th Priority: Social Impact and Policy Relevance** : Articles discussing AI-related legislation, policies, or contributions to solving societal challenges.
-- **6th Priority: Industrial Scalability and Investment Trends** : Articles addressing AI's expansion into new industries, investments, or business growth.
-4. Output the results in JSON format according to the given format.
+    - **1st Priority: Practical AI Applications** : Articles showcasing AI technologies that are commercialized to solve problems or improve user experience.
+    - **2nd Priority: Latest AI Technological Trends** : Articles covering advancements in AI technology, performance improvements, or research-driven insights.
+    - **3rd Priority: Latest AI Development Frameworks** : Articles about AI management frameworks, developer tools, or techniques such as RAG or fine-tuning.
+    - **4th Priority: Creative and Innovative Use Cases** : Articles demonstrating novel or fun applications of AI, showcasing new possibilities or creative implementations.
+    - **5th Priority: Social Impact and Policy Relevance** : Articles discussing AI-related legislation, policies, or contributions to solving societal challenges.
+    - **6th Priority: Industrial Scalability and Investment Trends** : Articles addressing AI's expansion into new industries, investments, or business growth.
+4. Output the results in Korean following the given format in JSON.
+    - id: included id in the request
+    - reason: a brief reason why this article is sorted
 """
 
     SORTING_AGENT_PROMPT_KO = """<역할 및 목표>
@@ -104,11 +106,13 @@ AI 관련 뉴스 기사를 중요도에 따라 정렬하는 도구로서, AI의 
 1. 주어진 뉴스 목록에서 각 기사를 중요도에 따라 순서대로 정렬하세요.
 2. 임의로 뉴스 목록을 수정하거나 재구성하지 않습니다.
 3. 중요도를 평가하는 기준은 다음과 같습니다 (순위가 높을수록 중요도가 높음):
-- **1순위: 실질적인 AI 기술 활용 사례** : AI 기술이 상용화되어 문제를 해결하거나 사용자 경험을 개선하는 기사
-- **2순위: 최신 AI 기술 트렌드** : 최신 AI 기술의 발전 방향, 성능 개선, 연구 중심의 내용을 다룬 기사
-- **3순위: 최신 AI 개발 프레임워크** : 최신 I 관리 프레임워크나 개발자 도구, AI 활용 기법 (RAG, 파인튜닝 등)에 대한 기사
-- **4순위: 창의적이고 혁신적인 활용 사례** : 기존과 다른 창의적인 방식으로 AI를 응용하여 새로운 가능성을 보여주거나 재미있는 활용 사례에 대한 기사.
-- **5순위: 사회적 영향 및 정책적 중요성** : AI 관련 입법, 정책, 사회 문제 해결 사례를 다룬 기사.
-- **6순위: 산업적 확장성 및 투자 동향** : AI 기술의 확장성, 투자 및 신사업 관련 내용을 다룬 기사.
-4. JSON 형식으로 주어진 형식에 맞게 출력하세요.
+    - **1순위: 실질적인 AI 기술 활용 사례** : AI 기술이 상용화되어 문제를 해결하거나 사용자 경험을 개선하는 기사
+    - **2순위: 최신 AI 기술 트렌드** : 최신 AI 기술의 발전 방향, 성능 개선, 연구 중심의 내용을 다룬 기사
+    - **3순위: 최신 AI 개발 프레임워크** : 최신 I 관리 프레임워크나 개발자 도구, AI 활용 기법 (RAG, 파인튜닝 등)에 대한 기사
+    - **4순위: 창의적이고 혁신적인 활용 사례** : 기존과 다른 창의적인 방식으로 AI를 응용하여 새로운 가능성을 보여주거나 재미있는 활용 사례에 대한 기사.
+    - **5순위: 사회적 영향 및 정책적 중요성** : AI 관련 입법, 정책, 사회 문제 해결 사례를 다룬 기사.
+    - **6순위: 산업적 확장성 및 투자 동향** : AI 기술의 확장성, 투자 및 신사업 관련 내용을 다룬 기사.
+4. JSON 형식으로 주어진 형식에 맞게 한국어로 출력하세요.
+    - id: 요청에 포함된 id
+    - reason: 이 기사가 왜 정렬되었는지에 대한 간단한 이유
 """

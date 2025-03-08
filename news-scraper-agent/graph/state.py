@@ -13,6 +13,7 @@ class SortedFilteringData(BaseModel):
 class PageCrawlingData(BaseModel):
     url: str
     title: str
+    reason: str
 
 
 type SortedFilterResult = dict[str, list[PageCrawlingData]]
