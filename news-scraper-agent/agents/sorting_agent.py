@@ -14,7 +14,6 @@ from models.site import SiteDto
 
 class SortRequestItem(BaseModel):
     id: int
-    url: str
     title: str
 
 
@@ -51,42 +50,29 @@ class SortingAgent:
             return state
 
         try:
-            # 필터링 결과 가져옴
-            filtering_result = state.filtering_result[self.site.name]
-
-            # 필터링 결과에 id를 부여
+            # 모델에게 보내기위해 id를 추가한 리스트
             filtering_results_with_id: list[SortRequestItem] = []
-            for idx, item in enumerate(filtering_result, start=1):
+            # 모델 응답으로 원본 데이터를 찾기위한 딕셔너리
+            filtering_results_map: dict[int, PageCrawlingData] = {}
+
+            for idx, item in enumerate(state.filtering_result[self.site.name], start=1):
+                data_id = idx
                 filtering_results_with_id.append(
-                    SortRequestItem(id=idx, url=item.url, title=item.title)
+                    SortRequestItem(id=data_id, title=item.title)
+                )
+                filtering_results_map[data_id] = PageCrawlingData(
+                    title=item.title, url=item.url
                 )
 
             sort_result: list[SortingResponse.Item] = self.__request_sort(
                 filtering_results_with_id
             )
 
-            def sort_by_id(sort_request_item: SortRequestItem) -> int:
-                for element in sort_result:
-                    if element.id == sort_request_item.id:
-                        return sort_result.index(element)
-                return 0
-
-            # id를 기준으로 필터링 결과를 정렬하고 reason 추가
-            sorted_result: list[PageCrawlingData] = []
-            for element in sort_result:
-                for filtering_result in filtering_results_with_id:
-                    if filtering_result.id == element.id:
-                        sorted_result.append(
-                            PageCrawlingData(
-                                title=filtering_result.title,
-                                url=filtering_result.url,
-                                reason=element.reason,
-                            )
-                        )
-                        break
-                else:
-                    raise ValueError("Element not found in filtering results")
-            filtering_results_with_id.sort(key=sort_by_id)
+            sorted_result = []
+            for item in sort_result:
+                result_item = filtering_results_map[item.id]
+                result_item.reason = item.reason
+                sorted_result.append(result_item)
 
             state.sorted_result[self.site.name] = sorted_result
         except Exception as e:

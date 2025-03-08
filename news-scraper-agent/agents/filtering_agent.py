@@ -11,7 +11,6 @@ from models.site import SiteDto
 
 class FilterRequestItem(BaseModel):
     id: int
-    url: str
     title: str
 
 
@@ -44,12 +43,19 @@ class FilteringAgent:
             return state
 
         try:
-            crawling_results_with_id = [
-                FilterRequestItem(id=idx, title=item.title, url=item.url)
-                for idx, item in enumerate(
-                    state.crawling_result[self.site.name], start=1
+            # 모델에게 보내기위해 id를 추가한 리스트
+            crawling_results_with_id: list[FilterRequestItem] = []
+            # 모델 응답으로 원본 데이터를 찾기위한 딕셔너리
+            crawling_results_map: dict[int, PageCrawlingData] = {}
+
+            for idx, item in enumerate(state.crawling_result[self.site.name], start=1):
+                data_id = idx
+                crawling_results_with_id.append(
+                    FilterRequestItem(id=data_id, title=item.title)
                 )
-            ]
+                crawling_results_map[data_id] = PageCrawlingData(
+                    title=item.title, url=item.url
+                )
 
             formatted_prompt = self.prompt.format(
                 crawling_result=crawling_results_with_id
@@ -62,14 +68,9 @@ class FilteringAgent:
                 formatted_prompt
             )
 
-            def find_item_by_id(item_id: int):
-                for item in crawling_results_with_id:
-                    if item.id == item_id:
-                        return PageCrawlingData(title=item.title, url=item.url)
-                raise ValueError(f"Item with id {item_id} not found")
-
-            filtering_result = [find_item_by_id(item_id) for item_id in response.items]
-
+            filtering_result = [
+                crawling_results_map[item_id] for item_id in response.items
+            ]
             state.filtering_result[self.site.name] = filtering_result
         except Exception as e:
             self.logger.error(f"Error occurred while filtering {self.site.name}: {e}")
