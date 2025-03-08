@@ -96,7 +96,7 @@ As a tool for ranking AI-related news articles by importance, the goal is to eva
     - **6th Priority: Industrial Scalability and Investment Trends** : Articles addressing AI's expansion into new industries, investments, or business growth.
 4. Output the results following the given format in JSON.
     - id: included id in the request
-    - reason: a brief reason why this article is sorted in Korean
+    - reason: the category of evaluation criteria this article falls under (e.g., Latest AI Technological Trends)
 """
 
     SORTING_AGENT_PROMPT_KO = """<역할 및 목표>
@@ -117,5 +117,5 @@ AI 관련 뉴스 기사를 중요도에 따라 정렬하는 도구로서, AI의 
     - **6순위: 산업적 확장성 및 투자 동향** : AI 기술의 확장성, 투자 및 신사업 관련 내용을 다룬 기사.
 4. JSON 형식으로 주어진 형식에 맞게 출력하세요.
     - id: 요청에 포함된 id
-    - reason: 이 기사가 왜 정렬되었는지에 대한 간단한 이유 (한국어)
+    - reason: 이 기사가 포함되는 평가 기준 카테고리 (예: 최신 AI 기술 트렌드 등)
 """
