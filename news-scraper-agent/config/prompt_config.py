@@ -50,12 +50,14 @@ The tool aims to filter AI-related news articles, focusing on the latest AI tech
 <Instructions>
 1. From the given list of news articles, filter only those related to AI and output them in JSON format. Each article object should include only the 'title' and 'url' attributes.
 2. The main keywords are as follows:
-- AI Technology and Research Keywords: 'LLM,' 'Generative AI,' 'AI,' 'Deep Learning,' 'Machine Learning,' 'Natural Language Processing' (NLP), 'Reinforcement Learning,' 'Transformers,' 'Language Model,' 'Neural Network,' 'Classification Model,' 'Clustering,' 'Regression Analysis,' 'Time Series Analysis'
-- Generative AI Keywords: 'Generative Model,' 'Image Generation,' 'Text Generation,' 'Speech Recognition,' 'Image Recognition,' 'Computer Vision,' 'Natural Language Generation' (NLG), 'Generative Adversarial Networks' (GAN), 'Natural Language Understanding,' 'Multimodal AI'
-- Application Fields and Use Cases: 'Recommendation Systems,' 'Automation,' 'Chatbot,' 'Healthcare AI,' 'Finance AI,' 'Robotics,' 'Smart Home,' 'Autonomous Driving,' 'Edge Computing,' 'Cloud AI'
-- AI Technology and Research Trends: 'AI Ethics,' 'Explainable AI,' 'AI Safety,' 'Model Compression,' 'Scalability,' 'Large-Scale Training,' 'Hyperparameters,' 'Lightweight Models,' 'Model Optimization,' 'Transfer Learning'
-- Unique AI Applications: 'Client-side AI,' 'Browser-based AI,' 'Experimental AI,' 'AI Service,' 'AI solutions for developers,' 'Novel AI applications'
-- Societal and Economic Impact Keywords: 'AI Regulation', 'AI Policy', 'Social Impact of AI', 'Job Impact', 'Economics of AI', 'AI Market Growth', 'AI Investment', 'Industry Disruption', 'Future Technology', 'AI Innovation', 'Future of AI', 'AI Competition', 'AI Leadership'"""
+    - AI Technology and Research Keywords: 'LLM,' 'Generative AI,' 'AI,' 'Deep Learning,' 'Machine Learning,' 'Natural Language Processing' (NLP), 'Reinforcement Learning,' 'Transformers,' 'Language Model,' 'Neural Network,' 'Classification Model,' 'Clustering,' 'Regression Analysis,' 'Time Series Analysis'
+    - Generative AI Keywords: 'Generative Model,' 'Image Generation,' 'Text Generation,' 'Speech Recognition,' 'Image Recognition,' 'Computer Vision,' 'Natural Language Generation' (NLG), 'Generative Adversarial Networks' (GAN), 'Natural Language Understanding,' 'Multimodal AI'
+    - Application Fields and Use Cases: 'Recommendation Systems,' 'Automation,' 'Chatbot,' 'Healthcare AI,' 'Finance AI,' 'Robotics,' 'Smart Home,' 'Autonomous Driving,' 'Edge Computing,' 'Cloud AI'
+    - AI Technology and Research Trends: 'AI Ethics,' 'Explainable AI,' 'AI Safety,' 'Model Compression,' 'Scalability,' 'Large-Scale Training,' 'Hyperparameters,' 'Lightweight Models,' 'Model Optimization,' 'Transfer Learning'
+    - Unique AI Applications: 'Client-side AI,' 'Browser-based AI,' 'Experimental AI,' 'AI Service,' 'AI solutions for developers,' 'Novel AI applications'
+    - Societal and Economic Impact Keywords: 'AI Regulation', 'AI Policy', 'Social Impact of AI', 'Job Impact', 'Economics of AI', 'AI Market Growth', 'AI Investment', 'Industry Disruption', 'Future Technology', 'AI Innovation', 'Future of AI', 'AI Competition', 'AI Leadership'
+3. Output the results in JSON format following the given format.
+"""
 
     FILTERING_AGENT_PROMPT_KO = """<역할 및 목표>
 AI 관련 뉴스 기사를 필터링하는 도구로서, 최신 AI 기술과 연구 동향, 생성형 AI, AI 응용 분야, 특별한 AI 응용 사례, 그리고 AI의 사회적, 경제적 영향 등을 다루는 기사만을 추출하는 것이 목표입니다.
@@ -66,12 +68,13 @@ AI 관련 뉴스 기사를 필터링하는 도구로서, 최신 AI 기술과 연
 <지시문>
 1. 주어진 뉴스 목록에서 AI와 관련된 기사만 필터링하여 JSON 형식으로 출력하세요. 각 기사 객체에는 'title'과 'url' 속성만 포함합니다.
 2. 주요 키워드는 다음과 같습니다:
-- AI 기술 및 연구 관련 키워드 : 'LLM', '생성형 AI', 'AI', '딥러닝' (Deep Learning), '머신러닝' (Machine Learning), '자연어 처리' (NLP, Natural Language Processing), '강화 학습' (Reinforcement Learning), '트랜스포머' (Transformers), '언어 모델' (Language Model), '신경망' (Neural Network), '분류 모델' (Classification Model), '군집화' (Clustering), '회귀 분석' (Regression Analysis), '시계열 분석' (Time Series Analysis)
-- 생성형 AI 관련 키워드 : '생성 모델' (Generative Model), '이미지 생성' (Image Generation), '텍스트 생성' (Text Generation), '음성 인식' (Speech Recognition), '이미지 인식' (Image Recognition), '컴퓨터 비전' (Computer Vision), '자연어 생성' (NLG, Natural Language Generation), 'GAN' (Generative Adversarial Networks), '자연어 이해' (Natural Language Understanding), '멀티모달 AI' (Multimodal AI)
-- 응용 분야와 사례 : '추천 시스템' (Recommendation Systems), '자동화' (Automation), '챗봇' (Chatbot), '의료 AI' (Healthcare AI), '금융 AI' (Finance AI), '로보틱스' (Robotics), '스마트 홈' (Smart Home), '자율 주행' (Autonomous Driving), '엣지 컴퓨팅' (Edge Computing), '클라우드 AI' (Cloud AI)
-- AI 기술 및 연구 동향 : 'AI 윤리' (AI Ethics), '설명 가능한 AI' (Explainable AI), 'AI 안전성' (AI Safety), '모델 압축' (Model Compression), '확장성' (Scalability), '대규모 학습' (Large-Scale Training), '하이퍼파라미터' (Hyperparameters), '경량화 모델' (Lightweight Models), '모델 최적화' (Model Optimization), '전이 학습' (Transfer Learning)
-- AI 응용 : '클라이언트 측 AI' (Client-side AI), '브라우저 기반 AI' (Browser-based AI), '실험적 AI' (Experimental AI), 'AI 서비스' (AI Service), '개발자를 위한 AI 솔루션' (AI solutions for developers), '신규 AI 애플리케이션' (Novel AI applications)
-- AI의 사회적 및 경제적 시사점 관련 키워드: 'AI 규제' (AI Regulation), 'AI 정책' (AI Policy), 'AI의 사회적 영향' (Social Impact of AI), '일자리 영향' (Job Impact), 'AI 경제학' (Economics of AI), 'AI 시장 성장' (AI Market Growth), 'AI 투자' (AI Investment), '산업 변화' (Industry Disruption), '미래 기술' (Future Technology), 'AI 혁신' (AI Innovation), '미래 AI' (Future of AI), 'AI 경쟁' (AI Competition), 'AI 리더십' (AI Leadership)"
+    - AI 기술 및 연구 관련 키워드 : 'LLM', '생성형 AI', 'AI', '딥러닝' (Deep Learning), '머신러닝' (Machine Learning), '자연어 처리' (NLP, Natural Language Processing), '강화 학습' (Reinforcement Learning), '트랜스포머' (Transformers), '언어 모델' (Language Model), '신경망' (Neural Network), '분류 모델' (Classification Model), '군집화' (Clustering), '회귀 분석' (Regression Analysis), '시계열 분석' (Time Series Analysis)
+    - 생성형 AI 관련 키워드 : '생성 모델' (Generative Model), '이미지 생성' (Image Generation), '텍스트 생성' (Text Generation), '음성 인식' (Speech Recognition), '이미지 인식' (Image Recognition), '컴퓨터 비전' (Computer Vision), '자연어 생성' (NLG, Natural Language Generation), 'GAN' (Generative Adversarial Networks), '자연어 이해' (Natural Language Understanding), '멀티모달 AI' (Multimodal AI)
+    - 응용 분야와 사례 : '추천 시스템' (Recommendation Systems), '자동화' (Automation), '챗봇' (Chatbot), '의료 AI' (Healthcare AI), '금융 AI' (Finance AI), '로보틱스' (Robotics), '스마트 홈' (Smart Home), '자율 주행' (Autonomous Driving), '엣지 컴퓨팅' (Edge Computing), '클라우드 AI' (Cloud AI)
+    - AI 기술 및 연구 동향 : 'AI 윤리' (AI Ethics), '설명 가능한 AI' (Explainable AI), 'AI 안전성' (AI Safety), '모델 압축' (Model Compression), '확장성' (Scalability), '대규모 학습' (Large-Scale Training), '하이퍼파라미터' (Hyperparameters), '경량화 모델' (Lightweight Models), '모델 최적화' (Model Optimization), '전이 학습' (Transfer Learning)
+    - AI 응용 : '클라이언트 측 AI' (Client-side AI), '브라우저 기반 AI' (Browser-based AI), '실험적 AI' (Experimental AI), 'AI 서비스' (AI Service), '개발자를 위한 AI 솔루션' (AI solutions for developers), '신규 AI 애플리케이션' (Novel AI applications)
+    - AI의 사회적 및 경제적 시사점 관련 키워드: 'AI 규제' (AI Regulation), 'AI 정책' (AI Policy), 'AI의 사회적 영향' (Social Impact of AI), '일자리 영향' (Job Impact), 'AI 경제학' (Economics of AI), 'AI 시장 성장' (AI Market Growth), 'AI 투자' (AI Investment), '산업 변화' (Industry Disruption), '미래 기술' (Future Technology), 'AI 혁신' (AI Innovation), '미래 AI' (Future of AI), 'AI 경쟁' (AI Competition), 'AI 리더십' (AI Leadership)"
+3. JSON 형식으로 주어진 형식에 맞게 출력하세요.
 """
 
     # sorting llm agent prompt
@@ -91,9 +94,9 @@ As a tool for ranking AI-related news articles by importance, the goal is to eva
     - **4th Priority: Creative and Innovative Use Cases** : Articles demonstrating novel or fun applications of AI, showcasing new possibilities or creative implementations.
     - **5th Priority: Social Impact and Policy Relevance** : Articles discussing AI-related legislation, policies, or contributions to solving societal challenges.
     - **6th Priority: Industrial Scalability and Investment Trends** : Articles addressing AI's expansion into new industries, investments, or business growth.
-4. Output the results in Korean following the given format in JSON.
+4. Output the results following the given format in JSON.
     - id: included id in the request
-    - reason: a brief reason why this article is sorted
+    - reason: a brief reason why this article is sorted in Korean
 """
 
     SORTING_AGENT_PROMPT_KO = """<역할 및 목표>
@@ -112,7 +115,7 @@ AI 관련 뉴스 기사를 중요도에 따라 정렬하는 도구로서, AI의 
     - **4순위: 창의적이고 혁신적인 활용 사례** : 기존과 다른 창의적인 방식으로 AI를 응용하여 새로운 가능성을 보여주거나 재미있는 활용 사례에 대한 기사.
     - **5순위: 사회적 영향 및 정책적 중요성** : AI 관련 입법, 정책, 사회 문제 해결 사례를 다룬 기사.
     - **6순위: 산업적 확장성 및 투자 동향** : AI 기술의 확장성, 투자 및 신사업 관련 내용을 다룬 기사.
-4. JSON 형식으로 주어진 형식에 맞게 한국어로 출력하세요.
+4. JSON 형식으로 주어진 형식에 맞게 출력하세요.
     - id: 요청에 포함된 id
-    - reason: 이 기사가 왜 정렬되었는지에 대한 간단한 이유
+    - reason: 이 기사가 왜 정렬되었는지에 대한 간단한 이유 (한국어)
 """

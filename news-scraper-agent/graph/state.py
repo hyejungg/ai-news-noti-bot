@@ -13,7 +13,7 @@ class SortedFilteringData(BaseModel):
 class PageCrawlingData(BaseModel):
     url: str
     title: str
-    reason: str
+    reason: str = None
 
 
 type SortedFilterResult = dict[str, list[PageCrawlingData]]
@@ -195,10 +195,4 @@ class State(BaseModel):
 class AgentResponse(BaseModel):
     items: list[PageCrawlingData] = Field(
         description="List of agent response items (title, url)"
-    )
-
-
-class SortAgentResponse(BaseModel):
-    items: list[SortedFilteringData] = Field(
-        description="List of agent response items (title, url, reason)"
     )

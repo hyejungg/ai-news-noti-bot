@@ -18,12 +18,10 @@ class SortRequestItem(BaseModel):
     title: str
 
 
-class SortResponse(BaseModel):
+class SortingResponse(BaseModel):
     class Item(BaseModel):
-        id: int = Field(description="id of the item")
-        reason: str = Field(
-            description="simplified reason why this item is sorted in Korean"
-        )
+        id: int
+        reason: str
 
     items: list[Item]
 
@@ -63,7 +61,7 @@ class SortingAgent:
                     SortRequestItem(id=idx, url=item.url, title=item.title)
                 )
 
-            sort_result: list[SortResponse.Item] = self.__request_sort(
+            sort_result: list[SortingResponse.Item] = self.__request_sort(
                 filtering_results_with_id
             )
 
@@ -73,21 +71,30 @@ class SortingAgent:
                         return sort_result.index(element)
                 return 0
 
-            # id를 기준으로 필터링 결과를 정렬
+            # id를 기준으로 필터링 결과를 정렬하고 reason 추가
+            sorted_result: list[PageCrawlingData] = []
+            for element in sort_result:
+                for filtering_result in filtering_results_with_id:
+                    if filtering_result.id == element.id:
+                        sorted_result.append(
+                            PageCrawlingData(
+                                title=filtering_result.title,
+                                url=filtering_result.url,
+                                reason=element.reason,
+                            )
+                        )
+                        break
+                else:
+                    raise ValueError("Element not found in filtering results")
             filtering_results_with_id.sort(key=sort_by_id)
 
-            result: list[PageCrawlingData] = [
-                PageCrawlingData(**filtering_result.model_dump())
-                for filtering_result in filtering_results_with_id
-            ]
-
-            state.sorted_result[self.site.name] = result
+            state.sorted_result[self.site.name] = sorted_result
         except Exception as e:
             self.logger.error(f"Error occurred while sorting {self.site.name}: {e}")
             self.logger.warning(f"Skip sorting {self.site.name}")
 
             state.sorted_result[self.site.name] = [
-                PageCrawlingData(url=item.url, title=item.title)
+                PageCrawlingData(url=item.url, title=item.title, reason=item.reason)
                 for item in state.filtering_result[self.site.name]
             ]
 
@@ -96,10 +103,10 @@ class SortingAgent:
 
     def __request_sort(
         self, filtering_result: list[SortRequestItem]
-    ) -> list[SortResponse.Item]:
+    ) -> list[SortingResponse.Item]:
         formatted_prompt = self.prompt.format(filtering_result=filtering_result)
 
-        llm_with_structured_output = self.llm.with_structured_output(SortResponse)
-        response: SortResponse = llm_with_structured_output.invoke(formatted_prompt)
+        llm_with_structured_output = self.llm.with_structured_output(SortingResponse)
+        response: SortingResponse = llm_with_structured_output.invoke(formatted_prompt)
 
         return response.items
