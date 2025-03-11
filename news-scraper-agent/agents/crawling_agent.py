@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from langchain.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
@@ -36,10 +37,14 @@ class CrawlingAgent:
             return state
 
         try:
+            compressed_parser_result = list(
+                map(self.__strip_attributes, state.parser_result[self.site.name])
+            )
+
             formatted_prompt = self.crawling_prompt.format(
                 site_name=self.site.name,
                 site_url=self.site.url,
-                parser_result=state.parser_result[self.site.name],
+                parser_result=compressed_parser_result,
             )
 
             llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
@@ -54,3 +59,11 @@ class CrawlingAgent:
 
         state.print_state(crawling_result=True)
         return state
+
+    @staticmethod
+    def __strip_attributes(html: str) -> str:
+        soup = BeautifulSoup(html, "lxml")
+        for tag in soup.find_all():
+            tag.attrs = {k: v for k, v in tag.attrs.items() if k == "href"}  # href 유지
+
+        return str(soup)
