@@ -5,7 +5,7 @@ import unittest
 from langchain_openai import ChatOpenAI
 
 from agents.crawling_agent import CrawlingAgent
-from config.log import default_logger
+from config.log import NewsScraperAgentLogger
 from graph.state import SiteState
 from models.site import SiteDto
 
@@ -15,8 +15,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 class CrawlingAgentTest(unittest.TestCase):
     def setUp(self):
-        self.gpt_4o_mini = ChatOpenAI(model_name="gpt-4o-mini")
-        self.gpt_4o = ChatOpenAI(model_name="gpt-4o")
+        self.logger = NewsScraperAgentLogger(name="CrawlingAgentTest")
+        self.gpt_4o_mini = ChatOpenAI(model="gpt-4o-mini")
+        self.gpt_4o = ChatOpenAI(model="gpt-4o")
         self.geek_news = SiteDto(
             name="긱뉴스",
             url="https://news.hada.io/new",
@@ -64,7 +65,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            default_logger.info(v)
+            self.logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)  # 키가 존재해야 함
         self.assertIsInstance(
@@ -90,7 +91,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            default_logger.info(v)
+            self.logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)  # 키가 존재해야 함
         self.assertIsInstance(
@@ -116,7 +117,7 @@ class CrawlingAgentTest(unittest.TestCase):
         state_after = crawling_agent(state_before)
 
         for v in state_after.crawling_result[site.name]:
-            default_logger.info(v)
+            self.logger.info(v)
 
         self.assertIn(site.name, state_after.crawling_result)
         self.assertIsInstance(state_after.crawling_result[site.name], list)

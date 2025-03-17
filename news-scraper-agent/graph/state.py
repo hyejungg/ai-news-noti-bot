@@ -6,24 +6,25 @@ from rich.table import Table
 
 
 class SortedFilteringData(BaseModel):
-    url: str
-    title: str
+    id: int
     reason: str
 
 
 class PageCrawlingData(BaseModel):
     url: str
     title: str
+    reason: str = None
 
 
-type SortedFilterResult = dict[str, list[SortedFilteringData]]
+type SortedFilterResult = dict[str, list[PageCrawlingData]]
+type FilteringResult = dict[str, list[PageCrawlingData]]
 type CrawlingResult = dict[str, list[PageCrawlingData]]
 type ParserResult = dict[str, list[str]]
 
 
 class SiteState(BaseModel):
     crawling_result: CrawlingResult
-    filtering_result: CrawlingResult
+    filtering_result: FilteringResult
     parser_result: ParserResult
     sorted_result: SortedFilterResult
 
@@ -194,10 +195,4 @@ class State(BaseModel):
 class AgentResponse(BaseModel):
     items: list[PageCrawlingData] = Field(
         description="List of agent response items (title, url)"
-    )
-
-
-class SortAgentResponse(BaseModel):
-    items: list[SortedFilteringData] = Field(
-        description="List of agent response items (title, url, reason)"
     )
