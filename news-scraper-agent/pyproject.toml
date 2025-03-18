@@ -8,7 +8,7 @@ authors = [
 ]
 readme = "README.md"
 package-mode = false
-requires-python = ">=3.12, <4.0"
+requires-python = ">=3.12, <3.13"
 dependencies = [
     "langgraph (>=0.2.35, <0.3.0)",
     "langsmith (>=0.1.134, <0.2.0)",
