@@ -17,38 +17,37 @@ class ParsingLambdaRequestBody(TypedDict):
 
 
 class HtmlParserAgent:
-    def __init__(self, site: SiteDto):
+    def __init__(self):
         self.logger = NewsScraperAgentLogger(self.__class__.__name__)
-        self.site = site
         self.lambda_invoker = LambdaInvoker()
         self.function_name = f"scraper-lambda-{env.PROFILE}"
         if env.PROFILE == "local":
             self.function_name = "scraper-lambda-dev"
 
     @log_time_agent_method
-    def __call__(self, state: SiteState = None) -> SiteState:
-        request_body = json.dumps(self.__create_payload())
+    def __call__(self, site: SiteDto, state: SiteState = None) -> SiteState:
+        request_body = json.dumps(self.__create_payload(site))
         try:
             response = self.lambda_invoker.invoke(
                 FunctionName=self.function_name,
                 InvocationType="RequestResponse",
                 Payload=request_body,
-                logging_name=f"scraper-lambda for {self.site.name}",
+                logging_name=f"scraper-lambda for {site.name}",
             )
 
             response_data: list[str] = response["result"]
 
-            if self.site.name == "데보션":
-                response_data = self.__parse_devocean_detail(response_data)
+            if site.name == "데보션":
+                response_data = self.__parse_devocean_detail(site, response_data)
 
-            state.parser_result[self.site.name] = response_data
+            state.parser_result[site.name] = response_data
         except Exception as e:
-            self.logger.error(f"Error occurred while parsing {self.site.name}: {e}")
-            state.parser_result[self.site.name] = []
+            self.logger.error(f"Error occurred while parsing {site.name}: {e}")
+            state.parser_result[site.name] = []
         return state
 
-    def __create_payload(self) -> ParsingLambdaRequestBody:
-        match url := self.site.url:
+    def __create_payload(self, site: SiteDto) -> ParsingLambdaRequestBody:
+        match url := site.url:
             case url if "news.hada.io" in url:
                 return {
                     "url": url,
@@ -71,13 +70,13 @@ class HtmlParserAgent:
                 self.logger.error(f"정의되지 않은 페이지 (url: ${url})")
                 raise ValueError("정의되지 않은 페이지 입니다.")
 
-    def __parse_devocean_detail(self, result: list[str]):
+    def __parse_devocean_detail(self, site: SiteDto, result: list[str]):
         title_html = result[0]
         pattern = r"onclick=\"goDetail\(this,'(\d+)',event\)"
 
         matched = re.search(pattern, title_html)
         if not matched:
-            raise ValueError(f"{self.site.name} 파싱 실패")
+            raise ValueError(f"{site.name} 파싱 실패")
 
         detail_page = (
             f"https://devocean.sk.com/blog/techBoardDetail.do?ID={matched.group(1)}"

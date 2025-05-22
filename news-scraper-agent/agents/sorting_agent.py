@@ -31,22 +31,21 @@ class SortingAgent:
         or DefaultPromptTemplate.SORTING_AGENT_PROMPT_KO
     )
 
-    def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
+    def __init__(self, llm: BaseLanguageModel, prompt: str = None):
         self.logger = NewsScraperAgentLogger(self.__class__.__name__)
-        self.site = site
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.sorting_prompt
         )
         self.llm = llm
 
     @log_time_agent_method
-    def __call__(self, state: SiteState) -> SiteState:
+    def __call__(self, site: SiteDto, state: SiteState) -> SiteState:
         if (
-            not state.filtering_result[self.site.name]
-            or len(state.filtering_result[self.site.name]) == 0
+            not state.filtering_result[site.name]
+            or len(state.filtering_result[site.name]) == 0
         ):
-            self.logger.warning(f"No data to sort for {self.site.name}")
-            state.sorted_result[self.site.name] = []
+            self.logger.warning(f"No data to sort for {site.name}")
+            state.sorted_result[site.name] = []
             return state
 
         try:
@@ -55,7 +54,7 @@ class SortingAgent:
             # 모델 응답으로 원본 데이터를 찾기위한 딕셔너리
             filtering_results_map: dict[int, PageCrawlingData] = {}
 
-            for idx, item in enumerate(state.filtering_result[self.site.name], start=1):
+            for idx, item in enumerate(state.filtering_result[site.name], start=1):
                 data_id = idx
                 filtering_results_with_id.append(
                     SortRequestItem(id=data_id, title=item.title)
@@ -74,14 +73,14 @@ class SortingAgent:
                 result_item.reason = item.reason
                 sorted_result.append(result_item)
 
-            state.sorted_result[self.site.name] = sorted_result
+            state.sorted_result[site.name] = sorted_result
         except Exception as e:
-            self.logger.error(f"Error occurred while sorting {self.site.name}: {e}")
-            self.logger.warning(f"Skip sorting {self.site.name}")
+            self.logger.error(f"Error occurred while sorting {site.name}: {e}")
+            self.logger.warning(f"Skip sorting {site.name}")
 
-            state.sorted_result[self.site.name] = [
+            state.sorted_result[site.name] = [
                 PageCrawlingData(url=item.url, title=item.title, reason=item.reason)
-                for item in state.filtering_result[self.site.name]
+                for item in state.filtering_result[site.name]
             ]
 
         state.print_state(sorted_result=True)
