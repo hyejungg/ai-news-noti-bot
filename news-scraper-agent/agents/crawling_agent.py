@@ -18,32 +18,31 @@ class CrawlingAgent:
         or DefaultPromptTemplate.CRAWLING_AGENT_PROMPT_KO
     )
 
-    def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
+    def __init__(self, llm: BaseLanguageModel, prompt: str = None):
         self.logger = NewsScraperAgentLogger(self.__class__.__name__)
         self.prompt = PromptTemplate.from_template(
             prompt if prompt else self.crawling_prompt
         )
-        self.site = site
         self.llm = llm
 
     @log_time_agent_method
-    def __call__(self, state: SiteState) -> SiteState:
+    def __call__(self, site: SiteDto, state: SiteState) -> SiteState:
         if (
-            state.parser_result[self.site.name] is None
-            or len(state.parser_result[self.site.name]) == 0
+            state.parser_result[site.name] is None
+            or len(state.parser_result[site.name]) == 0
         ):
-            self.logger.warning(f"No data to crawl for {self.site.name}")
-            state.crawling_result[self.site.name] = []
+            self.logger.warning(f"No data to crawl for {site.name}")
+            state.crawling_result[site.name] = []
             return state
 
         try:
             compressed_parser_result = list(
-                map(self.__strip_attributes, state.parser_result[self.site.name])
+                map(self.__strip_attributes, state.parser_result[site.name])
             )
 
             formatted_prompt = self.crawling_prompt.format(
-                site_name=self.site.name,
-                site_url=self.site.url,
+                site_name=site.name,
+                site_url=site.url,
                 parser_result=compressed_parser_result,
             )
 
@@ -52,10 +51,10 @@ class CrawlingAgent:
                 formatted_prompt
             )
 
-            state.crawling_result[self.site.name] = response.items
+            state.crawling_result[site.name] = response.items
         except Exception as e:
-            self.logger.error(f"Error occurred while crawling {self.site.name}: {e}")
-            state.crawling_result[self.site.name] = []
+            self.logger.error(f"Error occurred while crawling {site.name}: {e}")
+            state.crawling_result[site.name] = []
 
         state.print_state(crawling_result=True)
         return state

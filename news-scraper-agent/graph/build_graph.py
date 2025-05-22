@@ -20,32 +20,55 @@ fake_responses = [
     "[]",
 ]
 # llm = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
+llm = ChatOpenAI(model="gpt-4o")
 
 
-def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
-    html_parser_agent = HtmlParserAgent(site=site)
-    crawling_agent = CrawlingAgent(ChatOpenAI(model="gpt-4o"), site=site)
-    filtering_agent = FilteringAgent(ChatOpenAI(model="gpt-4o"), site=site)
-    sorting_agent = SortingAgent(ChatOpenAI(model="gpt-4o"), site=site)
-
+def create_crawl_filter_sequence(
+    site: SiteDto,
+    html_parser_agent_instance: HtmlParserAgent,
+    crawling_agent_instance: CrawlingAgent,
+    filtering_agent_instance: FilteringAgent,
+    sorting_agent_instance: SortingAgent,
+) -> Callable[[State], SiteState]:
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
             crawling_result={}, filtering_result={}, parser_result={}, sorted_result={}
         )
-        state = html_parser_agent(initial_site_state)
-        state = crawling_agent(state)
-        state = filtering_agent(state)
-        state = sorting_agent(state)
-        return state
+        # Pass site to the __call__ method of each agent
+        current_site_state = html_parser_agent_instance(
+            site=site, state=initial_site_state
+        )
+        current_site_state = crawling_agent_instance(
+            site=site, state=current_site_state
+        )
+        current_site_state = filtering_agent_instance(
+            site=site, state=current_site_state
+        )
+        current_site_state = sorting_agent_instance(
+            site=site, state=current_site_state
+        )
+        return current_site_state
 
     return process_site
 
 
-def parallel_crawl_filter(state: State) -> State:
+def parallel_crawl_filter(
+    state: State,
+    html_parser_agent_instance: HtmlParserAgent,
+    crawling_agent_instance: CrawlingAgent,
+    filtering_agent_instance: FilteringAgent,
+    sorting_agent_instance: SortingAgent,
+) -> State:
     sites = state.sites
 
     parallel_sequences = {
-        f"{site.name}": create_crawl_filter_sequence(site)
+        f"{site.name}": create_crawl_filter_sequence(
+            site,
+            html_parser_agent_instance,
+            crawling_agent_instance,
+            filtering_agent_instance,
+            sorting_agent_instance,
+        )
         for i, site in enumerate(sites)
     }
 
@@ -66,12 +89,26 @@ def parallel_crawl_filter(state: State) -> State:
 
 
 def build_graph(initial_state: State):
+    html_parser_agent = HtmlParserAgent()
+    crawling_agent = CrawlingAgent(llm=llm)
+    filtering_agent = FilteringAgent(llm=llm)
+    sorting_agent = SortingAgent(llm=llm)
+
     builder = StateGraph(State)
 
     # init node
     builder.add_node("start", lambda x: initial_state)
     builder.add_node("get_sites", get_sites)
-    builder.add_node("parallel_crawl_filter", parallel_crawl_filter)
+    builder.add_node(
+        "parallel_crawl_filter",
+        lambda state: parallel_crawl_filter(
+            state,
+            html_parser_agent,
+            crawling_agent,
+            filtering_agent,
+            sorting_agent,
+        ),
+    )
     builder.add_node("send_message", MessageAgent())
 
     # connect edge
