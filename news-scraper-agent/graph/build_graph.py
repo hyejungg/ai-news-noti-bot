@@ -24,9 +24,9 @@ fake_responses = [
 
 def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
     html_parser_agent = HtmlParserAgent(site=site)
-    crawling_agent = CrawlingAgent(ChatOpenAI(model="gpt-4o"), site=site)
-    filtering_agent = FilteringAgent(ChatOpenAI(model="gpt-4o"), site=site)
-    sorting_agent = SortingAgent(ChatOpenAI(model="gpt-4o"), site=site)
+    crawling_agent = CrawlingAgent(ChatOpenAI(model="gpt-5.4-mini"), site=site)
+    filtering_agent = FilteringAgent(ChatOpenAI(model="gpt-5.4-mini"), site=site)
+    sorting_agent = SortingAgent(ChatOpenAI(model="gpt-5.4-mini"), site=site)
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
