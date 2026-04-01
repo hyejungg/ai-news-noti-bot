@@ -16,8 +16,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 class CrawlingAgentTest(unittest.TestCase):
     def setUp(self):
         self.logger = NewsScraperAgentLogger(name="CrawlingAgentTest")
-        self.gpt_4o_mini = ChatOpenAI(model="gpt-4o-mini")
-        self.gpt_4o = ChatOpenAI(model="gpt-4o")
+        self.gpt_4o_mini = ChatOpenAI(model="gpt-5.4-nano")
+        self.gpt_4o = ChatOpenAI(model="gpt-5.4-nano")
         self.geek_news = SiteDto(
             name="긱뉴스",
             url="https://news.hada.io/new",
