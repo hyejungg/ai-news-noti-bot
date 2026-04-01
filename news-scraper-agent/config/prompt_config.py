@@ -55,6 +55,7 @@ The tool aims to filter AI-related news articles, focusing on the latest AI tech
     - Generative AI Keywords: 'Generative Model,' 'Image Generation,' 'Text Generation,' 'Speech Recognition,' 'Image Recognition,' 'Computer Vision,' 'Natural Language Generation' (NLG), 'Generative Adversarial Networks' (GAN), 'Natural Language Understanding,' 'Multimodal AI'
     - Application Fields and Use Cases: 'Recommendation Systems,' 'Automation,' 'Chatbot,' 'Healthcare AI,' 'Finance AI,' 'Robotics,' 'Smart Home,' 'Autonomous Driving,' 'Edge Computing,' 'Cloud AI'
     - AI Technology and Research Trends: 'AI Ethics,' 'Explainable AI,' 'AI Safety,' 'Model Compression,' 'Scalability,' 'Large-Scale Training,' 'Hyperparameters,' 'Lightweight Models,' 'Model Optimization,' 'Transfer Learning'
+    - AI Agent and Ecosystem: 'AI Agent,' 'MCP' (Model Context Protocol), 'Agentic AI,' 'Tool Use,' 'Function Calling,' 'Agent Framework,' 'Multi-Agent,' 'Agent Orchestration,' 'A2A' (Agent-to-Agent), 'Agent SDK'
     - Unique AI Applications: 'Client-side AI,' 'Browser-based AI,' 'Experimental AI,' 'AI Service,' 'AI solutions for developers,' 'Novel AI applications'
     - Societal and Economic Impact Keywords: 'AI Regulation', 'AI Policy', 'Social Impact of AI', 'Job Impact', 'Economics of AI', 'AI Market Growth', 'AI Investment', 'Industry Disruption', 'Future Technology', 'AI Innovation', 'Future of AI', 'AI Competition', 'AI Leadership'
 3. Output the results in JSON format following the given format.
@@ -73,6 +74,7 @@ AI 관련 뉴스 기사를 필터링하는 도구로서, 최신 AI 기술과 연
     - 생성형 AI 관련 키워드 : '생성 모델' (Generative Model), '이미지 생성' (Image Generation), '텍스트 생성' (Text Generation), '음성 인식' (Speech Recognition), '이미지 인식' (Image Recognition), '컴퓨터 비전' (Computer Vision), '자연어 생성' (NLG, Natural Language Generation), 'GAN' (Generative Adversarial Networks), '자연어 이해' (Natural Language Understanding), '멀티모달 AI' (Multimodal AI)
     - 응용 분야와 사례 : '추천 시스템' (Recommendation Systems), '자동화' (Automation), '챗봇' (Chatbot), '의료 AI' (Healthcare AI), '금융 AI' (Finance AI), '로보틱스' (Robotics), '스마트 홈' (Smart Home), '자율 주행' (Autonomous Driving), '엣지 컴퓨팅' (Edge Computing), '클라우드 AI' (Cloud AI)
     - AI 기술 및 연구 동향 : 'AI 윤리' (AI Ethics), '설명 가능한 AI' (Explainable AI), 'AI 안전성' (AI Safety), '모델 압축' (Model Compression), '확장성' (Scalability), '대규모 학습' (Large-Scale Training), '하이퍼파라미터' (Hyperparameters), '경량화 모델' (Lightweight Models), '모델 최적화' (Model Optimization), '전이 학습' (Transfer Learning)
+    - AI 에이전트 및 생태계 : 'AI 에이전트' (AI Agent), 'MCP' (Model Context Protocol), '에이전틱 AI' (Agentic AI), '도구 사용' (Tool Use), '함수 호출' (Function Calling), '에이전트 프레임워크' (Agent Framework), '멀티 에이전트' (Multi-Agent), '에이전트 오케스트레이션' (Agent Orchestration), 'A2A' (Agent-to-Agent), '에이전트 SDK' (Agent SDK)
     - AI 응용 : '클라이언트 측 AI' (Client-side AI), '브라우저 기반 AI' (Browser-based AI), '실험적 AI' (Experimental AI), 'AI 서비스' (AI Service), '개발자를 위한 AI 솔루션' (AI solutions for developers), '신규 AI 애플리케이션' (Novel AI applications)
     - AI의 사회적 및 경제적 시사점 관련 키워드: 'AI 규제' (AI Regulation), 'AI 정책' (AI Policy), 'AI의 사회적 영향' (Social Impact of AI), '일자리 영향' (Job Impact), 'AI 경제학' (Economics of AI), 'AI 시장 성장' (AI Market Growth), 'AI 투자' (AI Investment), '산업 변화' (Industry Disruption), '미래 기술' (Future Technology), 'AI 혁신' (AI Innovation), '미래 AI' (Future of AI), 'AI 경쟁' (AI Competition), 'AI 리더십' (AI Leadership)"
 3. JSON 형식으로 주어진 형식에 맞게 출력하세요.
@@ -91,7 +93,7 @@ As a tool for ranking AI-related news articles by importance, the goal is to eva
 3. Evaluate the importance of each article based on the following criteria (higher rank indicates greater importance):
     - **1st Priority: Practical AI Applications** : Articles showcasing AI technologies that are commercialized to solve problems or improve user experience.
     - **2nd Priority: Latest AI Technological Trends** : Articles covering advancements in AI technology, performance improvements, or research-driven insights.
-    - **3rd Priority: Latest AI Development Frameworks** : Articles about AI management frameworks, developer tools, or techniques such as RAG or fine-tuning.
+    - **3rd Priority: Latest AI Development Frameworks and Agent Ecosystem** : Articles about AI management frameworks, developer tools, techniques such as RAG or fine-tuning, and AI agent ecosystems including MCP (Model Context Protocol), agentic AI, agent frameworks, multi-agent orchestration, and A2A (Agent-to-Agent).
     - **4th Priority: Creative and Innovative Use Cases** : Articles demonstrating novel or fun applications of AI, showcasing new possibilities or creative implementations.
     - **5th Priority: Social Impact and Policy Relevance** : Articles discussing AI-related legislation, policies, or contributions to solving societal challenges.
     - **6th Priority: Industrial Scalability and Investment Trends** : Articles addressing AI's expansion into new industries, investments, or business growth.
@@ -112,7 +114,7 @@ AI 관련 뉴스 기사를 중요도에 따라 정렬하는 도구로서, AI의 
 3. 중요도를 평가하는 기준은 다음과 같습니다 (순위가 높을수록 중요도가 높음):
     - **1순위: 실질적인 AI 기술 활용 사례** : AI 기술이 상용화되어 문제를 해결하거나 사용자 경험을 개선하는 기사
     - **2순위: 최신 AI 기술 트렌드** : 최신 AI 기술의 발전 방향, 성능 개선, 연구 중심의 내용을 다룬 기사
-    - **3순위: 최신 AI 개발 프레임워크** : 최신 I 관리 프레임워크나 개발자 도구, AI 활용 기법 (RAG, 파인튜닝 등)에 대한 기사
+    - **3순위: 최신 AI 개발 프레임워크 및 에이전트 생태계** : 최신 AI 관리 프레임워크나 개발자 도구, AI 활용 기법 (RAG, 파인튜닝 등), 그리고 MCP (Model Context Protocol), 에이전틱 AI, 에이전트 프레임워크, 멀티 에이전트 오케스트레이션, A2A (Agent-to-Agent) 등 AI 에이전트 생태계에 대한 기사
     - **4순위: 창의적이고 혁신적인 활용 사례** : 기존과 다른 창의적인 방식으로 AI를 응용하여 새로운 가능성을 보여주거나 재미있는 활용 사례에 대한 기사.
     - **5순위: 사회적 영향 및 정책적 중요성** : AI 관련 입법, 정책, 사회 문제 해결 사례를 다룬 기사.
     - **6순위: 산업적 확장성 및 투자 동향** : AI 기술의 확장성, 투자 및 신사업 관련 내용을 다룬 기사.
