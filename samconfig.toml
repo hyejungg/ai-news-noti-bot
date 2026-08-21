@@ -28,7 +28,7 @@ stack_name = "ai-news-agent-prod"
 parameter_overrides = "PROFILE=prod"
 capabilities = "CAPABILITY_NAMED_IAM"
 confirm_changeset = true
-resolve_s3 = true
+s3_bucket = "ai-news-agent-sam-artifacts-prod-339712918956"
 resolve_image_repos = false
 image_repositories = [
     "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-prod",
@@ -36,10 +36,10 @@ image_repositories = [
 ]
 
 
-# ECR 리포지토리 스택 (ecr-template.yaml). 최초 1회는 scripts/import-ecr-stack.sh 로 편입 필요
+# 인프라 스택 (2026-08-21-template.yaml). 운영 방법은 INFRA.md 참고
 [prod-ecr]
 [prod-ecr.deploy.parameters]
-template_file = "ecr-template.yaml"
+template_file = "2026-08-21-template.yaml"
 stack_name = "ai-news-agent-ecr-prod"
 parameter_overrides = "PROFILE=prod"
 confirm_changeset = true
@@ -51,17 +51,17 @@ stack_name = "ai-news-agent-dev"
 parameter_overrides = "PROFILE=dev"
 capabilities = "CAPABILITY_NAMED_IAM"
 confirm_changeset = true
-resolve_s3 = true
+s3_bucket = "ai-news-agent-sam-artifacts-dev-339712918956"
 resolve_image_repos = false
 image_repositories = [
     "NewsScraperAgentFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/news-scraper-agent-dev",
     "ScraperLambdaFunction=339712918956.dkr.ecr.ap-northeast-2.amazonaws.com/ai-news-agent/scraper-lambda-dev"
 ]
 
-# ECR 리포지토리 스택 (ecr-template.yaml). 최초 1회는 scripts/import-ecr-stack.sh 로 편입 필요
+# 인프라 스택 (2026-08-21-template.yaml). 운영 방법은 INFRA.md 참고
 [dev-ecr]
 [dev-ecr.deploy.parameters]
-template_file = "ecr-template.yaml"
+template_file = "2026-08-21-template.yaml"
 stack_name = "ai-news-agent-ecr-dev"
 parameter_overrides = "PROFILE=dev"
 confirm_changeset = true

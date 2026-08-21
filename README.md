@@ -29,6 +29,16 @@ AI 뉴스 트렌드 알림 봇은 회사 내 GAI(Generative AI) 스터디원들�
 - aws sam (serverless application model)을 이용하여 로컬 환경에서 람다 디버깅 편의성을 높이고, cloudFormation 기반으로 뉴스봇에 사용하는 모든 리소스를 stack 형태로 관리하고 있습니다.
 ![Image](https://github.com/user-attachments/assets/af96cb0a-fcbc-4a61-8108-d328497f900a)
 
+## 🚀 deploy
+### 메인 스택 (template.yaml)
+- GitHub Actions로 배포합니다. main 브랜치 push 시 prod 자동 배포, dev는 workflow_dispatch로 수동 실행합니다.
+
+### 인프라 스택 (2026-08-21-template.yaml)
+- ECR 리포지토리(라이프사이클 정책: 리포지토리당 최신 2개 이미지만 유지)와 SAM 배포 아티팩트용 S3 버킷(30일 만료)을 관리하는 별도 스택입니다.
+- 메인 스택에 넣지 않은 이유: `sam deploy`는 스택 생성 **전에** 이미지를 ECR에 푸시하므로, 리포지토리가 메인 스택 소속이면 새 환경 첫 배포가 성립하지 않습니다. 또한 `AWS::Serverless` transform이 걸린 스택으로는 기존 리소스 import가 지원되지 않습니다.
+- 템플릿 파일명은 마지막으로 변경한 날짜를 따르고(`날짜-template.yaml`), 파일 상단 독스트링에 수행 내역을 기록합니다.
+- 자세한 배포 방법, 변경 이력, 1회성 작업 기록은 [INFRA.md](./INFRA.md)를 참고하세요.
+
 ## 🔥result
 ![Image](https://github.com/user-attachments/assets/a6a4a2c7-3520-4331-8160-44ed5ce3832d)
 ![Image](https://github.com/user-attachments/assets/d1fb5f52-f06a-41ff-ab71-702d7998212b)

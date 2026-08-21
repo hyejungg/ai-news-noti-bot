@@ -1,7 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: AI News Agent ECR repositories
+Description: AI News Agent infra (ECR repositories, SAM artifacts bucket)
 
-# 이 스택은 Lambda 이미지가 푸시될 ECR 리포지토리를 관리한다.
+# =====================================================================
+# AI News Agent 인프라 스택 (스택 이름: ai-news-agent-ecr-<phase>)
+#
+# 메인 스택(template.yaml)과 분리한 이유:
+#   - sam deploy 는 스택 생성 전에 이미지를 ECR에 푸시하므로
+#     리포지토리가 메인 스택 소속이면 첫 배포가 성립하지 않음 (순환)
+#   - AWS::Serverless transform 스택으로는 기존 리소스 import 미지원
+#
+# 수행 내역 (자세한 이력/운영 방법은 INFRA.md 참고):
+#   - 2026-08-21: 기존 ECR 리포지토리 4개(dev/prod)를 스택으로 편입하고
+#     라이프사이클 정책(최신 2개만 유지) 적용. SAM 배포 아티팩트용
+#     S3 버킷(30일 만료) 추가.
+# =====================================================================
 
 Parameters:
   PROFILE:
@@ -53,6 +65,33 @@ Resources:
               }
             ]
           }
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
+
+  # sam deploy 가 템플릿/아티팩트를 업로드하는 버킷.
+  # 계정 공용 SAM 버킷(aws-sam-cli-managed-default-*) 대신 사용하며,
+  # 배포 시점에만 필요한 파일이므로 30일 후 자동 만료시킨다.
+  SamArtifactsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub ai-news-agent-sam-artifacts-${PROFILE}-${AWS::AccountId}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-old-deploy-artifacts
+            Status: Enabled
+            ExpirationInDays: 30
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
       Tags:
         - Key: PROJECT
           Value: AI_NEWS_AGENT
