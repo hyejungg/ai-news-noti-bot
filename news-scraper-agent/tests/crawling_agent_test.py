@@ -5,6 +5,7 @@ import unittest
 from langchain_openai import ChatOpenAI
 
 from agents.crawling_agent import CrawlingAgent
+from config.env_config import env
 from config.log import NewsScraperAgentLogger
 from graph.state import SiteState
 from models.site import SiteDto
@@ -16,8 +17,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 class CrawlingAgentTest(unittest.TestCase):
     def setUp(self):
         self.logger = NewsScraperAgentLogger(name="CrawlingAgentTest")
-        self.gpt_4o_mini = ChatOpenAI(model="gpt-5.4-mini")
-        self.gpt_4o = ChatOpenAI(model="gpt-5.4-mini")
+        self.gpt_4o_mini = ChatOpenAI(model=env.OPENAI_MODEL)
+        self.gpt_4o = ChatOpenAI(model=env.OPENAI_MODEL)
         self.geek_news = SiteDto(
             name="긱뉴스",
             url="https://news.hada.io/new",
