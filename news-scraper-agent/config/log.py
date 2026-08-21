@@ -1,3 +1,4 @@
+import json
 import logging
 from config.env_config import env
 from datetime import datetime, timezone, timedelta
@@ -9,12 +10,29 @@ from rich.table import Table
 from rich.text import Text
 from typing import Any
 
+KST = timezone(timedelta(hours=9))
+
 
 class ConsoleDataType(Enum):
     TABLE = "TABLE"
     JSON = "JSON"
     TEXT = "TEXT"
     DICT = "DICT"
+
+
+class JsonLogFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        log = {
+            "timestamp": datetime.fromtimestamp(record.created, tz=KST).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+            "level": record.levelname,
+            "name": record.name,
+            "message": record.getMessage(),
+        }
+        if record.exc_info:
+            log["exception"] = self.formatException(record.exc_info)
+        return json.dumps(log, ensure_ascii=False)
 
 
 class NewsScraperAgentLogger(logging.Logger):
@@ -25,20 +43,28 @@ class NewsScraperAgentLogger(logging.Logger):
         self._initialize_logger()
 
     def _initialize_logger(self):
-        # Formatter 설정
-        formatter = logging.Formatter(fmt="%(name)16s - %(message)s")
-
         # Logger 레벨 설정
         self.setLevel(logging.DEBUG if env.PROFILE != "prod" else logging.INFO)
+
+        if env.PROFILE in ("dev", "prod"):
+            # dev/prod 환경에서는 CloudWatch 조회를 위해 JSON 형태로 로그 출력
+            json_handler = logging.StreamHandler()
+            json_handler.setLevel(logging.DEBUG)
+            json_handler.setFormatter(JsonLogFormatter())
+            self.addHandler(json_handler)
+            return
+
+        # Formatter 설정
+        formatter = logging.Formatter(fmt="%(name)16s - %(message)s")
 
         # RichHandler 추가
         rich_handler = RichHandler(
             rich_tracebacks=True,
             console=self.console,
             log_time_format=lambda dt: Text(
-                datetime.fromtimestamp(
-                    dt.timestamp(), tz=timezone(timedelta(hours=9))
-                ).strftime("%Y-%m-%d %H:%M:%S")
+                datetime.fromtimestamp(dt.timestamp(), tz=KST).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
             ),
         )
         rich_handler.setLevel(logging.DEBUG)

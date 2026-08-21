@@ -26,6 +26,8 @@ class Environment(BaseSettings):
 
     # llm
     OPENAI_API_KEY: str
+    OPENAI_MODEL: str = "gpt-5.4-mini"
+    OPENAI_REASONING_EFFORT: Optional[str] = None  # 미설정 시 API 기본값 사용
 
     # aws
     AWS_ACCESS_KEY_ID: str
