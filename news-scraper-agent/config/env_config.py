@@ -26,6 +26,7 @@ class Environment(BaseSettings):
 
     # llm
     OPENAI_API_KEY: str
+    OPENAI_MODEL: str = "gpt-5.4-mini"
 
     # aws
     AWS_ACCESS_KEY_ID: str

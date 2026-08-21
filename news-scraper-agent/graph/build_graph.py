@@ -10,6 +10,7 @@ from agents.filtering_agent import FilteringAgent
 from agents.html_parser_agent import HtmlParserAgent
 from agents.message_agent import MessageAgent
 from agents.sorting_agent import SortingAgent
+from config.env_config import env
 from graph.state import SiteState, State, PageCrawlingData
 from models.site import SiteDto
 from service.site_service import get_sites
@@ -24,9 +25,9 @@ fake_responses = [
 
 def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
     html_parser_agent = HtmlParserAgent(site=site)
-    crawling_agent = CrawlingAgent(ChatOpenAI(model="gpt-5.4-mini"), site=site)
-    filtering_agent = FilteringAgent(ChatOpenAI(model="gpt-5.4-mini"), site=site)
-    sorting_agent = SortingAgent(ChatOpenAI(model="gpt-5.4-mini"), site=site)
+    crawling_agent = CrawlingAgent(ChatOpenAI(model=env.OPENAI_MODEL), site=site)
+    filtering_agent = FilteringAgent(ChatOpenAI(model=env.OPENAI_MODEL), site=site)
+    sorting_agent = SortingAgent(ChatOpenAI(model=env.OPENAI_MODEL), site=site)
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
