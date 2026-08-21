@@ -23,11 +23,18 @@ fake_responses = [
 # llm = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
 
 
+def _create_llm() -> ChatOpenAI:
+    return ChatOpenAI(
+        model=env.OPENAI_MODEL,
+        reasoning_effort=env.OPENAI_REASONING_EFFORT,
+    )
+
+
 def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
     html_parser_agent = HtmlParserAgent(site=site)
-    crawling_agent = CrawlingAgent(ChatOpenAI(model=env.OPENAI_MODEL), site=site)
-    filtering_agent = FilteringAgent(ChatOpenAI(model=env.OPENAI_MODEL), site=site)
-    sorting_agent = SortingAgent(ChatOpenAI(model=env.OPENAI_MODEL), site=site)
+    crawling_agent = CrawlingAgent(_create_llm(), site=site)
+    filtering_agent = FilteringAgent(_create_llm(), site=site)
+    sorting_agent = SortingAgent(_create_llm(), site=site)
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
