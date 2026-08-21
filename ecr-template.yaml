@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AI News Agent ECR repositories
+
+# 이 스택은 Lambda 이미지가 푸시될 ECR 리포지토리를 관리한다.
+
+Parameters:
+  PROFILE:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+    Description: 배포에 사용할 phase
+
+Resources:
+  NewsScraperAgentRepository:
+    Type: AWS::ECR::Repository
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      RepositoryName: !Sub ai-news-agent/news-scraper-agent-${PROFILE}
+      # Lambda가 함수 생성 시 자동으로 붙이는 이미지 pull 정책.
+      # 템플릿에서 빠지면 CloudFormation이 실제 리포지토리의 정책을 삭제하므로 반드시 유지해야 한다.
+      RepositoryPolicyText:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: LambdaECRImageRetrievalPolicy
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - ecr:BatchGetImage
+              - ecr:DeleteRepositoryPolicy
+              - ecr:GetDownloadUrlForLayer
+              - ecr:GetRepositoryPolicy
+              - ecr:SetRepositoryPolicy
+            Condition:
+              StringLike:
+                aws:sourceArn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*
+      # Lambda가 사용 중인 이미지가 지워지지 않도록 최신 2개(현재 + 롤백용)는 유지
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "keep last 2 images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 2
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
+
+  ScraperLambdaRepository:
+    Type: AWS::ECR::Repository
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      RepositoryName: !Sub ai-news-agent/scraper-lambda-${PROFILE}
+      RepositoryPolicyText:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: LambdaECRImageRetrievalPolicy
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - ecr:BatchGetImage
+              - ecr:DeleteRepositoryPolicy
+              - ecr:GetDownloadUrlForLayer
+              - ecr:GetRepositoryPolicy
+              - ecr:SetRepositoryPolicy
+            Condition:
+              StringLike:
+                aws:sourceArn: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "keep last 2 images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 2
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+      Tags:
+        - Key: PROJECT
+          Value: AI_NEWS_AGENT
+        - Key: PHASE
+          Value: !Ref PROFILE
