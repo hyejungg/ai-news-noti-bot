@@ -1,10 +1,3 @@
-from typing import Callable
-
-from langchain.schema.runnable import RunnableParallel
-from langchain_community.llms import FakeListLLM
-from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, START, END
-
 from agents.crawling_agent import CrawlingAgent
 from agents.filtering_agent import FilteringAgent
 from agents.html_parser_agent import HtmlParserAgent
@@ -12,29 +5,35 @@ from agents.message_agent import MessageAgent
 from agents.sorting_agent import SortingAgent
 from config.env_config import env
 from graph.state import SiteState, State, PageCrawlingData
+from langchain.schema.runnable import RunnableParallel
+from langchain_community.llms import FakeListLLM
+from langchain_openai import ChatOpenAI
+from langgraph.graph import StateGraph, START, END
 from models.site import SiteDto
 from service.site_service import get_sites
+from typing import Callable
 
 # FakeListLLM 설정
 fake_responses = [
     "[]",
     "[]",
 ]
+
+
 # llm = FakeListLLM(responses=fake_responses)  # FIXME 테스트 시 사용
-
-
-def _create_llm() -> ChatOpenAI:
-    return ChatOpenAI(
-        model=env.OPENAI_MODEL,
-        reasoning_effort=env.OPENAI_REASONING_EFFORT,
-    )
 
 
 def create_crawl_filter_sequence(site: SiteDto) -> Callable[[State], SiteState]:
     html_parser_agent = HtmlParserAgent(site=site)
-    crawling_agent = CrawlingAgent(_create_llm(), site=site)
-    filtering_agent = FilteringAgent(_create_llm(), site=site)
-    sorting_agent = SortingAgent(_create_llm(), site=site)
+    crawling_agent = CrawlingAgent(
+        ChatOpenAI(model=env.OPENAI_MODEL, reasoning_effort=env.OPENAI_REASONING_EFFORT), site=site
+    )
+    filtering_agent = FilteringAgent(
+        ChatOpenAI(model=env.OPENAI_MODEL, reasoning_effort=env.OPENAI_REASONING_EFFORT), site=site
+    )
+    sorting_agent = SortingAgent(
+        ChatOpenAI(model=env.OPENAI_MODEL, reasoning_effort=env.OPENAI_REASONING_EFFORT), site=site
+    )
 
     def process_site(state: State) -> SiteState:
         initial_site_state = SiteState(
