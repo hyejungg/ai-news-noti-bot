@@ -1,8 +1,8 @@
 import json
 import requests
-
-from typing import get_type_hints, get_args
 from playwright.sync_api import sync_playwright, ElementHandle, TimeoutError as PlaywrightTimeoutError
+from typing import get_type_hints, get_args
+
 from used_type import RequestBody
 
 
@@ -95,10 +95,13 @@ def handler(event, context) -> dict:
                     headless=True,
                 )
                 page = browser.new_page()
-                page.goto(url, wait_until="domcontentloaded", timeout=70000) # 70초
-                page.wait_for_load_state("networkidle", timeout=70000) # 70초
+                page.goto(url, wait_until="domcontentloaded", timeout=70000)  # 70초
+                try:
+                    page.wait_for_load_state("networkidle", timeout=70000)  # 70초
+                except PlaywrightTimeoutError:
+                    print(f"networkidle timed out, continue with current DOM: {url}")
                 if selector:
-                    page.wait_for_selector(selector, timeout=10000) # 10초
+                    page.wait_for_selector(selector, timeout=10000)  # 10초
                     selected: list[ElementHandle] = page.query_selector_all(selector)
                     if len(selected) == 0:
                         return error(f"Element not found with {selector}", 400)
