@@ -6,7 +6,7 @@ from graph.state import (
     SiteState,
     AgentResponse,
 )
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from models.site import SiteDto
 

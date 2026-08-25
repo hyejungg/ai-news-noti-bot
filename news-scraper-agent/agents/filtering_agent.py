@@ -2,7 +2,7 @@ from config.log import NewsScraperAgentLogger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
 from graph.state import SiteState, PageCrawlingData
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from models.site import SiteDto
 from pydantic import BaseModel
