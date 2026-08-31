@@ -3,6 +3,7 @@ from config.log import ConsoleDataType, NewsScraperAgentLogger
 from models.site import SiteDto
 from pydantic import BaseModel, Field
 from rich.table import Table
+from typing import Optional
 
 
 class SortedFilteringData(BaseModel):
@@ -13,7 +14,8 @@ class SortedFilteringData(BaseModel):
 class PageCrawlingData(BaseModel):
     url: str
     title: str
-    reason: str = None
+    # json_schema strict 모드에서 모든 필드가 required로 변환되므로 null 허용 타입이어야 함
+    reason: Optional[str] = None
 
 
 type SortedFilterResult = dict[str, list[PageCrawlingData]]

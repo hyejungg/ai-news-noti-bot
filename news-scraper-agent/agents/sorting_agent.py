@@ -1,7 +1,3 @@
-from langchain.prompts import PromptTemplate
-from langchain_core.language_models import BaseLanguageModel
-from pydantic import BaseModel, Field
-
 from config.log import NewsScraperAgentLogger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
@@ -9,7 +5,10 @@ from graph.state import (
     SiteState,
     PageCrawlingData,
 )
+from langchain_core.prompts import PromptTemplate
+from langchain_core.language_models import BaseLanguageModel
 from models.site import SiteDto
+from pydantic import BaseModel, Field
 
 
 class SortRequestItem(BaseModel):
@@ -27,8 +26,8 @@ class SortingResponse(BaseModel):
 
 class SortingAgent:
     sorting_prompt = (
-        DefaultPromptTemplate.SORTING_AGENT_PROMPT_EN
-        or DefaultPromptTemplate.SORTING_AGENT_PROMPT_KO
+            DefaultPromptTemplate.SORTING_AGENT_PROMPT_EN
+            or DefaultPromptTemplate.SORTING_AGENT_PROMPT_KO
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
@@ -42,8 +41,8 @@ class SortingAgent:
     @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
         if (
-            not state.filtering_result[self.site.name]
-            or len(state.filtering_result[self.site.name]) == 0
+                not state.filtering_result[self.site.name]
+                or len(state.filtering_result[self.site.name]) == 0
         ):
             self.logger.warning(f"No data to sort for {self.site.name}")
             state.sorted_result[self.site.name] = []
@@ -88,11 +87,13 @@ class SortingAgent:
         return state
 
     def __request_sort(
-        self, filtering_result: list[SortRequestItem]
+            self, filtering_result: list[SortRequestItem]
     ) -> list[SortingResponse.Item]:
         formatted_prompt = self.prompt.format(filtering_result=filtering_result)
 
-        llm_with_structured_output = self.llm.with_structured_output(SortingResponse)
+        llm_with_structured_output = self.llm.with_structured_output(
+            SortingResponse, method="json_schema"
+        )
         response: SortingResponse = llm_with_structured_output.invoke(formatted_prompt)
 
         return response.items
