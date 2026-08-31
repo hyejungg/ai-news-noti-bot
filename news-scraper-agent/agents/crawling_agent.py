@@ -1,7 +1,4 @@
 from bs4 import BeautifulSoup
-from langchain.prompts import PromptTemplate
-from langchain_core.language_models import BaseLanguageModel
-
 from config.log import NewsScraperAgentLogger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
@@ -9,13 +6,15 @@ from graph.state import (
     SiteState,
     AgentResponse,
 )
+from langchain_core.prompts import PromptTemplate
+from langchain_core.language_models import BaseLanguageModel
 from models.site import SiteDto
 
 
 class CrawlingAgent:
     crawling_prompt = (
-        DefaultPromptTemplate.CRAWLING_AGENT_PROMPT_EN
-        or DefaultPromptTemplate.CRAWLING_AGENT_PROMPT_KO
+            DefaultPromptTemplate.CRAWLING_AGENT_PROMPT_EN
+            or DefaultPromptTemplate.CRAWLING_AGENT_PROMPT_KO
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
@@ -29,8 +28,8 @@ class CrawlingAgent:
     @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
         if (
-            state.parser_result[self.site.name] is None
-            or len(state.parser_result[self.site.name]) == 0
+                state.parser_result[self.site.name] is None
+                or len(state.parser_result[self.site.name]) == 0
         ):
             self.logger.warning(f"No data to crawl for {self.site.name}")
             state.crawling_result[self.site.name] = []
@@ -47,7 +46,9 @@ class CrawlingAgent:
                 parser_result=compressed_parser_result,
             )
 
-            llm_with_structured_output = self.llm.with_structured_output(AgentResponse)
+            llm_with_structured_output = self.llm.with_structured_output(
+                AgentResponse, method="json_schema"
+            )
             response: AgentResponse = llm_with_structured_output.invoke(
                 formatted_prompt
             )

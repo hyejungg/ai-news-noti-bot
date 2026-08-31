@@ -5,8 +5,8 @@ from agents.message_agent import MessageAgent
 from agents.sorting_agent import SortingAgent
 from config.env_config import env
 from graph.state import SiteState, State, PageCrawlingData
-from langchain.schema.runnable import RunnableParallel
-from langchain_community.llms import FakeListLLM
+from langchain_core.language_models import FakeListLLM
+from langchain_core.runnables import RunnableParallel
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 from models.site import SiteDto

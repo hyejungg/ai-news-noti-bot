@@ -1,12 +1,11 @@
-from langchain.prompts import PromptTemplate
-from langchain_core.language_models import BaseLanguageModel
-from pydantic import BaseModel
-
 from config.log import NewsScraperAgentLogger
 from config.prompt_config import DefaultPromptTemplate
 from decorations.log_time import log_time_agent_method
 from graph.state import SiteState, PageCrawlingData
+from langchain_core.prompts import PromptTemplate
+from langchain_core.language_models import BaseLanguageModel
 from models.site import SiteDto
+from pydantic import BaseModel
 
 
 class FilterRequestItem(BaseModel):
@@ -20,8 +19,8 @@ class FilteringResponse(BaseModel):
 
 class FilteringAgent:
     filtering_prompt = (
-        DefaultPromptTemplate.FILTERING_AGENT_PROMPT_EN
-        or DefaultPromptTemplate.FILTERING_AGENT_PROMPT_KO
+            DefaultPromptTemplate.FILTERING_AGENT_PROMPT_EN
+            or DefaultPromptTemplate.FILTERING_AGENT_PROMPT_KO
     )
 
     def __init__(self, llm: BaseLanguageModel, site: SiteDto, prompt: str = None):
@@ -35,8 +34,8 @@ class FilteringAgent:
     @log_time_agent_method
     def __call__(self, state: SiteState) -> SiteState:
         if (
-            not state.crawling_result[self.site.name]
-            or len(state.crawling_result[self.site.name]) == 0
+                not state.crawling_result[self.site.name]
+                or len(state.crawling_result[self.site.name]) == 0
         ):
             self.logger.warning(f"No data to filter for {self.site.name}")
             state.filtering_result[self.site.name] = []
@@ -62,7 +61,7 @@ class FilteringAgent:
             )
 
             llm_with_structured_output = self.llm.with_structured_output(
-                FilteringResponse
+                FilteringResponse, method="json_schema"
             )
             response: FilteringResponse = llm_with_structured_output.invoke(
                 formatted_prompt
